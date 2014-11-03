@@ -18,6 +18,7 @@
 	</head>
 	<body>
 		<script src="js/Three.js"></script>
+        <script src="js/Detector.js"></script>
         <script src="js/TrackballControls.js"></script>
         <script src="js/IndoorMapLoader.js"></script>
         <script src="js/stats.min.js"></script>
@@ -37,7 +38,11 @@
                 camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 800);
                 //camera = new THREE.OrthographicCamera( -window.innerWidth, window.innerWidth, window.innerHeight , -window.innerHeight, - 2000, 2000 );
 
-                renderer = new THREE.WebGLRenderer({ antialias: true });
+                if(Detector.webgl){
+                    renderer = new THREE.WebGLRenderer({ antialias: true });
+                }else {
+                    renderer = new THREE.CanvasRenderer();
+                }
                 renderer.setClearColor( 0xffffff );
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 container.appendChild(renderer.domElement);
