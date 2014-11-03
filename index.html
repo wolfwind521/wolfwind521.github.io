@@ -1,49 +1,143 @@
 <!DOCTYPE html>
 <html>
-
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Wolfwind521.github.io : my personal webpage" />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Wolfwind521.github.io</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/wolfwind521">View on GitHub</a>
-
-          <h1 id="project_title">Wolfwind</h1>
-          <h2 id="project_tagline">My Personal Webpage</h2>
-
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to My Page</h3>
-
-<p>Under construction. Coming soon...</p>
+	<head>
+		<title>Indoor Map 3d</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+            body
+            {
+                background-color: #f0f0f0;
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+	</head>
+	<body>
+		<script src="js/Three.js"></script>
+        <script src="js/TrackballControls.js"></script>
+        <script src="js/IndoorMapLoader.js"></script>
+        <script src="js/stats.min.js"></script>
+		<script>
+            var camera, scene, renderer, controls, projector, raycaster;
+            var stats, container;
+            var mouse = new THREE.Vector2(), INTERSECTED;
+            init();
+            animate();
 
 
-      </section>
-    </div>
+            function init() {
+                container = document.createElement( 'div' );
+                document.body.appendChild( container );
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 800);
+                //camera = new THREE.OrthographicCamera( -window.innerWidth, window.innerWidth, window.innerHeight , -window.innerHeight, - 2000, 2000 );
 
-    
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setClearColor( 0xffffff );
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                container.appendChild(renderer.domElement);
 
-  </body>
+                var light = new THREE.DirectionalLight( 0xffffff );
+                light.position.set( 0, 0, 400 );
+                scene.add( light );
+
+                var loader = new IndoorMapLoader(true);
+                loader.load("B000A9R4FE.json", function(mall){
+                    scene.add(mall.root);
+                    renderer.setClearColor(mall.theme.clearColor);
+                    //mall.showAll();
+                    mall.showFloor(1);
+                });
+
+                camera.position.z = 300;
+
+                projector = new THREE.Projector();
+                raycaster = new THREE.Raycaster();
+
+                controls = new THREE.TrackballControls(camera);
+
+                stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                container.appendChild( stats.domElement );
+
+                window.addEventListener( 'resize', onWindowResize, false );
+                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+            }
+
+            function animate(){
+                requestAnimationFrame(animate);
+                controls.update();
+                update();
+                stats.update();
+            }
+
+            function update(){
+
+//                // find intersections
+//
+//                var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+//                projector.unprojectVector( vector, camera );
+//
+//                raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
+//
+//                var intersects = raycaster.intersectObjects( scene.children );
+//
+//                if ( intersects.length > 0 ) {
+//
+//                    if ( INTERSECTED != intersects[ 0 ].object ) {
+//
+//                        if ( INTERSECTED ) {
+//                            INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+//                        }
+//                        for(var i=0; i<intersects.length; i++) {
+//                            INTERSECTED = intersects[ i ].object;
+//                            if(INTERSECTED.name == "shop") {
+//                                INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+//                                INTERSECTED.material.color.setHex(0xffff55);
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                } else {
+//
+//                    if ( INTERSECTED ) {
+//                        INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+//                    }
+//
+//                    INTERSECTED = null;
+//
+//                }
+
+                renderer.render(scene, camera);
+            }
+
+            function onWindowResize(){
+                windowHalfX = window.innerWidth / 2;
+                windowHalfY = window.innerHeight / 2;
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                controls.handleResize();
+            }
+
+            function onDocumentMouseMove( event ) {
+
+                event.preventDefault();
+
+                mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            }
+
+        </script>
+	</body>
 </html>
