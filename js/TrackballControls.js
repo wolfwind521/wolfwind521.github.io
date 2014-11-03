@@ -12,7 +12,7 @@ THREE.TrackballControls = function ( object, domElement ) {
     this.domElement = ( domElement !== undefined ) ? domElement : document;
 
     // API
-
+    this.usingWebgl = true;
     this.enabled = true;
 
     this.screen = { left: 0, top: 0, width: 0, height: 0 };
@@ -504,12 +504,14 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(Detector.webgl) {
+                if(this.usingWebgl) { //rotate when using webgl
                     _state = STATE.TOUCH_ROTATE;
                     _rotateStart.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
                     _rotateEnd.copy(_rotateStart);
-                    break;
+                }else{
+                    _state = STATE.NONE;
                 }
+                break;
             case 2:
                 _state = STATE.TOUCH_ZOOM_PAN;
                 var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
@@ -541,10 +543,12 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(Detector.webgl) {
+                if(this.usingWebgl) {
                     _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
-                    break;
+                }else{
+                    _state = STATE.NONE;
                 }
+                break;
             case 2:
                 var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
                 var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
@@ -569,11 +573,11 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(Detector.webgl) {
+                if(this.usingWebgl) {
                     _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
                     _rotateStart.copy(_rotateEnd);
-                    break;
                 }
+                break;
             case 2:
                 _touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
 

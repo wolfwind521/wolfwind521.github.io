@@ -37,11 +37,14 @@
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 800);
                 //camera = new THREE.OrthographicCamera( -window.innerWidth, window.innerWidth, window.innerHeight , -window.innerHeight, - 2000, 2000 );
+                controls = new THREE.TrackballControls(camera);
 
                 if(Detector.webgl){
                     renderer = new THREE.WebGLRenderer({ antialias: true });
+                    controls.usingWebgl = true;
                 }else {
                     renderer = new THREE.CanvasRenderer();
+                    controls.usingWebgl = false;
                 }
                 renderer.setClearColor( 0xffffff );
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -66,7 +69,7 @@
                 projector = new THREE.Projector();
                 raycaster = new THREE.Raycaster();
 
-                controls = new THREE.TrackballControls(camera);
+
 
                 stats = new Stats();
                 stats.domElement.style.position = 'absolute';
