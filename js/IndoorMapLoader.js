@@ -8,14 +8,14 @@ var defaultTheme = {
     name : "default",
     clearColor : 0xffffff,
     buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true, depthTest:false}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:true, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2}),
+    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:true, side: THREE.DoubleSide, polygonOffset: false, polygonOffsetFactor: -1, polygonOffsetUnits: -2}),
     roomMat : function(type){
         var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: true, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
+        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: true, polygonOffset: false, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
         //return new THREE.MeshBasicMaterial({color: 0xEFE5D9, opacity: 1, transparent: true})
     },
     roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 1.5 }),
-    fontMat: {fontsize: 50, color:"rgb(255,255,255)"}
+    fontMat: {fontsize: 50, color:"rgb(0,0,0)"}
 }
 
 var techTheme = {
@@ -263,7 +263,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             shape = new THREE.Shape(points);
             geometry = new THREE.ShapeGeometry(shape);
             mesh = new THREE.Mesh(geometry, mall.theme.floorMat);
-            //mesh.position.set(0,0,-50);
+            mesh.position.set(0,0,-5);
             mesh.height = floorHeight;
 
             mall.floors.push(mesh);
