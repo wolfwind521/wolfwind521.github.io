@@ -504,11 +504,12 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                _state = STATE.TOUCH_ROTATE;
-                _rotateStart.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-                _rotateEnd.copy( _rotateStart );
-                break;
-
+                if(Detector.webgl) {
+                    _state = STATE.TOUCH_ROTATE;
+                    _rotateStart.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
+                    _rotateEnd.copy(_rotateStart);
+                    break;
+                }
             case 2:
                 _state = STATE.TOUCH_ZOOM_PAN;
                 var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
@@ -540,9 +541,10 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                _rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-                break;
-
+                if(Detector.webgl) {
+                    _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
+                    break;
+                }
             case 2:
                 var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
                 var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
@@ -567,10 +569,11 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                _rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-                _rotateStart.copy( _rotateEnd );
-                break;
-
+                if(Detector.webgl) {
+                    _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
+                    _rotateStart.copy(_rotateEnd);
+                    break;
+                }
             case 2:
                 _touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
 
