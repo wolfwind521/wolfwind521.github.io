@@ -14,7 +14,7 @@ var defaultTheme = {
         return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: true, polygonOffset: false, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
         //return new THREE.MeshBasicMaterial({color: 0xEFE5D9, opacity: 1, transparent: true})
     },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 1.5 }),
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 2 }),
     fontMat: {fontsize: 50, color:"rgb(0,0,0)"}
 }
 
@@ -253,6 +253,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
         //floor geometry
         for(var i=0; i<json.data.Floors.length; i++){
+            var floorObj = new THREE.Object3D();
             var floor = json.data.Floors[i];
             floorHeight = floor.High * scale;
             if(floorHeight == 0.0){ //if it's 0, set to 50.0
@@ -264,9 +265,11 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             geometry = new THREE.ShapeGeometry(shape);
             mesh = new THREE.Mesh(geometry, mall.theme.floorMat);
             mesh.position.set(0,0,-5);
-            mesh.height = floorHeight;
 
-            mall.floors.push(mesh);
+            floorObj.height = floorHeight;
+            floorObj.add(mesh);
+
+            mall.floors.push(floorObj);
 
             //funcArea geometry
             for(var j=0; j<floor.FuncAreas.length; j++){

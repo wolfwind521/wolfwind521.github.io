@@ -504,7 +504,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(this.usingWebgl) { //rotate when using webgl
+                if(_this.usingWebgl) { //rotate when using webgl
                     _state = STATE.TOUCH_ROTATE;
                     _rotateStart.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
                     _rotateEnd.copy(_rotateStart);
@@ -543,7 +543,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(this.usingWebgl) {
+                if(_this.usingWebgl) {
                     _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
                 }else{
                     _state = STATE.NONE;
@@ -573,7 +573,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         switch ( event.touches.length ) {
 
             case 1:
-                if(this.usingWebgl) {
+                if(_this.usingWebgl) {
                     _rotateEnd.copy(getMouseProjectionOnBall(event.touches[ 0 ].pageX, event.touches[ 0 ].pageY));
                     _rotateStart.copy(_rotateEnd);
                 }
