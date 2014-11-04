@@ -36,12 +36,13 @@
 
             .textNames{
                 font-size: 8px;
+                text-align:center;
             }
 
         </style>
 	</head>
 	<body>
-		<script src="js/Three.js"></script>
+		<script src="js/three.min.js"></script>
         <script src="js/Detector.js"></script>
         <script src="js/TrackballControls.js"></script>
         <script src="js/IndoorMapLoader.js"></script>
@@ -129,7 +130,7 @@
                         currentFloor.className = '';
                         this.className = 'currentFloor';
                         currentFloor = this;
-                        camera.position.z = 500;
+                        camera.position.set(100,-400,400);
                         textsRoot.innerHTML="";
                     }
 
@@ -144,7 +145,7 @@
                                     currentFloor.className = '';
                                     this.className = 'currentFloor';
                                     currentFloor = this;
-                                    camera.position.z = 300;
+                                    camera.position.set(0,0,300);
 
                                     //texts
                                     textsRoot.innerHTML=""; //clear old ones
