@@ -104,7 +104,6 @@ function Mall(){
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
     this.theme = defaultTheme;
-//    this.
 
     //get the floor object3d by its name
     this.getFloor = function(floorName){
@@ -250,13 +249,13 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
     function parseModels() {
         var building,shape, extrudeSettings, geometry, material, mesh, wire, color, points;
-        var scale = 10.0, floorHeight, buildingHeight = 0;
+        var scale = 0.1, floorHeight, buildingHeight = 0;
 
         //floor geometry
         for(var i=0; i<json.data.Floors.length; i++){
             var floorObj = new THREE.Object3D();
             var floor = json.data.Floors[i];
-            floorHeight = floor.High * scale;
+            floorHeight = floor.High / scale;
             if(floorHeight == 0.0){ //if it's 0, set to 50.0
                 floorHeight = 50.0;
             }
@@ -269,6 +268,8 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
             floorObj.height = floorHeight;
             floorObj.add(mesh);
+            floorObj.texts = [];
+            floorObj.points = [];
 
             mall.floors.push(floorObj);
 
@@ -280,10 +281,12 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 shape = new THREE.Shape(points);
 
                 //text of the shop name
-                var spritey = makeTextSprite(funcArea.Name, mall.theme.fontMat);
+                //var spritey = makeTextSprite(funcArea.Name, mall.theme.fontMat);
                 var center = getCenter(points);
-                spritey.position.set(center.x, center.y, floorHeight*1.5);
-                mall.floors[i].add(spritey);
+                //spritey.position.set(center.x, center.y, floorHeight*1.5);
+                //floorObj.add(spritey);
+                floorObj.texts.push({ name: funcArea.Name, position: new THREE.Vector3(center.x * scale, center.y * scale, floorHeight * scale)});
+
 
                 //wireframe
                 geometry = shape.createPointsGeometry();
@@ -329,7 +332,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
         mall.remark = building.Remark;
 
         //scale the mall
-        mall.root.scale.set(1.0/scale, 1.0/scale, 1.0/scale);
+        mall.root.scale.set(scale, scale, scale);
 
         return mall;
 

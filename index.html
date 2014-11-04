@@ -33,6 +33,11 @@
                 border: 1px solid #bbbbbb;
                 text-align: center;
             }
+
+            .textNames{
+                font-size: 8px;
+            }
+
         </style>
 	</head>
 	<body>
@@ -45,11 +50,39 @@
             var camera, scene, renderer, controls, projector, raycaster;
             var stats, container;
             var mouse = new THREE.Vector2(), INTERSECTED;
-            var currentFloor;
+            var currentFloor, floorTexts, textsRoot;
             init();
             animate();
 
+            //create texts in the html page
+            function createTexts(mall, floorid){
+                floorTexts = mall.floors[floorid].texts;
+                for(var i=0 ; i < floorTexts.length; i++) {
+                    var div = document.createElement('div');
+                    var text = document.createTextNode(floorTexts[i].name);
+                    div.appendChild(text);
+                    textsRoot.appendChild(div);
+                }
+            }
 
+            function updateTexts(){
+                if(floorTexts == null || textsRoot.children.length == 0){
+                    return;
+                }
+                var halfWidth = window.innerWidth / 2;
+                var halfHeight = window.innerHeight / 2;
+                for(var i=0; i<floorTexts.length; i++){
+                    var vec = new THREE.Vector3(floorTexts[i].position.x, floorTexts[i].position.y, floorTexts[i].position.z);
+                    projector.projectVector(vec, camera);
+                    var pos = {
+                        x: Math.round(vec.x * halfWidth + halfWidth),
+                        y: Math.round(-vec.y * halfHeight + halfHeight)
+                    };
+                    textsRoot.children[i].style.left = pos.x + 'px';
+                    textsRoot.children[i].style.top = pos.y+'px';
+                    textsRoot.children[i].style.position = 'absolute';
+                }
+            }
             function init() {
                 container = document.createElement( 'div' );
                 document.body.appendChild( container );
@@ -79,6 +112,10 @@
                     scene.add(mall.root);
                     renderer.setClearColor(mall.theme.clearColor);
 
+                    textsRoot = document.createElement('div');
+                    textsRoot.className = "textNames";
+
+                    //create the ul list
                     var ul = document.createElement('ul');
                     ul.className = 'floors';
                     document.body.appendChild(ul);
@@ -93,6 +130,7 @@
                         this.className = 'currentFloor';
                         currentFloor = this;
                         camera.position.z = 500;
+                        textsRoot.innerHTML="";
                     }
 
                     for(var i = 0; i < mall.floorNames.length; i++){
@@ -101,11 +139,18 @@
                             text = document.createTextNode(mall.floorNames[i]);
                             li.appendChild(text);
                             li.onclick = function () {
-                                mall.showFloor(arg);
-                                currentFloor.className = '';
-                                this.className = 'currentFloor';
-                                currentFloor = this;
-                                camera.position.z = 300;
+                                if(currentFloor != this) {
+                                    mall.showFloor(arg);
+                                    currentFloor.className = '';
+                                    this.className = 'currentFloor';
+                                    currentFloor = this;
+                                    camera.position.z = 300;
+
+                                    //texts
+                                    textsRoot.children = []; //clear old ones
+                                    createTexts(mall, arg);
+
+                                }
                             }
                             ul.appendChild(li);
                         })(i);
@@ -115,6 +160,8 @@
                     mall.showFloor(1);
                     ul.children[2].className = 'currentFloor';
                     currentFloor = ul.children[2];
+                    createTexts(mall,1);
+                    document.body.appendChild(textsRoot);
 
                 });
 
@@ -178,7 +225,7 @@
 //                    INTERSECTED = null;
 //
 //                }
-
+                updateTexts();
                 renderer.render(scene, camera);
             }
 
