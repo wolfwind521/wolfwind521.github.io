@@ -104,6 +104,7 @@ function Mall(){
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
     this.theme = defaultTheme;
+//    this.
 
     //get the floor object3d by its name
     this.getFloor = function(floorName){

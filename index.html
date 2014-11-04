@@ -18,8 +18,9 @@
             {
                 position: absolute;;
                 top:100px;
-                left: 10px;
+                left: 0px;
                 list-style: none;
+                padding: 0;
             }
 
             .floors .currentFloor{
@@ -91,6 +92,7 @@
                         currentFloor.className = '';
                         this.className = 'currentFloor';
                         currentFloor = this;
+                        camera.position.z = 500;
                     }
 
                     for(var i = 0; i < mall.floorNames.length; i++){
@@ -103,6 +105,7 @@
                                 currentFloor.className = '';
                                 this.className = 'currentFloor';
                                 currentFloor = this;
+                                camera.position.z = 300;
                             }
                             ul.appendChild(li);
                         })(i);
