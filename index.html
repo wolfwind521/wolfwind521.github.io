@@ -51,37 +51,40 @@
             var camera, scene, renderer, controls, projector, raycaster;
             var stats, container;
             var mouse = new THREE.Vector2(), INTERSECTED;
-            var currentFloor, floorTexts, textsRoot;
+            var currentFloor, floorPoints, labelRoot;
             init();
             animate();
 
             //create texts in the html page
-            function createTexts(mall, floorid){
-                floorTexts = mall.floors[floorid].texts;
-                for(var i=0 ; i < floorTexts.length; i++) {
+            function createFloorPoints(mall, floorid){
+                floorPoints = mall.floors[floorid].points;
+                for(var i=0 ; i < floorPoints.length; i++) {
                     var div = document.createElement('div');
-                    var text = document.createTextNode(floorTexts[i].name);
+                    var img = document.createElement('img');
+                    img.setAttribute('src', mall.theme.labelImg(floorPoints[i].type));
+                    div.appendChild(img);
+                    var text = document.createTextNode(floorPoints[i].name);
                     div.appendChild(text);
-                    textsRoot.appendChild(div);
+                    labelRoot.appendChild(div);
                 }
             }
 
             function updateTexts(){
-                if(floorTexts == null || textsRoot.children.length == 0){
+                if(floorPoints == null || labelRoot.children.length == 0){
                     return;
                 }
                 var halfWidth = window.innerWidth / 2;
                 var halfHeight = window.innerHeight / 2;
-                for(var i=0; i<floorTexts.length; i++){
-                    var vec = new THREE.Vector3(floorTexts[i].position.x, floorTexts[i].position.y, floorTexts[i].position.z);
+                for(var i=0; i<floorPoints.length; i++){
+                    var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
                     projector.projectVector(vec, camera);
                     var pos = {
                         x: Math.round(vec.x * halfWidth + halfWidth),
                         y: Math.round(-vec.y * halfHeight + halfHeight)
                     };
-                    textsRoot.children[i].style.left = pos.x + 'px';
-                    textsRoot.children[i].style.top = pos.y+'px';
-                    textsRoot.children[i].style.position = 'absolute';
+                    labelRoot.children[i].style.left = pos.x + 'px';
+                    labelRoot.children[i].style.top = pos.y+'px';
+                    labelRoot.children[i].style.position = 'absolute';
                 }
             }
             function init() {
@@ -113,8 +116,8 @@
                     scene.add(mall.root);
                     renderer.setClearColor(mall.theme.clearColor);
 
-                    textsRoot = document.createElement('div');
-                    textsRoot.className = "textNames";
+                    labelRoot = document.createElement('div');
+                    labelRoot.className = "textNames";
 
                     //create the ul list
                     var ul = document.createElement('ul');
@@ -131,7 +134,7 @@
                         this.className = 'currentFloor';
                         currentFloor = this;
                         camera.position.set(100,-400,400);
-                        textsRoot.innerHTML="";
+                        labelRoot.innerHTML="";
                     }
 
                     for(var i = 0; i < mall.floorNames.length; i++){
@@ -148,8 +151,8 @@
                                     camera.position.set(0,0,300);
 
                                     //texts
-                                    textsRoot.innerHTML=""; //clear old ones
-                                    createTexts(mall, arg);
+                                    labelRoot.innerHTML=""; //clear old ones
+                                    createFloorPoints(mall, arg);
 
                                 }
                             }
@@ -161,8 +164,8 @@
                     mall.showFloor(1);
                     ul.children[2].className = 'currentFloor';
                     currentFloor = ul.children[2];
-                    createTexts(mall,1);
-                    document.body.appendChild(textsRoot);
+                    createFloorPoints(mall,1);
+                    document.body.appendChild(labelRoot);
 
                 });
 

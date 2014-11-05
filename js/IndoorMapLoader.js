@@ -15,7 +15,19 @@ var defaultTheme = {
         //return new THREE.MeshBasicMaterial({color: 0xEFE5D9, opacity: 1, transparent: true})
     },
     roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 2 }),
-    fontMat: {fontsize: 50, color:"rgb(0,0,0)"}
+    fontMat: {fontsize: 12, color:"rgba(0,0,0,0.7)"},
+    labelImg: function(type){
+        switch (type){
+            case "11003": //cashier
+                return "./img/cashier.png";
+            case "22006": //gate
+                return "./img/gate.png";
+            case "11001": //WC
+                return "./img/wc.png";
+            default :
+                return "./img/default-point.png";
+        }
+    }
 }
 
 var techTheme = {
@@ -27,65 +39,66 @@ var techTheme = {
     roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 })
 }
 
-//make a text sprite
-function makeTextSprite( message, parameters )
-{
-    if ( parameters === undefined ) parameters = {};
-
-    var fontface = parameters.hasOwnProperty("fontface") ?
-        parameters["fontface"] : "Arial";
-
-    var fontsize = parameters.hasOwnProperty("fontsize") ?
-        parameters["fontsize"] : 18;
-
-    var fontcolor = parameters.hasOwnProperty("color") ?
-        parameters["color"] : "rgb(0,0,0)";
-
-    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-        parameters["borderThickness"] : 4;
-
-    var borderColor = parameters.hasOwnProperty("borderColor") ?
-        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-
-    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
-
-    //var spriteAlignment = THREE.SpriteAlignment.topLeft;
-
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    context.font = "Bold " + fontsize + "px " + fontface;
-
-    // get size data (height depends only on font size)
-    var metrics = context.measureText( message );
-    var textWidth = metrics.width;
-
-    // background color
-    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-        + backgroundColor.b + "," + backgroundColor.a + ")";
-    // border color
-    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-        + borderColor.b + "," + borderColor.a + ")";
-
-    context.lineWidth = borderThickness;
-    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-    // 1.4 is extra height factor for text below baseline: g,j,p,q.
-
-    // text color
-    context.fillStyle = fontcolor;
-
-    context.fillText( message, borderThickness, fontsize + borderThickness);
-
-    // canvas contents will be used for a texture
-    var texture = new THREE.Texture(canvas)
-    texture.needsUpdate = true;
-
-    var spriteMaterial = new THREE.SpriteMaterial(
-        { map: texture, useScreenCoordinates: false, alignment: new THREE.Vector2( 1, -1 ), depthTest:true } );
-    var sprite = new THREE.Sprite( spriteMaterial );
-    sprite.scale.set(10,5,1.0);
-    return sprite;
-}
+////removed on 2014.11.5. text sprite is not used any more
+////make a text sprite
+//function makeTextSprite( message, parameters )
+//{
+//    if ( parameters === undefined ) parameters = {};
+//
+//    var fontface = parameters.hasOwnProperty("fontface") ?
+//        parameters["fontface"] : "Arial";
+//
+//    var fontsize = parameters.hasOwnProperty("fontsize") ?
+//        parameters["fontsize"] : 18;
+//
+//    var fontcolor = parameters.hasOwnProperty("color") ?
+//        parameters["color"] : "rgb(0,0,0)";
+//
+//    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+//        parameters["borderThickness"] : 4;
+//
+//    var borderColor = parameters.hasOwnProperty("borderColor") ?
+//        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+//
+//    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+//        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+//
+//    //var spriteAlignment = THREE.SpriteAlignment.topLeft;
+//
+//    var canvas = document.createElement('canvas');
+//    var context = canvas.getContext('2d');
+//    context.font = "Bold " + fontsize + "px " + fontface;
+//
+//    // get size data (height depends only on font size)
+//    var metrics = context.measureText( message );
+//    var textWidth = metrics.width;
+//
+//    // background color
+//    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+//        + backgroundColor.b + "," + backgroundColor.a + ")";
+//    // border color
+//    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+//        + borderColor.b + "," + borderColor.a + ")";
+//
+//    context.lineWidth = borderThickness;
+//    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+//    // 1.4 is extra height factor for text below baseline: g,j,p,q.
+//
+//    // text color
+//    context.fillStyle = fontcolor;
+//
+//    context.fillText( message, borderThickness, fontsize + borderThickness);
+//
+//    // canvas contents will be used for a texture
+//    var texture = new THREE.Texture(canvas)
+//    texture.needsUpdate = true;
+//
+//    var spriteMaterial = new THREE.SpriteMaterial(
+//        { map: texture, useScreenCoordinates: false, alignment: new THREE.Vector2( 1, -1 ), depthTest:true } );
+//    var sprite = new THREE.Sprite( spriteMaterial );
+//    sprite.scale.set(10,5,1.0);
+//    return sprite;
+//}
 
 //get the center of some points
 function getCenter(points){
@@ -268,7 +281,6 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
             floorObj.height = floorHeight;
             floorObj.add(mesh);
-            floorObj.texts = [];
             floorObj.points = [];
 
             mall.floors.push(floorObj);
@@ -285,17 +297,18 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 var center = getCenter(points);
                 //spritey.position.set(center.x, center.y, floorHeight*1.5);
                 //floorObj.add(spritey);
-                floorObj.texts.push({ name: funcArea.Name, position: new THREE.Vector3(center.x * scale, center.y * scale, floorHeight * scale)});
+                floorObj.points.push({ name: funcArea.Name, type: funcArea.Type, position: new THREE.Vector3(center.x * scale, center.y * scale, floorHeight * scale)});
 
 
-                //wireframe
                 geometry = shape.createPointsGeometry();
-                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
-                mall.floors[i].add(wire);
+//                //bottom wireframe
+//                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
+//                floorObj.add(wire);
 
+                //top wireframe
                 wire = new THREE.Line(geometry, mall.theme.roomWireMat);
                 wire.position.set(0,0, floorHeight);
-                mall.floors[i].add(wire);
+                floorObj.add(wire);
 
 //                //verticle lines
 //                geometry = new THREE.Geometry();
@@ -312,7 +325,14 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
                 material = mall.theme.roomMat(funcArea.Type);
                 mesh = new THREE.Mesh(geometry, material);
-                mall.floors[i].add(mesh);
+                floorObj.add(mesh);
+            }
+
+            //pubPoint geometry
+            for(var j = 0; j < floor.PubPoint.length; j++){
+                var pubPoint = floor.PubPoint[j];
+                var point = parsePoints(pubPoint.Outline[0][0])[0];
+                floorObj.points.push({name: pubPoint.Name, type: pubPoint.Type, position: new THREE.Vector3(point.x * scale, point.y * scale, floorHeight * scale)});
             }
             mall.root.add(mall.floors[i]);
         }
@@ -339,7 +359,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
     };
 
-
+    //parse the points to THREE.Vector2 (remove duplicated points)
     function parsePoints(pointArray){
         var shapePoints = [];
         for(var i=0; i < pointArray.length; i+=2){
