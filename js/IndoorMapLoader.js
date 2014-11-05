@@ -15,15 +15,35 @@ var defaultTheme = {
         //return new THREE.MeshBasicMaterial({color: 0xEFE5D9, opacity: 1, transparent: true})
     },
     roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 2 }),
-    fontMat: {fontsize: 12, color:"rgba(0,0,0,0.7)"},
     labelImg: function(type){
         switch (type){
-            case "11003": //cashier
-                return "./img/cashier.png";
-            case "22006": //gate
-                return "./img/gate.png";
+            case "000300":
+                return "./img/indoor_floor_normal.png";
             case "11001": //WC
                 return "./img/wc.png";
+            case "11002": //WC
+                return "./img/indoor_pub_atm.png";
+            case "11003": //cashier
+                return "./img/indoor_pub_cashier.png";
+            case "11004": //office
+                return "./img/indoor_pub_office.png";
+            case "21001": //staircase
+                return "./img/indoor_pub_staircase.png";
+            case "21002": //escalator
+                return "./img/indoor_pub_escalator.png";
+            case "21003": //elevator
+                return "./img/indoor_pub_elevator.png";
+            case "050100":
+                return "./img/indoor_func_am0010.png";
+            case "061102":
+                return "./img/indoor_func_am0006.png";
+            case "061103":
+                return "./img/indoor_func_am0009.png";
+            case "061202":
+                return "./img/indoor_func_am0002.png";
+            case "22006": //gate
+                return "./img/gate.png";
+
             default :
                 return "./img/default-point.png";
         }

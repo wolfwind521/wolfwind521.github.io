@@ -34,9 +34,14 @@
                 text-align: center;
             }
 
-            .textNames{
+            .labels {
                 font-size: 8px;
                 text-align:center;
+            }
+
+            .labels img{
+                width: 15px;
+                height: 15px;
             }
 
         </style>
@@ -69,7 +74,7 @@
                 }
             }
 
-            function updateTexts(){
+            function updateLabels(){
                 if(floorPoints == null || labelRoot.children.length == 0){
                     return;
                 }
@@ -117,7 +122,7 @@
                     renderer.setClearColor(mall.theme.clearColor);
 
                     labelRoot = document.createElement('div');
-                    labelRoot.className = "textNames";
+                    labelRoot.className = "labels";
 
                     //create the ul list
                     var ul = document.createElement('ul');
@@ -182,7 +187,6 @@
                 container.appendChild( stats.domElement );
 
                 window.addEventListener( 'resize', onWindowResize, false );
-                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
             }
 
             function animate(){
@@ -229,7 +233,7 @@
 //                    INTERSECTED = null;
 //
 //                }
-                updateTexts();
+                updateLabels();
                 renderer.render(scene, camera);
             }
 
@@ -242,15 +246,6 @@
 
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 controls.handleResize();
-            }
-
-            function onDocumentMouseMove( event ) {
-
-                event.preventDefault();
-
-                mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-                mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
             }
 
         </script>
