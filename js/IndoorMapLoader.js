@@ -5,23 +5,22 @@
 
 
 var defaultTheme = {
-    name : "default",
-    clearColor : 0xffffff,
+    name : "default", //theme's name
+    clearColor : 0xffffff, //background color
     buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true, depthTest:false}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:true, side: THREE.DoubleSide, polygonOffset: false, polygonOffsetFactor: -1, polygonOffsetUnits: -2}),
+    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
     roomMat : function(type){
         var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: true, polygonOffset: false, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
-        //return new THREE.MeshBasicMaterial({color: 0xEFE5D9, opacity: 1, transparent: true})
+        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 0.8, transparent: false});
     },
     roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 2 }),
     labelImg: function(type){
         switch (type){
-            case "000300":
+            case "000300": //closed area
                 return "./img/indoor_floor_normal.png";
             case "11001": //WC
                 return "./img/wc.png";
-            case "11002": //WC
+            case "11002": //atm
                 return "./img/indoor_pub_atm.png";
             case "11003": //cashier
                 return "./img/indoor_pub_cashier.png";
@@ -33,18 +32,20 @@ var defaultTheme = {
                 return "./img/indoor_pub_escalator.png";
             case "21003": //elevator
                 return "./img/indoor_pub_elevator.png";
-            case "050100":
+            case "050100": //food
                 return "./img/indoor_func_am0010.png";
-            case "061102":
+            case "061102": //shoes
                 return "./img/indoor_func_am0006.png";
-            case "061103":
+            case "061103": //bags
                 return "./img/indoor_func_am0009.png";
-            case "061202":
+            case "061202": //jewelry
                 return "./img/indoor_func_am0002.png";
+            case "061400": //toiletry
+                return "./img/indoor_func_am0005.png";
             case "22006": //gate
                 return "./img/gate.png";
 
-            default :
+            default : //default
                 return "./img/default-point.png";
         }
     }
@@ -54,7 +55,7 @@ var techTheme = {
     name : "tech",
     clearColor : 0x000000,
     buildingMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent:true, depthTest:false}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity:0.1, transparent:true, side: THREE.DoubleSide}),
+    floorMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity:0.4, transparent:true, side: THREE.DoubleSide}),
     roomMat : function(type){return new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent: true, side: THREE.DoubleSide});},
     roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 }),
     labelImg: function(type){return "";}
