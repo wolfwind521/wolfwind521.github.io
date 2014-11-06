@@ -55,34 +55,42 @@
 		<script>
             var camera, scene, renderer, controls, projector, raycaster;
             var stats, container;
+            var projectMatrix = new THREE.Matrix4();
             var mouse = new THREE.Vector2(), INTERSECTED;
             var currentFloor, floorPoints, labelRoot;
             init();
             animate();
 
-            //create texts in the html page
-            function createFloorPoints(mall, floorid){
+            //create labels in the html page
+            function createFloorLabels(mall, floorid){
                 floorPoints = mall.floors[floorid].points;
                 for(var i=0 ; i < floorPoints.length; i++) {
                     var div = document.createElement('div');
-                    var img = document.createElement('img');
-                    img.setAttribute('src', mall.theme.labelImg(floorPoints[i].type));
-                    div.appendChild(img);
+                    var imgsrc = mall.theme.labelImg(floorPoints[i].type);
+                    if(imgsrc != null && imgsrc != "") {
+                        var img = document.createElement('img');
+                        img.setAttribute('src', imgsrc);
+                        div.appendChild(img);
+                    }
                     var text = document.createTextNode(floorPoints[i].name);
                     div.appendChild(text);
                     labelRoot.appendChild(div);
                 }
             }
 
+            //update the position of the labels
+            //TODO: only update when interacting
             function updateLabels(){
+                //if the mall hasn't been loaded or the labels haven't been created, return
                 if(floorPoints == null || labelRoot.children.length == 0){
                     return;
                 }
                 var halfWidth = window.innerWidth / 2;
                 var halfHeight = window.innerHeight / 2;
+                projectMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
                 for(var i=0; i<floorPoints.length; i++){
                     var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
-                    projector.projectVector(vec, camera);
+                    vec.applyProjection(projectMatrix);
                     var pos = {
                         x: Math.round(vec.x * halfWidth + halfWidth),
                         y: Math.round(-vec.y * halfHeight + halfHeight)
@@ -157,7 +165,7 @@
 
                                     //texts
                                     labelRoot.innerHTML=""; //clear old ones
-                                    createFloorPoints(mall, arg);
+                                    createFloorLabels(mall, arg);
 
                                 }
                             }
@@ -169,7 +177,7 @@
                     mall.showFloor(1);
                     ul.children[2].className = 'currentFloor';
                     currentFloor = ul.children[2];
-                    createFloorPoints(mall,1);
+                    createFloorLabels(mall,1);
                     document.body.appendChild(labelRoot);
 
                 });

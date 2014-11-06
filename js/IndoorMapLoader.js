@@ -56,7 +56,8 @@ var techTheme = {
     buildingMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent:true, depthTest:false}),
     floorMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity:0.1, transparent:true, side: THREE.DoubleSide}),
     roomMat : function(type){return new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent: true, side: THREE.DoubleSide});},
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 })
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 }),
+    labelImg: function(type){return "";}
 }
 
 ////removed on 2014.11.5. text sprite is not used any more
@@ -132,21 +133,10 @@ function getCenter(points){
 
 //the Mall class
 function Mall(){
-    this.floorNames = []; //the floor names
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
     this.theme = defaultTheme;
-
-    //get the floor object3d by its name
-    this.getFloor = function(floorName){
-        for(var i=0; i<this.floorNames.length; i++){
-            if(this.floorNames[i] == floorName){
-                return this.floors[i];
-            }
-        }
-        return null;
-    }
 
     //show floor by id
     this.showFloor = function(id){
@@ -155,15 +145,12 @@ function Mall(){
             return;
         }
         //set the building outline to invisible
-        this.building.visible = false;
         this.root.remove(this.building);
         //set all the floors to invisible
         for(var i=0; i<this.floors.length; i++){
-            this.floors[i].visible = false;
             this.root.remove(this.floors[i]);
         }
         //set the specific floor to visible
-        this.floors[id].visible = true;
         this.floors[id].position.set(0,0,0);
         this.root.add(this.floors[id]);
 
@@ -173,9 +160,7 @@ function Mall(){
     //show the whole building
     this.showAll = function(){
         var offset = 4;
-        this.building.visible = true;
         for(var i=0; i<this.floors.length; i++){
-            this.floors[i].visible = true;
             this.floors[i].position.set(0,0,i*this.floors[i].height*offset);
             this.root.add(this.floors[i]);
         }
@@ -283,11 +268,13 @@ IndoorMapLoader.prototype.parse = function ( json ) {
     function parseModels() {
         var building,shape, extrudeSettings, geometry, material, mesh, wire, color, points;
         var scale = 0.1, floorHeight, buildingHeight = 0;
+        var underfloors = json.data.building.UnderFloors;
 
         //floor geometry
         for(var i=0; i<json.data.Floors.length; i++){
             var floorObj = new THREE.Object3D();
             var floor = json.data.Floors[i];
+            var floorid = floor._id;
             floorHeight = floor.High / scale;
             if(floorHeight == 0.0){ //if it's 0, set to 50.0
                 floorHeight = 50.0;
@@ -302,9 +289,11 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             floorObj.height = floorHeight;
             floorObj.add(mesh);
             floorObj.points = [];
-
-            mall.floors.push(floorObj);
-
+            if(floorid < 0) { //underfloors
+                mall.floors[floorid + underfloors] = floorObj;
+            }else{ // ground floors, id starts from 1
+                mall.floors[floorid - 1 + underfloors] = floorObj;
+            }
             //funcArea geometry
             for(var j=0; j<floor.FuncAreas.length; j++){
 
@@ -354,7 +343,6 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 var point = parsePoints(pubPoint.Outline[0][0])[0];
                 floorObj.points.push({name: pubPoint.Name, type: pubPoint.Type, position: new THREE.Vector3(point.x * scale, point.y * scale, floorHeight * scale)});
             }
-            mall.root.add(mall.floors[i]);
         }
 
         //building geometry
@@ -366,7 +354,6 @@ IndoorMapLoader.prototype.parse = function ( json ) {
         mesh = new THREE.Mesh(geometry, mall.theme.buildingMat);
 
         mall.building = mesh;
-        mall.root.add(mall.building);
         mall.root.name = building.Name;
         mall.floorNames = building.FloorsId.split(",");
         mall.remark = building.Remark;
