@@ -81,6 +81,9 @@
             //update the position of the labels
             //TODO: only update when interacting
             function updateLabels(){
+                if(!controls.viewChanged){
+                    return;
+                }
                 //if the mall hasn't been loaded or the labels haven't been created, return
                 if(floorPoints == null || labelRoot.children.length == 0){
                     return;
@@ -99,6 +102,7 @@
                     labelRoot.children[i].style.top = pos.y+'px';
                     labelRoot.children[i].style.position = 'absolute';
                 }
+                controls.viewChanged = false;
             }
             function init() {
                 container = document.createElement( 'div' );

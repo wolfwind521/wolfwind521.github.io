@@ -34,6 +34,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 
+    this.viewChanged = true;
+
     // internals
 
     this.target = new THREE.Vector3();
@@ -207,6 +209,7 @@ THREE.TrackballControls = function ( object, domElement ) {
                     _rotateStart.applyQuaternion( quaternion );
 
                 }
+                _this.viewChanged = true;
 
             }
         }
@@ -220,12 +223,14 @@ THREE.TrackballControls = function ( object, domElement ) {
             var factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
             _touchZoomDistanceStart = _touchZoomDistanceEnd;
             _eye.multiplyScalar( factor );
+            _this.viewChanged = true;
 
         } else {
 
             var factor = 1.0 + ( _zoomEnd.y - _zoomStart.y ) * _this.zoomSpeed;
 
             if ( factor !== 1.0 && factor > 0.0 ) {
+                _this.viewChanged = true;
 
                 _eye.multiplyScalar( factor );
 
@@ -242,6 +247,7 @@ THREE.TrackballControls = function ( object, domElement ) {
             }
 
         }
+
 
     };
 
@@ -274,8 +280,10 @@ THREE.TrackballControls = function ( object, domElement ) {
                     _panStart.add( mouseChange.subVectors( _panEnd, _panStart ).multiplyScalar( _this.dynamicDampingFactor ) );
 
                 }
+                _this.viewChanged  = true;
 
             }
+
         }
 
     }());
