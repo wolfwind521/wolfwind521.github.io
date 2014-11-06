@@ -27,11 +27,17 @@
                 background-color: #cccccc !important;
             }
 
-            .floors li{
+            .floors li, #toggleText{
                 padding: 10px;
                 background-color: #e8e8e8 ;
                 border: 1px solid #bbbbbb;
                 text-align: center;
+            }
+
+            #toggleText{
+                position: absolute;
+                top: 50px;
+                left: 0px;
             }
 
             .labels {
@@ -261,7 +267,15 @@
                 controls.handleResize();
                 controls.viewChanged = true;
             }
+            function onToggleText(){
+                if(labelRoot.style.display == "none"){
+                    labelRoot.style.display = "inline";
+                }else{
+                    labelRoot.style.display= "none";
+                }
+            }
 
         </script>
+        <div id="toggleText" onclick="onToggleText()">ToggleText</div>
 	</body>
 </html>

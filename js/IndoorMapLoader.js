@@ -11,9 +11,55 @@ var defaultTheme = {
     floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
     roomMat : function(type){
         var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 0.8, transparent: false});
+        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 0.8, transparent: true});
     },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.5, transparent: true, linewidth: 2 }),
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.8, transparent: true, linewidth: 2 }),
+    labelImg: function(type){
+        switch (type){
+            case "000300": //closed area
+                return "./img/indoor_floor_normal.png";
+            case "11001": //WC
+                return "./img/wc.png";
+            case "11002": //atm
+                return "./img/indoor_pub_atm.png";
+            case "11003": //cashier
+                return "./img/indoor_pub_cashier.png";
+            case "11004": //office
+                return "./img/indoor_pub_office.png";
+            case "21001": //staircase
+                return "./img/indoor_pub_staircase.png";
+            case "21002": //escalator
+                return "./img/indoor_pub_escalator.png";
+            case "21003": //elevator
+                return "./img/indoor_pub_elevator.png";
+            case "050100": //food
+                return "./img/indoor_func_am0010.png";
+            case "061102": //shoes
+                return "./img/indoor_func_am0006.png";
+            case "061103": //bags
+                return "./img/indoor_func_am0009.png";
+            case "061202": //jewelry
+                return "./img/indoor_func_am0002.png";
+            case "061400": //toiletry
+                return "./img/indoor_func_am0005.png";
+            case "22006": //gate
+                return "./img/gate.png";
+
+            default : //default
+                return "./img/default-point.png";
+        }
+    }
+}
+
+var testTheme = {
+    name : "default", //theme's name
+    clearColor : 0xffffff, //background color
+    buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true, depthTest:false}),
+    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
+    roomMat : function(type){
+        return new THREE.MeshBasicMaterial({color: 0xF8CBAD, opacity: 0.2, transparent: true});
+    },
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.8, transparent: true, linewidth: 2 }),
     labelImg: function(type){
         switch (type){
             case "000300": //closed area
@@ -58,7 +104,41 @@ var techTheme = {
     floorMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity:0.4, transparent:true, side: THREE.DoubleSide}),
     roomMat : function(type){return new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent: true, side: THREE.DoubleSide});},
     roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 }),
-    labelImg: function(type){return "";}
+    labelImg: function(type){
+        switch (type){
+            case "000300": //closed area
+                return "./img/indoor_floor_normal.png";
+            case "11001": //WC
+                return "./img/wc.png";
+            case "11002": //atm
+                return "./img/indoor_pub_atm.png";
+            case "11003": //cashier
+                return "./img/indoor_pub_cashier.png";
+            case "11004": //office
+                return "./img/indoor_pub_office.png";
+            case "21001": //staircase
+                return "./img/indoor_pub_staircase.png";
+            case "21002": //escalator
+                return "./img/indoor_pub_escalator.png";
+            case "21003": //elevator
+                return "./img/indoor_pub_elevator.png";
+            case "050100": //food
+                return "./img/indoor_func_am0010.png";
+            case "061102": //shoes
+                return "./img/indoor_func_am0006.png";
+            case "061103": //bags
+                return "./img/indoor_func_am0009.png";
+            case "061202": //jewelry
+                return "./img/indoor_func_am0002.png";
+            case "061400": //toiletry
+                return "./img/indoor_func_am0005.png";
+            case "22006": //gate
+                return "./img/gate.png";
+
+            default : //default
+                return "./img/default-point.png";
+        }
+    }
 }
 
 ////removed on 2014.11.5. text sprite is not used any more
@@ -137,7 +217,7 @@ function Mall(){
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
-    this.theme = defaultTheme;
+    this.theme = techTheme;
 
     //show floor by id
     this.showFloor = function(id){
