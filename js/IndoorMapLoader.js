@@ -347,7 +347,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 
 
     function parseModels() {
-        var building,shape, extrudeSettings, geometry, material, mesh, wire, color, points;
+        var building,shape, extrudeSettings, geometry, material, mesh, wire, color, points, bufferGeom;
         var scale = 0.1, floorHeight, buildingHeight = 0;
         var underfloors = json.data.building.UnderFloors;
 
@@ -364,7 +364,9 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             points = parsePoints(floor.Outline[0][0]);
             shape = new THREE.Shape(points);
             geometry = new THREE.ShapeGeometry(shape);
-            mesh = new THREE.Mesh(geometry, mall.theme.floorMat);
+            bufferGeom = new THREE.BufferGeometry();
+            bufferGeom.fromGeometry(geometry);
+            mesh = new THREE.Mesh(bufferGeom, mall.theme.floorMat);
             mesh.position.set(0,0,-5);
 
             floorObj.height = floorHeight;
@@ -375,6 +377,8 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             }else{ // ground floors, id starts from 1
                 mall.floors[floorid - 1 + underfloors] = floorObj;
             }
+
+
             //funcArea geometry
             for(var j=0; j<floor.FuncAreas.length; j++){
 
@@ -382,22 +386,30 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 points = parsePoints(funcArea.Outline[0][0]);
                 shape = new THREE.Shape(points);
 
-                //text of the shop name
-                //var spritey = makeTextSprite(funcArea.Name, mall.theme.fontMat);
+                //from the points to wires
+                var wires = [];
+                for(var k = 0; k < points.length; k++){
+                    wires.push(points[k].x);
+                    wires.push(points[k].y);
+                    wires.push(floorHeight);
+                }
+
+                //center points used for text labels
                 var center = getCenter(points);
-                //spritey.position.set(center.x, center.y, floorHeight*1.5);
-                //floorObj.add(spritey);
                 floorObj.points.push({ name: funcArea.Name, type: funcArea.Type, position: new THREE.Vector3(center.x * scale, center.y * scale, floorHeight * scale)});
 
-
-                geometry = shape.createPointsGeometry();
-//                //bottom wireframe
-//                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
-//                floorObj.add(wire);
-
+                bufferGeom = new THREE.BufferGeometry();
+                bufferGeom.addAttribute('position', new THREE.BufferAttribute( new Float32Array(wires), 3 ));
+//                bufferGeom.computeBoundingSphere();
+////                geometry = shape.createPointsGeometry();
+//
+////                //bottom wireframe
+////                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
+////                floorObj.add(wire);
+//
                 //top wireframe
-                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
-                wire.position.set(0,0, floorHeight);
+                wire = new THREE.Line(bufferGeom, mall.theme.roomWireMat);
+//                wire.position.set(0,0, floorHeight);
                 floorObj.add(wire);
 
 //                //verticle lines
@@ -413,12 +425,14 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 //solid model
                 extrudeSettings = {amount: floorHeight, bevelEnabled: false};
                 geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
+                bufferGeom = new THREE.BufferGeometry();
+                bufferGeom.fromGeometry(geometry);
                 material = mall.theme.roomMat(funcArea.Type);
-                mesh = new THREE.Mesh(geometry, material);
+                mesh = new THREE.Mesh(bufferGeom, material);
                 floorObj.add(mesh);
             }
 
-            //pubPoint geometry
+            //pubPoint information
             for(var j = 0; j < floor.PubPoint.length; j++){
                 var pubPoint = floor.PubPoint[j];
                 var point = parsePoints(pubPoint.Outline[0][0])[0];
@@ -432,7 +446,9 @@ IndoorMapLoader.prototype.parse = function ( json ) {
         shape = new THREE.Shape(points);
         extrudeSettings = {amount: buildingHeight, bevelEnabled: false};
         geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        mesh = new THREE.Mesh(geometry, mall.theme.buildingMat);
+        bufferGeom = new THREE.BufferGeometry();
+        bufferGeom.fromGeometry(geometry);
+        mesh = new THREE.Mesh(bufferGeom, mall.theme.buildingMat);
 
         mall.building = mesh;
         mall.root.name = building.Name;
