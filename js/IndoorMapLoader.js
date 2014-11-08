@@ -11,9 +11,9 @@ var defaultTheme = {
     floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
     roomMat : function(type){
         var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: false});
+        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 0.8, transparent: true});
     },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 1, transparent: false, linewidth: 2 }),
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.8, transparent: true, linewidth: 2 }),
     labelImg: function(type){
         switch (type){
             case "000300": //closed area
@@ -217,7 +217,7 @@ function Mall(){
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
-    this.theme = defaultTheme;
+    this.theme = techTheme;
 
     //show floor by id
     this.showFloor = function(id){

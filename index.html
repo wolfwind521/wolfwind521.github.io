@@ -59,7 +59,6 @@
         <script src="js/TrackballControls.js"></script>
         <script src="js/IndoorMapLoader.js"></script>
         <script src="js/stats.min.js"></script>
-        <script src="js/SVGRenderer.js"></script>
 		<script>
             var camera, scene, renderer, controls, projector, raycaster;
             var stats, container;
@@ -128,7 +127,6 @@
                     renderer = new THREE.CanvasRenderer();
                     controls.usingWebgl = false;
                 }
-                //renderer.setQuality( 'low' );
                 renderer.setClearColor( 0xffffff );
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 container.appendChild(renderer.domElement);
@@ -179,8 +177,6 @@
                                     //texts
                                     labelRoot.innerHTML=""; //clear old ones
                                     createFloorLabels(mall, arg);
-
-                                    controls.viewChanged = true;
 
                                 }
                             }
@@ -256,9 +252,8 @@
 //                    INTERSECTED = null;
 //
 //                }
-
-                renderer.render(scene, camera);
                 updateLabels();
+                renderer.render(scene, camera);
             }
 
             function onWindowResize(){
