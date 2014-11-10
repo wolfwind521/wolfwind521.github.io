@@ -226,7 +226,7 @@ function Mall(){
     //show floor by id
     this.showFloor = function(id){
         //if the id out of range
-        if(id<0 || id>=this.floors.length){
+        if(id < 0 || id >= this.floors.length){
             return;
         }
         //set the building outline to invisible
@@ -238,8 +238,6 @@ function Mall(){
         //set the specific floor to visible
         this.floors[id].position.set(0,0,0);
         this.root.add(this.floors[id]);
-
-        return this.floors[id];
     }
 
     //show the whole building
@@ -251,7 +249,6 @@ function Mall(){
         }
         this.building.scale.set(1,1,offset);
         this.root.add(this.building);
-        return this.root;
     }
 }
 
@@ -433,6 +430,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 bufferGeom.fromGeometry(geometry);
                 material = mall.theme.roomMat(funcArea.Type);
                 mesh = new THREE.Mesh(bufferGeom, material);
+                mesh.type = 'solidroom';
                 floorObj.add(mesh);
             }
 
