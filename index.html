@@ -51,6 +51,13 @@
                 height: 15px;
             }
 
+            .labels .keyPoints img{
+                width: 30px;
+                height: 30px;
+                -webkit-border-radius: 100px;
+                border: 3px #a72525 solid;
+            }
+
         </style>
 	</head>
 	<body>
@@ -81,6 +88,10 @@
                     }
                     var text = document.createTextNode(floorPoints[i].name);
                     div.appendChild(text);
+                    if(floorPoints[i].type[0] == '2')//stairs,gates...
+                    {
+                        div.className = 'keyPoints';
+                    }
                     labelRoot.appendChild(div);
                 }
             }
@@ -252,8 +263,9 @@
 //                    INTERSECTED = null;
 //
 //                }
-                updateLabels();
+
                 renderer.render(scene, camera);
+                updateLabels();
             }
 
             function onWindowResize(){

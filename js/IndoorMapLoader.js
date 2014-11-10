@@ -78,6 +78,8 @@ var testTheme = {
                 return "./img/indoor_pub_escalator.png";
             case "21003": //elevator
                 return "./img/indoor_pub_elevator.png";
+            case "21005":
+                return "./img/indoor_pub_elevator.png";
             case "050100": //food
                 return "./img/indoor_func_am0010.png";
             case "061102": //shoes
@@ -121,6 +123,8 @@ var techTheme = {
             case "21002": //escalator
                 return "./img/indoor_pub_escalator.png";
             case "21003": //elevator
+                return "./img/indoor_pub_elevator.png";
+            case "21005":
                 return "./img/indoor_pub_elevator.png";
             case "050100": //food
                 return "./img/indoor_func_am0010.png";
