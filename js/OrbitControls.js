@@ -66,6 +66,26 @@ THREE.OrbitControls = function ( object, domElement ) {
     var changeEvent = { type: 'change' };
 
 
+    this.reset = function (){
+        rotateStart = new THREE.Vector2();
+        rotateEnd = new THREE.Vector2();
+        rotateDelta = new THREE.Vector2();
+
+        zoomStart = new THREE.Vector2();
+        zoomEnd = new THREE.Vector2();
+        zoomDelta = new THREE.Vector2();
+
+        phiDelta = 0;
+        thetaDelta = 0;
+        scale = 1;
+
+        lastPosition = new THREE.Vector3();
+        state = STATE.NONE;
+
+        this.center = new THREE.Vector3();
+
+    }
+
     this.rotateLeft = function ( angle ) {
 
         if ( angle === undefined ) {
