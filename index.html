@@ -63,7 +63,7 @@
 	<body>
 		<script src="js/three.min.js"></script>
         <script src="js/Detector.js"></script>
-        <script src="js/TrackballControls.js"></script>
+        <script src="js/OrbitControls.js"></script>
         <script src="js/IndoorMapLoader.js"></script>
         <script src="js/stats.min.js"></script>
 		<script>
@@ -122,14 +122,21 @@
                 }
                 controls.viewChanged = false;
             }
+
+            function resetCamera(){
+                camera.position.set(0,150,400);//TODO: adjust the position automatically
+                camera.lookAt(scene.position);
+            }
             function init() {
                 container = document.createElement( 'div' );
                 document.body.appendChild( container );
 
                 scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 800);
+                camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 800);
+                resetCamera();
+                //camera.position.set(0,-200,10000);
                 //camera = new THREE.OrthographicCamera( -window.innerWidth, window.innerWidth, window.innerHeight , -window.innerHeight, - 2000, 2000 );
-                controls = new THREE.TrackballControls(camera);
+                controls = new THREE.OrbitControls(camera);
 
                 if(Detector.webgl){
                     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -169,7 +176,7 @@
                         currentFloor.className = '';
                         this.className = 'currentFloor';
                         currentFloor = this;
-                        camera.position.set(100,-400,400);
+                        resetCamera();
                         labelRoot.innerHTML="";
                     }
 
@@ -184,11 +191,12 @@
                                     currentFloor.className = '';
                                     this.className = 'currentFloor';
                                     currentFloor = this;
-                                    camera.position.set(0,0,300);
+                                    resetCamera();
 
                                     //texts
                                     labelRoot.innerHTML=""; //clear old ones
                                     createFloorLabels(mall, arg);
+                                    controls.viewChanged = true;
 
                                 }
                             }
@@ -254,7 +262,7 @@
                         }
                         for(var i=0; i<intersects.length; i++) {
                             INTERSECTED = intersects[ i ].object;
-                            if(INTERSECTED.type == "solidroom") {
+                            if(INTERSECTED.type && INTERSECTED.type == "solidroom") {
                                 INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
                                 INTERSECTED.material.color.setHex(0xffff55);
                                 break;
@@ -283,7 +291,7 @@
                 camera.updateProjectionMatrix();
 
                 renderer.setSize( window.innerWidth, window.innerHeight );
-                controls.handleResize();
+                //controls.handleResize();
                 controls.viewChanged = true;
             }
             function onToggleText(){
