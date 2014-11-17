@@ -217,7 +217,7 @@ function Mall(){
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
-    this.theme = techTheme;
+    this.theme = defaultTheme;
 
     //show floor by id
     this.showFloor = function(id){
