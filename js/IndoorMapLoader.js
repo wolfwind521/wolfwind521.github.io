@@ -7,13 +7,13 @@
 var defaultTheme = {
     name : "default", //theme's name
     clearColor : 0xffffff, //background color
-    buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true, depthTest:false}),
+    buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true /*, depthTest:false*/}),
     floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
     roomMat : function(type){
         var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: false});
+        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
     },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 1, transparent: false, linewidth: 2 }),
+    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 1, transparent: false, linewidth: 1.5 }),
     labelImg: function(type){
         switch (type){
             case "000300": //closed area
@@ -389,6 +389,13 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 //floorObj.add(spritey);
                 floorObj.points.push({ name: funcArea.Name, type: funcArea.Type, position: new THREE.Vector3(center.x * scale, floorHeight * scale, -center.y * scale )});
 
+                //solid model
+                extrudeSettings = {amount: floorHeight, bevelEnabled: false};
+                geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
+                material = mall.theme.roomMat(funcArea.Type);
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.type = "solidroom";
+                floorObj.add(mesh);
 
                 geometry = shape.createPointsGeometry();
 //                //bottom wireframe
@@ -410,13 +417,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 //                    room.add(line);
 //                }
 
-                //solid model
-                extrudeSettings = {amount: floorHeight, bevelEnabled: false};
-                geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
-                material = mall.theme.roomMat(funcArea.Type);
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.type = "solidroom";
-                floorObj.add(mesh);
+
             }
 
             //pubPoint geometry
