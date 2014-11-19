@@ -153,9 +153,19 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
+    //light
     var light = new THREE.DirectionalLight( 0xffffff );
-    light.position.set( 0, 0, 400 );
+    light.position.set( 500, 500, 500 );
     scene.add( light );
+
+    //light
+    var light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( -500, 500, -500 );
+    scene.add( light );
+
+//    //ambient light
+//    var ambientLight = new THREE.AmbientLight(0x222222);
+//    scene.add(ambientLight);
 
     var loader = new IndoorMapLoader(true);
     loader.load("B000A9R4FE.json", function(mall){
