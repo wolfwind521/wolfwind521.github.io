@@ -76,7 +76,7 @@ function Mall(){
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
-    this.theme = techTheme;
+    this.theme = defaultTheme;
 
     //show floor by id
     this.showFloor = function(id){
@@ -254,7 +254,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 //solid model
                 extrudeSettings = {amount: floorHeight, bevelEnabled: false};
                 geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
-                material = new THREE.MeshBasicMaterial(mall.theme.room(funcArea.Type));
+                material = new THREE.MeshLambertMaterial(mall.theme.room(funcArea.Type));
                 mesh = new THREE.Mesh(geometry, material);
                 mesh.type = "solidroom";
                 floorObj.add(mesh);

@@ -43,8 +43,8 @@ var defaultTheme = {
     //room wires' style
     roomWire : {
         color: 0xED7D31,
-        opacity: 1,
-        transparent: false,
+        opacity: 0,//opacity 0 is same as invisible
+        transparent: true,
         linewidth: 1.5
     },
 
