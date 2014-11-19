@@ -61,9 +61,10 @@
     </style>
 </head>
 <body>
-<script src="js/three.min.js"></script>
+<script src="js/three.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/OrbitControls.js"></script>
+<script src="js/IndoorMapTheme.js"></script>
 <script src="js/IndoorMapLoader.js"></script>
 <script src="js/stats.min.js"></script>
 <script>
@@ -71,7 +72,7 @@ var camera, scene, renderer, controls, projector, raycaster, mallroot;
 var stats, container;
 var projectMatrix = new THREE.Matrix4();
 var mouse = new THREE.Vector2(), INTERSECTED;
-var currentFloor, floorPoints, labelRoot;
+var currentFloor, floorPoints, labelRoot, theMall;
 init();
 animate();
 
@@ -160,7 +161,7 @@ function init() {
     loader.load("B000A9R4FE.json", function(mall){
         mallroot = mall.root;
         scene.add(mall.root);
-        renderer.setClearColor(mall.theme.clearColor);
+        renderer.setClearColor(mall.theme.background);
 
         labelRoot = document.createElement('div');
         labelRoot.className = "labels";
@@ -213,6 +214,8 @@ function init() {
         currentFloor = ul.children[2];
         createFloorLabels(mall,1);
         document.body.appendChild(labelRoot);
+        labelRoot.style.display = "none"; //hide at first
+        theMall = mall;
 
     });
 
@@ -267,7 +270,7 @@ function onSelectObject(){
                 INTERSECTED = intersects[ i ].object;
                 if(INTERSECTED.type && INTERSECTED.type == "solidroom") {
                     INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-                    INTERSECTED.material.color.setHex(0xffff55);
+                    INTERSECTED.material.color.setHex(theMall.theme.selected);
                     break;
                 }else{
                     INTERSECTED = null;

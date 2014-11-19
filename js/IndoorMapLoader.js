@@ -1,145 +1,4 @@
-/**
- * @author gaimeng
- * @date Oct, 2014
- */
 
-
-var defaultTheme = {
-    name : "default", //theme's name
-    clearColor : 0xffffff, //background color
-    buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true /*, depthTest:false*/}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
-    roomMat : function(type){
-        var roomcolor = 0xffffff - parseInt(type);
-        return new THREE.MeshBasicMaterial({color: roomcolor, opacity: 1, transparent: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1});
-    },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 1, transparent: false, linewidth: 1.5 }),
-    labelImg: function(type){
-        switch (type){
-            case "000300": //closed area
-                return "./img/indoor_floor_normal.png";
-            case "11001": //WC
-                return "./img/wc.png";
-            case "11002": //atm
-                return "./img/indoor_pub_atm.png";
-            case "11003": //cashier
-                return "./img/indoor_pub_cashier.png";
-            case "11004": //office
-                return "./img/indoor_pub_office.png";
-            case "21001": //staircase
-                return "./img/indoor_pub_staircase.png";
-            case "21002": //escalator
-                return "./img/indoor_pub_escalator.png";
-            case "21003": //elevator
-                return "./img/indoor_pub_elevator.png";
-            case "050100": //food
-                return "./img/indoor_func_am0010.png";
-            case "061102": //shoes
-                return "./img/indoor_func_am0006.png";
-            case "061103": //bags
-                return "./img/indoor_func_am0009.png";
-            case "061202": //jewelry
-                return "./img/indoor_func_am0002.png";
-            case "061400": //toiletry
-                return "./img/indoor_func_am0005.png";
-            case "22006": //gate
-                return "./img/gate.png";
-
-            default : //default
-                return "./img/default-point.png";
-        }
-    }
-}
-
-var testTheme = {
-    name : "default", //theme's name
-    clearColor : 0xffffff, //background color
-    buildingMat : new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, transparent:true, depthTest:false}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0xc1c1c1, opacity:1, transparent:false, side: THREE.DoubleSide}),
-    roomMat : function(type){
-        return new THREE.MeshBasicMaterial({color: 0xF8CBAD, opacity: 0.2, transparent: true});
-    },
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0xED7D31, opacity: 0.8, transparent: true, linewidth: 2 }),
-    labelImg: function(type){
-        switch (type){
-            case "000300": //closed area
-                return "./img/indoor_floor_normal.png";
-            case "11001": //WC
-                return "./img/wc.png";
-            case "11002": //atm
-                return "./img/indoor_pub_atm.png";
-            case "11003": //cashier
-                return "./img/indoor_pub_cashier.png";
-            case "11004": //office
-                return "./img/indoor_pub_office.png";
-            case "21001": //staircase
-                return "./img/indoor_pub_staircase.png";
-            case "21002": //escalator
-                return "./img/indoor_pub_escalator.png";
-            case "21003": //elevator
-                return "./img/indoor_pub_elevator.png";
-            case "050100": //food
-                return "./img/indoor_func_am0010.png";
-            case "061102": //shoes
-                return "./img/indoor_func_am0006.png";
-            case "061103": //bags
-                return "./img/indoor_func_am0009.png";
-            case "061202": //jewelry
-                return "./img/indoor_func_am0002.png";
-            case "061400": //toiletry
-                return "./img/indoor_func_am0005.png";
-            case "22006": //gate
-                return "./img/gate.png";
-
-            default : //default
-                return "./img/default-point.png";
-        }
-    }
-}
-
-var techTheme = {
-    name : "tech",
-    clearColor : 0x000000,
-    buildingMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent:true, depthTest:false}),
-    floorMat : new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity:0.4, transparent:true, side: THREE.DoubleSide}),
-    roomMat : function(type){return new THREE.MeshBasicMaterial({color: 0x00B1FF, opacity: 0.2, transparent: true, side: THREE.DoubleSide});},
-    roomWireMat : new THREE.LineBasicMaterial({ color: 0x00B1FF, opacity: 0.7, transparent: true, linewidth: 2 }),
-    labelImg: function(type){
-        switch (type){
-            case "000300": //closed area
-                return "./img/indoor_floor_normal.png";
-            case "11001": //WC
-                return "./img/wc.png";
-            case "11002": //atm
-                return "./img/indoor_pub_atm.png";
-            case "11003": //cashier
-                return "./img/indoor_pub_cashier.png";
-            case "11004": //office
-                return "./img/indoor_pub_office.png";
-            case "21001": //staircase
-                return "./img/indoor_pub_staircase.png";
-            case "21002": //escalator
-                return "./img/indoor_pub_escalator.png";
-            case "21003": //elevator
-                return "./img/indoor_pub_elevator.png";
-            case "050100": //food
-                return "./img/indoor_func_am0010.png";
-            case "061102": //shoes
-                return "./img/indoor_func_am0006.png";
-            case "061103": //bags
-                return "./img/indoor_func_am0009.png";
-            case "061202": //jewelry
-                return "./img/indoor_func_am0002.png";
-            case "061400": //toiletry
-                return "./img/indoor_func_am0005.png";
-            case "22006": //gate
-                return "./img/gate.png";
-
-            default : //default
-                return "./img/default-point.png";
-        }
-    }
-}
 
 ////removed on 2014.11.5. text sprite is not used any more
 ////make a text sprite
@@ -217,7 +76,7 @@ function Mall(){
     this.floors = [];   //the object3d of the floors
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
-    this.theme = defaultTheme;
+    this.theme = techTheme;
 
     //show floor by id
     this.showFloor = function(id){
@@ -240,13 +99,16 @@ function Mall(){
 
     //show the whole building
     this.showAll = function(){
+
+        this.root.add(this.building);
+
         var offset = 4;
         for(var i=0; i<this.floors.length; i++){
             this.floors[i].position.set(0,0,i*this.floors[i].height*offset);
             this.root.add(this.floors[i]);
         }
         this.building.scale.set(1,1,offset);
-        this.root.add(this.building);
+
         return this.root;
     }
 }
@@ -364,7 +226,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             points = parsePoints(floor.Outline[0][0]);
             shape = new THREE.Shape(points);
             geometry = new THREE.ShapeGeometry(shape);
-            mesh = new THREE.Mesh(geometry, mall.theme.floorMat);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial(mall.theme.floor));
             mesh.position.set(0,0,-5);
 
             floorObj.height = floorHeight;
@@ -392,7 +254,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 //solid model
                 extrudeSettings = {amount: floorHeight, bevelEnabled: false};
                 geometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
-                material = mall.theme.roomMat(funcArea.Type);
+                material = new THREE.MeshBasicMaterial(mall.theme.room(funcArea.Type));
                 mesh = new THREE.Mesh(geometry, material);
                 mesh.type = "solidroom";
                 floorObj.add(mesh);
@@ -403,7 +265,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
 //                floorObj.add(wire);
 
                 //top wireframe
-                wire = new THREE.Line(geometry, mall.theme.roomWireMat);
+                wire = new THREE.Line(geometry, new THREE.LineBasicMaterial(mall.theme.roomWire));
                 wire.position.set(0,0, floorHeight);
                 floorObj.add(wire);
 
@@ -434,7 +296,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
         shape = new THREE.Shape(points);
         extrudeSettings = {amount: buildingHeight, bevelEnabled: false};
         geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        mesh = new THREE.Mesh(geometry, mall.theme.buildingMat);
+        mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial(mall.theme.building));
 
         mall.building = mesh;
         mall.root.name = building.Name;
