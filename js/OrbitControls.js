@@ -52,6 +52,10 @@ THREE.OrbitControls = function ( object, domElement ) {
     var zoomEnd = new THREE.Vector2();
     var zoomDelta = new THREE.Vector2();
 
+    var panStart = new THREE.Vector2();
+    var panEnd = new THREE.Vector2();
+    var panDelta = new THREE.Vector2();
+
     var phiDelta = 0;
     var thetaDelta = 0;
     var scale = 1;
@@ -74,6 +78,10 @@ THREE.OrbitControls = function ( object, domElement ) {
         zoomStart = new THREE.Vector2();
         zoomEnd = new THREE.Vector2();
         zoomDelta = new THREE.Vector2();
+
+        panStart = new THREE.Vector2();
+        panEnd = new THREE.Vector2();
+        panDelta = new THREE.Vector2();
 
         phiDelta = 0;
         thetaDelta = 0;
@@ -270,6 +278,7 @@ THREE.OrbitControls = function ( object, domElement ) {
         } else if ( state === STATE.PAN ) {
 
             //state = STATE.PAN;
+            panStart.set(event.clientX, event.clientY);
 
         }
 
@@ -315,10 +324,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 
         } else if ( state === STATE.PAN ) {
 
-            var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-            var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-
-            scope.pan( new THREE.Vector3( - movementX, movementY, 0 ) );
+            panEnd.set(event.clientX, event.clientY);
+            panDelta.subVectors(panEnd, panStart);
+            scope.pan( new THREE.Vector3( - panDelta.x, panDelta.y , 0 ) );
+            panStart.copy(panEnd);
 
         }
 

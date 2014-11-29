@@ -41,7 +41,7 @@
         }
 
         .labels {
-            font-size: 8px;
+            font-size: 10px;
             text-align:center;
             text-shadow:#ffffff 1px 0 0,#ffffff 0 1px 0,#ffffff -1px 0 0,#ffffff 0 -1px 0;
         }
@@ -51,11 +51,28 @@
             height: 15px;
         }
 
-        .labels .keyPoints img{
-            width: 30px;
-            height: 30px;
-            -webkit-border-radius: 30px;
-            border: 3px #a72525 solid;
+        @media screen {
+            .labels .keyPoints img {
+                width: 30px;
+                height: 30px;
+                -webkit-border-radius: 30px;
+                border: 3px #a72525 solid;
+            }
+        }
+
+        @media print{
+            #stats{
+                display: none;
+            }
+
+            #toggleText{
+                display: none;
+            }
+
+            .floors .currentFloor{
+                border: 2px solid #000000;
+            }
+
         }
 
     </style>
@@ -120,6 +137,12 @@ function updateLabels(){
         labelRoot.children[i].style.left = pos.x + 'px';
         labelRoot.children[i].style.top = pos.y+'px';
         labelRoot.children[i].style.position = 'absolute';
+
+        if(pos.x < 0 || pos.x > window.innerWidth || pos.y < 0 || pos.y > window.innerHeight){
+            labelRoot.children[i].style.display = "none";
+        }else{
+            labelRoot.children[i].style.display = "inline";
+        }
     }
     controls.viewChanged = false;
 }
@@ -224,6 +247,7 @@ function init() {
         currentFloor = ul.children[2];
         createFloorLabels(mall,1);
         document.body.appendChild(labelRoot);
+        document.title += " " + mall.root.name;
         labelRoot.style.display = "none"; //hide at first
         theMall = mall;
 

@@ -42,8 +42,8 @@ var defaultTheme = {
 
     //room wires' style
     roomWire : {
-        color: 0xED7D31,
-        opacity: 0,//opacity 0 is same as invisible
+        color: 0xffffff,
+        opacity: 1,//opacity 0 is same as invisible
         transparent: true,
         linewidth: 1.5
     },
@@ -83,6 +83,57 @@ var defaultTheme = {
             default : //default
                 return "./img/default-point.png";
         }
+    }
+}
+
+//this is a theme for printing
+var printTheme = {
+    name : "print", //theme's name
+    background : 0xffffff, //background color
+
+    //building's style
+    building : {
+        color: 0xeeeeee,
+        opacity: 0.2,
+        transparent:true,
+        depthTest:false
+    },
+
+    //floor's style
+    floor : {
+        color: 0xeeeeee,
+        opacity:1,
+        transparent:false,
+        side: THREE.DoubleSide
+    },
+
+    //selected room's style
+    selected : 0xffffff,
+
+    //rooms' style
+    room : function(type){
+        return {
+            color: 0xeeeeee,
+            opacity: 1,
+            transparent: false,
+            side: THREE.DoubleSide,
+            polygonOffset: true,
+            polygonOffsetFactor: 1,
+            polygonOffsetUnits: 1
+        }
+    },
+
+    //room wires' style
+    roomWire : {
+        color: 0xaaaaaa,
+        opacity: 1,
+        transparent: false,
+        linewidth: 2
+    },
+
+    //icons
+    labelImg: function(type){
+        return "./img/indoor_floor_normal.png";
     }
 }
 
