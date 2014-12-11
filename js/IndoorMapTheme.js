@@ -31,8 +31,8 @@ var defaultTheme = {
         var roomcolor = 0xffffff - parseInt(type);
         return {
             color: roomcolor,
-            opacity: 0.8,
-            transparent: true,
+            opacity: 1.0,
+            transparent: false,
 
             //just ignore the following lines. u don't have to understand them.
             //basically, it offsets the rooms so that they won't obscure the wires
