@@ -82,6 +82,26 @@ html, body {
     top: calc(100% / 4 * 3 - 2.5%);
 }
 .slide_page_4:before {
+    left: 50%;
+    top: calc(100% / 4 * 3 - 2.5%);
+}
+.slide_page_5:before {
+    left: 50%;
+    top: calc(100% / 4 * 3 - 2.5%);
+}
+.slide_page_6:before {
+    left: 50%;
+    top: calc(100% / 4 * 3 - 2.5%);
+}
+.slide_page_7:before {
+    left: 50%;
+    top: calc(100% / 4 * 3 - 2.5%);
+}
+.slide_page_8:before {
+    left: 50%;
+    top: calc(100% / 4 * 3 - 2.5%);
+}
+.slide_page_9:before {
     content: none;
 }
 
