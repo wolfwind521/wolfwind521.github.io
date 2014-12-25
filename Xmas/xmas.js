@@ -4,7 +4,7 @@
 $(function () {
     var cur_page= 0, touchFirst_obj, touchLast_obj, touchEnd_obj, moveY, startTranslateY, currentTranslateY,
         slide_range = 130,
-        page_count = $('.slide_div div').length || 4;
+        page_count = $('.slide_div div').length || 9;
 
     $(document).on('touchstart', '.slide_div', function (e) {
         e.preventDefault();
@@ -52,6 +52,6 @@ $(function () {
             cur_page++;
         }
 
-        $(this).css('-webkit-transform', 'translateY('+ (-100 * (+cur_page)/4) +'%) translateZ(0)');
+        $(this).css('-webkit-transform', 'translateY('+ (-100 * (+cur_page)/9) +'%) translateZ(0)');
     });
 });
