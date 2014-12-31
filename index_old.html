@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Indoor Map 3d</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        body
+        {
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+        .floors
+        {
+            position: absolute;;
+            top:100px;
+            left: 0px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .floors .currentFloor{
+            background-color: #cccccc !important;
+        }
+
+        .floors li, #toggleText{
+            padding: 10px;
+            background-color: #e8e8e8 ;
+            border: 1px solid #bbbbbb;
+            text-align: center;
+        }
+
+        #toggleText{
+            position: absolute;
+            top: 50px;
+            left: 0px;
+        }
+
+        .labels {
+            font-size: 10px;
+            text-align:center;
+            text-shadow:#ffffff 1px 0 0,#ffffff 0 1px 0,#ffffff -1px 0 0,#ffffff 0 -1px 0;
+        }
+
+        .labels img{
+            width: 15px;
+            height: 15px;
+        }
+
+        @media screen {
+            .labels .keyPoints img {
+                width: 30px;
+                height: 30px;
+                -webkit-border-radius: 30px;
+                border: 3px #a72525 solid;
+            }
+        }
+
+        @media print{
+            #stats{
+                display: none;
+            }
+
+            #toggleText{
+                display: none;
+            }
+
+            .floors .currentFloor{
+                border: 2px solid #000000;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+<script src="js/three.min.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/IndoorMapTheme.js"></script>
+<script src="js/IndoorMapLoader.js"></script>
+<script src="js/stats.min.js"></script>
+<script>
+var camera, scene, renderer, controls, projector, raycaster, mallroot;
+var stats, container;
+var projectMatrix = new THREE.Matrix4();
+var mouse = new THREE.Vector2(), INTERSECTED;
+var currentFloor, floorPoints, labelRoot, theMall;
+init();
+animate();
+
+//create labels in the html page
+function createFloorLabels(mall, floorid){
+    floorPoints = mall.floors[floorid].points;
+    for(var i=0 ; i < floorPoints.length; i++) {
+        var div = document.createElement('div');
+        var imgsrc = mall.theme.labelImg(floorPoints[i].type);
+        if(imgsrc != null && imgsrc != "") {
+            var img = document.createElement('img');
+            img.setAttribute('src', imgsrc);
+            div.appendChild(img);
+        }
+        var text = document.createTextNode(floorPoints[i].name);
+        div.appendChild(text);
+        if(floorPoints[i].type[0] == '2')//stairs,gates...
+        {
+            div.className = 'keyPoints';
+        }
+        labelRoot.appendChild(div);
+    }
+}
+
+//update the position of the labels
+//TODO: only update when interacting
+function updateLabels(){
+    if(!controls.viewChanged){
+        return;
+    }
+    //if the mall hasn't been loaded or the labels haven't been created, return
+    if(floorPoints == null || labelRoot.children.length == 0){
+        return;
+    }
+    var halfWidth = window.innerWidth / 2;
+    var halfHeight = window.innerHeight / 2;
+    projectMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
+    for(var i=0; i<floorPoints.length; i++){
+        var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
+        vec.applyProjection(projectMatrix);
+        var pos = {
+            x: Math.round(vec.x * halfWidth + halfWidth),
+            y: Math.round(-vec.y * halfHeight + halfHeight)
+        };
+        labelRoot.children[i].style.left = pos.x + 'px';
+        labelRoot.children[i].style.top = pos.y+'px';
+        labelRoot.children[i].style.position = 'absolute';
+
+        if(pos.x < 0 || pos.x > window.innerWidth || pos.y < 0 || pos.y > window.innerHeight){
+            labelRoot.children[i].style.display = "none";
+        }else{
+            labelRoot.children[i].style.display = "inline";
+        }
+    }
+    controls.viewChanged = false;
+}
+
+function resetCamera(){
+    camera.position.set(0,150,400);//TODO: adjust the position automatically
+    camera.lookAt(scene.position);
+    controls.reset();
+}
+function init() {
+    container = document.createElement( 'div' );
+    document.body.appendChild( container );
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 2000);
+
+    //camera.position.set(0,-200,10000);
+    //camera = new THREE.OrthographicCamera( -window.innerWidth, window.innerWidth, window.innerHeight , -window.innerHeight, - 2000, 2000 );
+    controls = new THREE.OrbitControls(camera);
+
+    resetCamera();
+
+    if(Detector.webgl){
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        controls.usingWebgl = true;
+    }else {
+        renderer = new THREE.CanvasRenderer();
+        controls.usingWebgl = false;
+    }
+    renderer.setClearColor( 0xffffff );
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    //light
+    var light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( 500, 500, 500 );
+    scene.add( light );
+
+    //light
+    var light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( -500, 500, -500 );
+    scene.add( light );
+
+//    //ambient light
+//    var ambientLight = new THREE.AmbientLight(0x222222);
+//    scene.add(ambientLight);
+
+    var loader = new IndoorMapLoader(true);
+    loader.load("B000A9R4FE.json", function(mall){
+        mallroot = mall.root;
+        scene.add(mall.root);
+        renderer.setClearColor(mall.theme.background);
+
+        labelRoot = document.createElement('div');
+        labelRoot.className = "labels";
+
+        //create the ul list
+        var ul = document.createElement('ul');
+        ul.className = 'floors';
+        document.body.appendChild(ul);
+
+        var li = document.createElement('li');
+        var text = document.createTextNode('All');
+        li.appendChild(text);
+        ul.appendChild(li);
+        li.onclick = function(){
+            mall.showAll();
+            currentFloor.className = '';
+            this.className = 'currentFloor';
+            currentFloor = this;
+            resetCamera();
+            labelRoot.innerHTML="";
+        }
+
+        for(var i = 0; i < mall.floorNames.length; i++){
+            (function(arg){
+                li = document.createElement('li');
+                text = document.createTextNode(mall.floorNames[i]);
+                li.appendChild(text);
+                li.onclick = function () {
+                    if(currentFloor != this) {
+                        mall.showFloor(arg);
+                        currentFloor.className = '';
+                        this.className = 'currentFloor';
+                        currentFloor = this;
+                        resetCamera();
+
+                        //texts
+                        labelRoot.innerHTML=""; //clear old ones
+                        createFloorLabels(mall, arg);
+                        controls.viewChanged = true;
+
+                    }
+                }
+                ul.appendChild(li);
+            })(i);
+        }
+
+        //mall.showAll();
+        mall.showFloor(1);
+        ul.children[2].className = 'currentFloor';
+        currentFloor = ul.children[2];
+        createFloorLabels(mall,1);
+        document.body.appendChild(labelRoot);
+        document.title += " " + mall.root.name;
+        labelRoot.style.display = "none"; //hide at first
+        theMall = mall;
+
+    });
+
+    camera.position.z = 300;
+
+    projector = new THREE.Projector();
+    raycaster = new THREE.Raycaster();
+
+
+
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    container.appendChild( stats.domElement );
+
+    window.addEventListener( 'resize', onWindowResize, false );
+    document.addEventListener( 'mousedown', onSelectObject, false );
+}
+
+function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    update();
+    stats.update();
+}
+
+function update(){
+    renderer.render(scene, camera);
+    updateLabels();
+}
+
+function onSelectObject(){
+    // find intersections
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+    projector.unprojectVector( vector, camera );
+
+    raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
+
+    var intersects = raycaster.intersectObjects( mallroot.children[0].children );
+
+    if ( intersects.length > 0 ) {
+
+        if ( INTERSECTED != intersects[ 0 ].object ) {
+
+            if ( INTERSECTED ) {
+                INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+            }
+            for(var i=0; i<intersects.length; i++) {
+                INTERSECTED = intersects[ i ].object;
+                if(INTERSECTED.type && INTERSECTED.type == "solidroom") {
+                    INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+                    INTERSECTED.material.color.setHex(theMall.theme.selected);
+                    break;
+                }else{
+                    INTERSECTED = null;
+                }
+            }
+        }
+
+    } else {
+
+        if ( INTERSECTED ) {
+            INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        }
+
+        INTERSECTED = null;
+
+    }
+}
+
+function onWindowResize(){
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    //controls.handleResize();
+    controls.viewChanged = true;
+}
+function onToggleText(){
+    if(labelRoot.style.display == "none"){
+        labelRoot.style.display = "inline";
+    }else{
+        labelRoot.style.display= "none";
+    }
+}
+
+</script>
+<div id="toggleText" onclick="onToggleText()">ToggleText</div>
+</body>
+</html>

@@ -31,8 +31,6 @@ var defaultTheme = {
         var roomcolor = 0xffffff - parseInt(type);
         return {
             color: roomcolor,
-            opacity: 1.0,
-            transparent: false,
 
             //just ignore the following lines. u don't have to understand them.
             //basically, it offsets the rooms so that they won't obscure the wires
@@ -44,7 +42,7 @@ var defaultTheme = {
 
     //room wires' style
     roomWire : {
-        color: 0xffffff,
+        color: 0xED7D31,
         opacity: 0,//opacity 0 is same as invisible
         transparent: true,
         linewidth: 1.5
@@ -85,57 +83,6 @@ var defaultTheme = {
             default : //default
                 return "./img/default-point.png";
         }
-    }
-}
-
-//this is a theme for printing
-var printTheme = {
-    name : "print", //theme's name
-    background : 0xffffff, //background color
-
-    //building's style
-    building : {
-        color: 0xeeeeee,
-        opacity: 0.2,
-        transparent:true,
-        depthTest:false
-    },
-
-    //floor's style
-    floor : {
-        color: 0xeeeeee,
-        opacity:1,
-        transparent:false,
-        side: THREE.DoubleSide
-    },
-
-    //selected room's style
-    selected : 0xffffff,
-
-    //rooms' style
-    room : function(type){
-        return {
-            color: 0xeeeeee,
-            opacity: 1,
-            transparent: false,
-            side: THREE.DoubleSide,
-            polygonOffset: true,
-            polygonOffsetFactor: 1,
-            polygonOffsetUnits: 1
-        }
-    },
-
-    //room wires' style
-    roomWire : {
-        color: 0xaaaaaa,
-        opacity: 1,
-        transparent: false,
-        linewidth: 2
-    },
-
-    //icons
-    labelImg: function(type){
-        return "./img/indoor_floor_normal.png";
     }
 }
 
@@ -219,10 +166,12 @@ var techTheme = {
     }
 }
 
+
+
 //this is a theme just for test. feel free to modify it as you like
 var testTheme = {
     name : "test", //theme's name
-    background : 0xffffff, //background color
+    background : 0xe6e6e6, //background color
 
     //building's style
     building : {
@@ -255,74 +204,74 @@ var testTheme = {
             case "000300": //closed area
                 return {
                     color: 0x9e9e9e,
-                    opacity: 0.8,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "000400": //empty shop
                 return{
-                    color: 0x795548,
-                    opacity: 0.8,
+                    color: 0xE4E4E4,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "050100": //chinese food
                 return {
-                    color: 0xe51c23,
-                    opacity: 0.8,
+                    color: 0xd8992c,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "050117": //hotpot
                 return {
-                    color: 0xff5722,
-                    opacity: 0.8,
+                    color: 0xe6a1d1,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "050201": //i don't know. some kinds of food...
                 return {
-                    color: 0xff9800,
-                    opacity: 0.8,
+                    color: 0xb9b3ff,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "050300": //western food
                 return {
-                    color: 0xe51c23,
-                    opacity: 0.8,
+                    color: 0xa1e5e6,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "050300": //western food
                 return {
-                    color: 0xe51c23,
-                    opacity: 0.8,
+                    color: 0x9e9323,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "061102": //shoes
                 return {
-                    color: 0xe91e63,
-                    opacity: 0.8,
+                    color: 0x99455e,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "061103": //bags
                 return {
-                    color: 0x9c27b0,
-                    opacity: 0.8,
+                    color: 0x17566a,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "061202": //jewelry
                 return {
-                    color: 0x673ab7,
-                    opacity: 0.8,
+                    color: 0xd6675b,
+                    opacity: 0.7,
                     transparent: true
                 };
             case "061400": //toiletry
                 return {
-                    color: 0x3f51b5,
-                    opacity: 0.8,
+                    color: 0x17566a,
+                    opacity: 0.7,
                     transparent: true
                 };
 
             default : //default
                 return {
-                    color: 0xF8CBAD,
-                    opacity: 0.8,
+                    color: 0xd0641a,
+                    opacity: 0.7,
                     transparent: true
                 };
         }
@@ -330,10 +279,10 @@ var testTheme = {
 
     //room wires' style
     roomWire : {
-        color: 0xED7D31,
-        opacity: 0.8,
+        color: 0x38291f,
+        opacity: 0.5,
         transparent: true,
-        linewidth: 2
+        linewidth: 1
     },
 
     //icons of the labels

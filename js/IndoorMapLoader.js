@@ -1,118 +1,3 @@
-
-
-////removed on 2014.11.5. text sprite is not used any more
-////make a text sprite
-//function makeTextSprite( message, parameters )
-//{
-//    if ( parameters === undefined ) parameters = {};
-//
-//    var fontface = parameters.hasOwnProperty("fontface") ?
-//        parameters["fontface"] : "Arial";
-//
-//    var fontsize = parameters.hasOwnProperty("fontsize") ?
-//        parameters["fontsize"] : 18;
-//
-//    var fontcolor = parameters.hasOwnProperty("color") ?
-//        parameters["color"] : "rgb(0,0,0)";
-//
-//    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-//        parameters["borderThickness"] : 4;
-//
-//    var borderColor = parameters.hasOwnProperty("borderColor") ?
-//        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-//
-//    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-//        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
-//
-//    //var spriteAlignment = THREE.SpriteAlignment.topLeft;
-//
-//    var canvas = document.createElement('canvas');
-//    var context = canvas.getContext('2d');
-//    context.font = "Bold " + fontsize + "px " + fontface;
-//
-//    // get size data (height depends only on font size)
-//    var metrics = context.measureText( message );
-//    var textWidth = metrics.width;
-//
-//    // background color
-//    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-//        + backgroundColor.b + "," + backgroundColor.a + ")";
-//    // border color
-//    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-//        + borderColor.b + "," + borderColor.a + ")";
-//
-//    context.lineWidth = borderThickness;
-//    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-//    // 1.4 is extra height factor for text below baseline: g,j,p,q.
-//
-//    // text color
-//    context.fillStyle = fontcolor;
-//
-//    context.fillText( message, borderThickness, fontsize + borderThickness);
-//
-//    // canvas contents will be used for a texture
-//    var texture = new THREE.Texture(canvas)
-//    texture.needsUpdate = true;
-//
-//    var spriteMaterial = new THREE.SpriteMaterial(
-//        { map: texture, useScreenCoordinates: false, alignment: new THREE.Vector2( 1, -1 ), depthTest:true } );
-//    var sprite = new THREE.Sprite( spriteMaterial );
-//    sprite.scale.set(10,5,1.0);
-//    return sprite;
-//}
-
-//get the center of some points
-function getCenter(points){
-    var center = new THREE.Vector3(0,0,0);
-    for(var i=0; i<points.length; i++){
-        center.add(points[i]);
-    }
-    center.divideScalar(points.length);
-    return center;
-}
-
-//the Mall class
-function Mall(){
-    this.floors = [];   //the object3d of the floors
-    this.building = null; //the building
-    this.root = new THREE.Object3D(); //the root scene
-    this.theme = defaultTheme;
-
-    //show floor by id
-    this.showFloor = function(id){
-        //if the id out of range
-        if(id<0 || id>=this.floors.length){
-            return;
-        }
-        //set the building outline to invisible
-        this.root.remove(this.building);
-        //set all the floors to invisible
-        for(var i=0; i<this.floors.length; i++){
-            this.root.remove(this.floors[i]);
-        }
-        //set the specific floor to visible
-        this.floors[id].position.set(0,0,0);
-        this.root.add(this.floors[id]);
-
-        return this.floors[id];
-    }
-
-    //show the whole building
-    this.showAll = function(){
-
-        this.root.add(this.building);
-
-        var offset = 4;
-        for(var i=0; i<this.floors.length; i++){
-            this.floors[i].position.set(0,0,i*this.floors[i].height*offset);
-            this.root.add(this.floors[i]);
-        }
-        this.building.scale.set(1,1,offset);
-
-        return this.root;
-    }
-}
-
 //the Loader
 IndoorMapLoader= function ( showStatus ) {
 
@@ -207,6 +92,15 @@ IndoorMapLoader.prototype.parse = function ( json ) {
     var scope = this,
         mall = new Mall();
 
+    //get the center of some points
+    function getCenter(points){
+        var center = new THREE.Vector3(0,0,0);
+        for(var i=0; i<points.length; i++){
+            center.add(points[i]);
+        }
+        center.divideScalar(points.length);
+        return center;
+    }
 
     function parseModels() {
         var building,shape, extrudeSettings, geometry, material, mesh, wire, color, points;
@@ -232,6 +126,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             floorObj.height = floorHeight;
             floorObj.add(mesh);
             floorObj.points = [];
+            floorObj.id = floor._id;
             if(floorid < 0) { //underfloors
                 mall.floors[floorid + underfloors] = floorObj;
             }else{ // ground floors, id starts from 1
@@ -244,11 +139,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 points = parsePoints(funcArea.Outline[0][0]);
                 shape = new THREE.Shape(points);
 
-                //text of the shop name
-                //var spritey = makeTextSprite(funcArea.Name, mall.theme.fontMat);
                 var center = getCenter(points);
-                //spritey.position.set(center.x, center.y, floorHeight*1.5);
-                //floorObj.add(spritey);
                 floorObj.points.push({ name: funcArea.Name, type: funcArea.Type, position: new THREE.Vector3(center.x * scale, floorHeight * scale, -center.y * scale )});
 
                 //solid model
@@ -257,6 +148,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
                 material = new THREE.MeshLambertMaterial(mall.theme.room(funcArea.Type));
                 mesh = new THREE.Mesh(geometry, material);
                 mesh.type = "solidroom";
+                mesh.name = funcArea.Name;
                 floorObj.add(mesh);
 
                 geometry = shape.createPointsGeometry();
@@ -330,23 +222,4 @@ IndoorMapLoader.prototype.parse = function ( json ) {
     }
 
     return parseModels( );
-
-//    if ( json.materials === undefined || json.materials.length === 0 ) {
-//
-//        return { geometry: geometry };
-//
-//    } else {
-//
-//        var materials = this.initMaterials( json.materials, texturePath );
-//
-//        if ( this.needsTangents( materials ) ) {
-//
-//            geometry.computeTangents();
-//
-//        }
-//
-//        return { geometry: geometry, materials: materials };
-//
-//    }
-
 };
