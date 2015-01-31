@@ -5,12 +5,12 @@
     <title></title>
 </head>
 <body>
-<script src="indoor3D/js/three.min.js"></script>
-<script src="indoor3D/js/Detector.js"></script>
-<script src="indoor3D/js/OrbitControls.js"></script>
-<script src="indoor3D/js/IndoorMap.js"></script>
-<script src="indoor3D/js/stats.min.js"></script>
-<link href="indoor3D/css/indoor3D.css" rel="stylesheet">
+<script src="Indoor3D/js/three.min.js"></script>
+<script src="Indoor3D/js/Detector.js"></script>
+<script src="Indoor3D/js/OrbitControls.js"></script>
+<script src="Indoor3D/js/IndoorMap.js"></script>
+<script src="Indoor3D/js/stats.min.js"></script>
+<link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
 
 
 <script>
@@ -24,7 +24,7 @@
         mapDiv:"indoor3d"
     }
     var indoorMap = new IndoorMap(params);
-    indoorMap.load('indoor3D/data/B000A9R4FE.json', function(){
+    indoorMap.load('Indoor3D/data/B000A9R4FE.json', function(){
         indoorMap.showFloor(1);
         indoorMap.setSelectable(true);
         var ul = indoorMap.getUI();
