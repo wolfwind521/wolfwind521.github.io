@@ -7,6 +7,7 @@
 function Mall(){
     var _this = this;
     this.floors = [];   //the object3d of the floors
+    this.floorNames = [];
     this.building = null; //the building
     this.root = new THREE.Object3D(); //the root scene
     this.theme = defaultTheme; //theme
@@ -350,11 +351,14 @@ IndoorMapLoader.prototype.parse = function ( json ) {
             floorObj.add(mesh);
             floorObj.points = [];
             floorObj.id = floor._id;
+            var index;
             if(floorid < 0) { //underfloors
-                mall.floors[floorid + underfloors] = floorObj;
+                index = floorid + underfloors;
             }else{ // ground floors, id starts from 1
-                mall.floors[floorid - 1 + underfloors] = floorObj;
+                index = floorid - 1 + underfloors;
             }
+            mall.floors[index] = floorObj;
+            mall.floorNames[index] = ''+floorObj.id;
             //funcArea geometry
             for(var j=0; j<floor.FuncAreas.length; j++){
 
@@ -408,14 +412,17 @@ IndoorMapLoader.prototype.parse = function ( json ) {
         //building geometry
         building = json.data.building;
         points = parsePoints(building.Outline[0][0]);
-        shape = new THREE.Shape(points);
-        extrudeSettings = {amount: buildingHeight, bevelEnabled: false};
-        geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial(mall.theme.building));
 
-        mall.building = mesh;
+        if(points.length > 0) {
+                shape = new THREE.Shape(points);
+                extrudeSettings = {amount: buildingHeight, bevelEnabled: false};
+                geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial(mall.theme.building));
+
+                mall.building = mesh;
+        }
         mall.root.name = building.Name;
-        mall.floorNames = building.FloorsId.split(",");
+        //mall.floorNames = building.FloorsId.split(",");
         mall.remark = building.Remark;
 
         //scale the mall
@@ -447,7 +454,7 @@ IndoorMapLoader.prototype.parse = function ( json ) {
     return parseModels( );
 };
 
-//-----------------------------the Indoor3D class ------------------------------------
+//-----------------------------the IndoorMap class ------------------------------------
 
 var Indoor3D = function (params) {
     var _this = this;
@@ -490,10 +497,10 @@ var Indoor3D = function (params) {
         // webgl detection
         if (Detector.webgl) {
             _renderer = new THREE.WebGLRenderer({ antialias: true });
-            _controls.usingWebgl = true;
+            _controls.is3d = true;
         } else {
             _renderer = new THREE.CanvasRenderer();
-            _controls.usingWebgl = false;
+            _controls.is3d = false;
         }
 
         _renderer.setSize(_mapDiv.clientWidth, _mapDiv.clientHeight);
