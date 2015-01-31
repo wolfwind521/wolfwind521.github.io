@@ -167,10 +167,10 @@ function init() {
 
     if(Detector.webgl){
         renderer = new THREE.WebGLRenderer({ antialias: true });
-        controls.usingWebgl = true;
+        controls.is3d = true;
     }else {
         renderer = new THREE.CanvasRenderer();
-        controls.usingWebgl = false;
+        controls.is3d = false;
     }
     renderer.setClearColor( 0xffffff );
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -191,7 +191,7 @@ function init() {
 //    scene.add(ambientLight);
 
     var loader = new IndoorMapLoader(true);
-    loader.load("B000A9R4FE.json", function(mall){
+    loader.load("indoor3D/data/B000A9R4FE.json", function(mall){
         mallroot = mall.root;
         scene.add(mall.root);
         renderer.setClearColor(mall.theme.background);
