@@ -10,6 +10,7 @@
 <script src="Indoor3D/js/OrbitControls.js"></script>
 <script src="Indoor3D/js/IndoorMap.js"></script>
 <script src="Indoor3D/js/stats.min.js"></script>
+<script src="Indoor3D/js/Projector.js"></script>
 <link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
 
 
@@ -21,10 +22,10 @@
     animate();
 
     var params = {
-        mapDiv:"indoor3d"
+        mapDiv:"indoor3d",
     }
     var indoorMap = new IndoorMap(params);
-    indoorMap.load('Indoor3D/data/B000A9R4FE.json', function(){
+    indoorMap.load('Indoor3D/data/爱琴海购物中心.json', function(){
         indoorMap.showFloor(1);
         indoorMap.setSelectable(true);
         var ul = indoorMap.getUI();
