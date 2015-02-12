@@ -2,6 +2,14 @@
  * Created by gaimeng on 14/12/27.
  */
 
+var System={};
+var js=document.scripts;
+js=js[js.length-1].src.substring(0,js[js.length-1].src.lastIndexOf("/"));
+System.path = js;
+System.libPath = System.path.substring(0,System.path.lastIndexOf("/"));
+System.imgPath = System.libPath+"/img";
+
+
 //---------------------the GeomUtility class--------------------
 function GeomUtility(){}
 
@@ -36,6 +44,33 @@ GeomUtility.getBoundingRect = function(points){
     rect.tl = [minX, minY];
     rect.br = [maxX, maxY];
     return rect;
+}
+//---------------------the Sprite class------------------
+function CanvasSprite(params){
+    var _this = this,
+        _ctx = params.ctx,
+        _width = params.width,
+        _height = params.height,
+        _offsetX = 0,
+        _offsetY = 0,
+        _visible = true,
+
+        _img = new Image();
+    _img.src = params.image;
+
+    this.draw = function(x, y){
+        if(_visible){
+            _ctx.drawImage(_img,_offsetX, _offsetY, _width, _height, x >> 0, y >> 0, _width, _height);
+        }
+    }
+
+    this.show = function(){
+        _visible = true;
+    }
+
+    this.hide = function(){
+        _visible = false;
+    }
 }
 
 //---------------------the Mall class--------------------
@@ -84,6 +119,17 @@ function Mall(){
         return _this.getFloor(_curFloorId);
     }
 
+    //get Floor's json data
+    this.getFloorJson = function(fid){
+        var floorsJson = _this.jsonData.data.Floors;
+        for(var i = 0; i < floorsJson.length; i++){
+            if(floorsJson[i]._id == fid) {
+                return floorsJson[i];
+            }
+        }
+        return null;
+    }
+
     //show floor by id
     this.showFloor = function(id){
         if(_this.is3d) {
@@ -125,30 +171,30 @@ function Mall(){
 }
 //----------------------------theme--------------------------------------
 var defaultTheme = {
-    name : "test", //theme's name
-    background : "#e6e6e6", //background color
+    name: "test", //theme's name
+    background: "#e6e6e6", //background color
 
     //building's style
-    building : {
+    building: {
         color: "#000000",
         opacity: 0.1,
-        transparent:true,
-        depthTest:false
+        transparent: true,
+        depthTest: false
     },
 
     //floor's style
-    floor : {
+    floor: {
         color: "#c1c1c1",
-        opacity:1,
-        transparent:false
+        opacity: 1,
+        transparent: false
     },
 
     //selected room's style
-    selected : 0xffff55,
+    selected: 0xffff55,
 
     //rooms' style
-    room : function(type){
-        switch (type){
+    room: function (type) {
+        switch (type) {
 
             case "100": //hollow. u needn't change this color. because i will make a hole on the model in the final version.
                 return {
@@ -163,7 +209,7 @@ var defaultTheme = {
                     transparent: true
                 };
             case "400": //empty shop
-                return{
+                return {
                     color: "#E4E4E4",
                     opacity: 0.7,
                     transparent: true
@@ -233,49 +279,59 @@ var defaultTheme = {
     },
 
     //room wires' style
-    strokeStyle : {
+    strokeStyle: {
         color: "#38291f",
         opacity: 0.5,
         transparent: true,
         linewidth: 1
     },
 
-    //icons of the labels
-    labelImg: function(type){
-        switch (type){
-            case "000300": //closed area
-                return "./img/indoor_floor_normal.png";
-            case "11001": //WC
-                return "./img/wc.png";
-            case "11002": //atm
-                return "./img/indoor_pub_atm.png";
-            case "11003": //cashier
-                return "./img/indoor_pub_cashier.png";
-            case "11004": //office
-                return "./img/indoor_pub_office.png";
-            case "21001": //staircase
-                return "./img/indoor_pub_staircase.png";
-            case "21002": //escalator
-                return "./img/indoor_pub_escalator.png";
-            case "21003": //elevator
-                return "./img/indoor_pub_elevator.png";
-            case "050100": //food
-                return "./img/indoor_func_am0010.png";
-            case "061102": //shoes
-                return "./img/indoor_func_am0006.png";
-            case "061103": //bags
-                return "./img/indoor_func_am0009.png";
-            case "061202": //jewelry
-                return "./img/indoor_func_am0002.png";
-            case "061400": //toiletry
-                return "./img/indoor_func_am0005.png";
-            case "22006": //gate
-                return "./img/gate.png";
+    pubPointImg: {
 
-            default : //default
-                return "./img/default-point.png";
-        }
+        "11001": System.imgPath+"/toilet.png",
+        "11002": System.imgPath+"/ATM.png",
+        "21001": System.imgPath+"/stair.png",
+        "22006": System.imgPath+"/entry.png",
+        "21002": System.imgPath+"/escalator.png",
+        "21003": System.imgPath+"/lift.png"
     }
+
+    ////icons of the labels
+    //pubPointImg: function(type){
+    //    switch (type){
+    //        case "000300": //closed area
+    //            return "./img/indoor_floor_normal.png";
+    //        case "11001": //WC
+    //            return "./img/toilet.png";
+    //        case "11002": //atm
+    //            return "./img/ATM.png";
+    //        //case "11003": //cashier
+    //        //    return "./img/indoor_pub_cashier.png";
+    //        //case "11004": //office
+    //        //    return "./img/indoor_pub_office.png";
+    //        case "21001": //staircase
+    //            return "./img/stair.png";
+    //        case "21002": //escalator
+    //            return "./img/escalator.png";
+    //        case "21003": //elevator
+    //            return "./img/lift.png";
+    //        case "050100": //food
+    //            return "./img/indoor_func_am0010.png";
+    //        case "061102": //shoes
+    //            return "./img/indoor_func_am0006.png";
+    //        case "061103": //bags
+    //            return "./img/indoor_func_am0009.png";
+    //        case "061202": //jewelry
+    //            return "./img/indoor_func_am0002.png";
+    //        case "061400": //toiletry
+    //            return "./img/indoor_func_am0005.png";
+    //        case "22006": //gate
+    //            return "./img/entry.png";
+    //
+    //        default : //default
+    //            return "./img/default-point.png";
+    //    }
+    //}
 }
 //----------------------------the Loader class --------------------------
 IndoorMapLoader= function ( is3d ) {
@@ -506,11 +562,14 @@ var IndoorMap = function (params) {
     var _scene, _controls, _renderer, _projector, _rayCaster;
     var _mapDiv, _canvasDiv, _labelsRoot, _uiRoot, _uiSelected;
     var _selected;
-    var _showLabels = false;
+    var _showLabels = false, _showPubPoints = true;
     var _curFloorId = 0;
     var _fullScreen = false;
     var _selectionListener = null;
+    var _sceneOrtho, _cameraOrtho;//for 2d
+    var _canvasWidth, _canvasHeight, _canvasWidthHalf, _canvasHeightHalf;
     this.is3d = true;
+    var _spriteMaterials = [], _pubPointSprites=null;
 
     //initialization
     this.init = function (params) {
@@ -539,15 +598,24 @@ var IndoorMap = function (params) {
             window.addEventListener('resize', onWindowResize, false);
         }
 
+        _canvasWidth = _mapDiv.clientWidth;
+        _canvasWidthHalf = _canvasWidth / 2;
+        _canvasHeight = _mapDiv.clientHeight;
+        _canvasHeightHalf = _canvasHeight / 2;
+
         // set up the scene
         _scene = new THREE.Scene();
-        _this.camera = new THREE.PerspectiveCamera(20, _mapDiv.clientWidth / _mapDiv.clientHeight, 0.1, 2000);
-        _controls = new THREE.OrbitControls(_this.camera);
+        _this.camera = new THREE.PerspectiveCamera(20, _canvasWidth / _canvasHeight, 0.1, 2000);
 
+        _sceneOrtho = new THREE.Scene();
+        _cameraOrtho = new THREE.OrthographicCamera(- _canvasWidthHalf, _canvasWidthHalf, _canvasHeightHalf, -_canvasHeightHalf, 1, 10);
+        _cameraOrtho.position.z = 10;
+        _controls = new THREE.OrbitControls(_this.camera);
 
         // webgl detection
         if (Detector.webgl && _this.is3d) {
             _renderer = new THREE.WebGLRenderer({ antialias: true });
+            _renderer.autoClear = false;
             var light = new THREE.DirectionalLight(0xffffff);
             light.position.set(-500, 500, -500);
             _scene.add(light);
@@ -663,12 +731,9 @@ var IndoorMap = function (params) {
     }
 
     //show the labels
-    this.showLabels = function(showLabels) {
-        if(showLabels == undefined){
-            _showLabels = true;
-        }else {
-            _showLabels = showLabels;
-        }
+    this.showLabels = function(show) {
+
+        _showLabels = show == undefined ? true : show;
 
         if(_this.mall == null){ //if the mall hasn't been loaded
             return;
@@ -683,6 +748,21 @@ var IndoorMap = function (params) {
             } else {
                 if(_labelsRoot != null) {
                     _labelsRoot.style.display = "none";
+                }
+            }
+        }
+    }
+
+    //show pubPoints(entries, ATM, escalator...)
+    this.showPubPoints = function(show){
+        _showPubPoints = show == undefined ? true: show;
+
+        if(_this.mall == null){//if the mall hasn't been loaded
+            return;
+        }else{//the mall has already been loaded
+            if(_showPubPoints){
+                if(_spriteMaterials.length == 0){
+                    loadSprites();
                 }
             }
         }
@@ -763,8 +843,10 @@ var IndoorMap = function (params) {
         }
         _this.mall.showFloor(floorid);
         _this.adjustCamera();
+        createPubPointSprites(floorid);
         _this.showLabels(_showLabels);
         updateUI();
+        redraw();
     }
 
     //show all floors
@@ -778,6 +860,7 @@ var IndoorMap = function (params) {
         if(_labelsRoot != null){
             _labelsRoot.innerHTML = ""; //clear the labels when showing all
         }
+        clearPubPointSprites();
         updateUI();
     }
 
@@ -798,7 +881,7 @@ var IndoorMap = function (params) {
         var floorPoints = _this.mall.getFloor(floorId).points;
         for(var i=0 ; i < floorPoints.length; i++) {
             var div = document.createElement('div');
-            var imgsrc = _this.mall.theme.labelImg(floorPoints[i].type);
+            var imgsrc = _this.mall.theme.pubPointImg(floorPoints[i].type);
             if(imgsrc != null && imgsrc != "") {
                 var img = document.createElement('img');
                 img.setAttribute('src', imgsrc);
@@ -817,34 +900,87 @@ var IndoorMap = function (params) {
 
     }
 
+    //labels includes pubPoints and shop names
     function updateLabels() {
-        if(_this.mall == null || _controls == null || !_controls.viewChanged){
+        var mall = _this.mall;
+        if(mall == null || _controls == null || !_controls.viewChanged){
             return;
         }
-        if(_this.mall.getCurFloor() == null || _showLabels == false || _labelsRoot.children.length == 0){
+        var curFloor = mall.getCurFloor();
+        if(curFloor == null){
             return;
         }
-        var floorPoints = _this.mall.getCurFloor().points;
 
-        var halfWidth = _canvasDiv.clientWidth / 2;
-        var halfHeight = _canvasDiv.clientHeight / 2;
-        var projectMatrix = new THREE.Matrix4();
-        projectMatrix.multiplyMatrices( _this.camera.projectionMatrix, _this.camera.matrixWorldInverse );
-        for(var i=0; i<floorPoints.length; i++){
-            var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
-            vec.applyProjection(projectMatrix);
-            var pos = {
-                x: Math.round(vec.x * halfWidth + halfWidth),
-                y: Math.round(-vec.y * halfHeight + halfHeight)
-            };
-            _labelsRoot.children[i].style.left = pos.x + 'px';
-            _labelsRoot.children[i].style.top = pos.y+'px';
-            _labelsRoot.children[i].style.position = 'absolute';
+        var projectMatrix = null;
+        var halfWidth, halfHeight;
+        if(_showLabels) {
+            if (_labelsRoot.children.length == 0) {
+                return;
+            }
+            var floorPoints = mall.getCurFloor().points;
 
-            if(pos.x < 0 || pos.x > _canvasDiv.clientWidth || pos.y < 0 || pos.y > _canvasDiv.clientHeight){
-                _labelsRoot.children[i].style.display = "none";
-            }else{
-                _labelsRoot.children[i].style.display = "inline";
+            projectMatrix = new THREE.Matrix4();
+            projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
+
+            for (var i = 0; i < floorPoints.length; i++) {
+                var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
+                vec.applyProjection(projectMatrix);
+                var pos = {
+                    x: Math.round(vec.x * _canvasWidthHalf + _canvasWidthHalf),
+                    y: Math.round(-vec.y * _canvasHeightHalf + _canvasHeightHalf)
+                };
+                _labelsRoot.children[i].style.left = pos.x + 'px';
+                _labelsRoot.children[i].style.top = pos.y + 'px';
+                _labelsRoot.children[i].style.position = 'absolute';
+
+                if (pos.x < 0 || pos.x > _canvasWidth || pos.y < 0 || pos.y > _canvasHeight) {
+                    _labelsRoot.children[i].style.display = "none";
+                } else {
+                    _labelsRoot.children[i].style.display = "inline";
+                }
+            }
+        }
+
+        if(_showPubPoints){
+            if(!projectMatrix){
+                projectMatrix = new THREE.Matrix4();
+                projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
+            }
+            var pubPointsJson = _this.mall.getFloorJson(mall.getCurFloorId()).PubPoint;
+
+            for(var i = 0 ; i < _pubPointSprites.children.length; i++){
+                var sprite = _pubPointSprites.children[i];
+                var vec = new THREE.Vector3(sprite.oriX * 0.1, 0, -sprite.oriY * 0.1);
+                vec.applyProjection(projectMatrix);
+
+                var x = Math.round(vec.x * _canvasWidthHalf);
+                var y = Math.round(vec.y * _canvasHeightHalf);
+                sprite.position.set(x, y, 1);
+
+                //check collision with the former sprites
+                var visible = true;
+                var visibleMargin = 5;
+                for(var j = 0; j < i; j++){
+                    var img = sprite.material.map.image;
+                    if(!img){
+                        visible = false;
+                        break;
+                    }
+
+                    var dis = sprite.position.distanceTo( _pubPointSprites.children[j].position ) ;
+
+                    if(dis < img.width){
+                        visible = false;
+                        break;
+                    }
+
+                    if(sprite.visible == false && dis < sprite.material.map.image.width + visibleMargin){
+                        visible = false;
+                        break;
+                    }
+                }
+                sprite.visible = visible;
+
             }
         }
         _controls.viewChanged = false;
@@ -880,16 +1016,23 @@ var IndoorMap = function (params) {
         requestAnimationFrame(animate);
         _controls.update();
         if(_controls.viewChanged) {
+
+            _renderer.clear();
             _renderer.render(_scene, _this.camera);
+
+
+            if(_showLabels || _showPubPoints){
+                updateLabels();
+            }
+            _renderer.clearDepth();
+            _renderer.render(_sceneOrtho, _cameraOrtho);
         }
-        if(_showLabels){
-            updateLabels();
-        }
+
         _controls.viewChanged = false;
     }
 
     function redraw(){
-        _renderer.render(_scene, _this.camera);
+        _controls.viewChanged = true;
     }
 
     function onSelectObject() {
@@ -905,7 +1048,7 @@ var IndoorMap = function (params) {
             mouse.y = -( event.clientY / _canvasDiv.clientHeight ) * 2 + 1;
         }
         var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
-        _projector.unprojectVector( vector, _this.camera );
+        vector.unproject( _this.camera);
 
         _rayCaster.set( _this.camera.position, vector.sub( _this.camera.position ).normalize() );
 
@@ -954,6 +1097,55 @@ var IndoorMap = function (params) {
         _this.resize(window.innerWidth, window.innerHeight);
     }
 
+    //load Sprites
+    function loadSprites(){
+        if(_this.mall != null && _spriteMaterials.length == 0){
+            var images = _this.mall.theme.pubPointImg;
+            for(var key in images){
+                var texture = THREE.ImageUtils.loadTexture(images[key], undefined, redraw);
+                var material = new THREE.SpriteMaterial({map:texture});
+                _spriteMaterials[key] = material;
+            }
+        }
+        _spriteMaterials.isLoaded = true;
+    }
+
+    //create the sprites in a floor by the floor id
+    function createPubPointSprites(floorId){
+        if(!_spriteMaterials.isLoaded){
+            loadSprites();
+        }
+
+        if(!_pubPointSprites) {
+
+            _pubPointSprites = new THREE.Object3D();
+        }else{
+
+            clearPubPointSprites();
+        }
+
+        var pubPointsJson = _this.mall.getFloorJson(_this.mall.getCurFloorId()).PubPoint;
+        var imgWidth, imgHeight;
+        for(var i = 0; i < pubPointsJson.length; i++){
+            var spriteMat = _spriteMaterials[pubPointsJson[i].Type];
+            if(spriteMat !== undefined) {
+                //imgWidth = spriteMat.map.image.width;
+                //imgHeight = spriteMat.map.image.height;
+                imgWidth = 30, imgHeight = 30;
+                var sprite = new THREE.Sprite(spriteMat);
+                sprite.scale.set(imgWidth, imgHeight, 1);
+                sprite.oriX = pubPointsJson[i].Outline[0][0][0];
+                sprite.oriY = pubPointsJson[i].Outline[0][0][1];
+                _pubPointSprites.add(sprite);
+            }
+        }
+        _sceneOrtho.add(_pubPointSprites);
+    }
+
+    function clearPubPointSprites(){
+        _pubPointSprites.remove(_pubPointSprites.children);
+        _pubPointSprites.children.length = 0;
+    }
 
     _this.init(params);
     animate();

@@ -13,7 +13,6 @@
 <script src="Indoor3D/js/Projector.js"></script>
 <link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
 
-
 <script>
     var stats = new Stats();
     stats.domElement.style.position = 'absolute';
@@ -27,6 +26,7 @@
     var indoorMap = new IndoorMap(params);
     indoorMap.load('Indoor3D/data/爱琴海购物中心.json', function(){
         indoorMap.showFloor(1);
+	indoorMap.showPubPoints(true);
         indoorMap.setSelectable(true);
         var ul = indoorMap.getUI();
         document.body.appendChild(ul);
