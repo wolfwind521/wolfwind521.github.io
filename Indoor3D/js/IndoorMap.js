@@ -14,9 +14,17 @@ System.imgPath = System.libPath+"/img";
 function GeomUtility(){}
 
 //get the bounding Rect of the points
-function Rect(){
-    this.tl = [0,0]; //top left point
-    this.br = [0,0]; //bottom right point
+function Rect(minx,miny,maxx,maxy){
+    this.tl = [minx || 0, miny || 0]; //top left point
+    this.br = [maxx || 0, maxy || 0]; //bottom right point
+}
+
+Rect.prototype.isCollide = function(rect){
+    if(rect.br[0] < this.tl[0] || rect.tl[0] > this.br[0] ||
+        rect.br[1] < this.tl[1] || rect.tl[1] > this.br[1]){
+        return false;
+    }
+    return true;
 }
 
 GeomUtility.getBoundingRect = function(points){
@@ -44,33 +52,6 @@ GeomUtility.getBoundingRect = function(points){
     rect.tl = [minX, minY];
     rect.br = [maxX, maxY];
     return rect;
-}
-//---------------------the Sprite class------------------
-function CanvasSprite(params){
-    var _this = this,
-        _ctx = params.ctx,
-        _width = params.width,
-        _height = params.height,
-        _offsetX = 0,
-        _offsetY = 0,
-        _visible = true,
-
-        _img = new Image();
-    _img.src = params.image;
-
-    this.draw = function(x, y){
-        if(_visible){
-            _ctx.drawImage(_img,_offsetX, _offsetY, _width, _height, x >> 0, y >> 0, _width, _height);
-        }
-    }
-
-    this.show = function(){
-        _visible = true;
-    }
-
-    this.hide = function(){
-        _visible = false;
-    }
 }
 
 //---------------------the Mall class--------------------
@@ -193,12 +174,12 @@ var defaultTheme = {
     selected: 0xffff55,
 
     //rooms' style
-    room: function (type) {
+    room: function (type, category) {
         switch (type) {
 
             case "100": //hollow. u needn't change this color. because i will make a hole on the model in the final version.
                 return {
-                    color: "#212121",
+                    color: "#e6e6e6",
                     opacity: 0.8,
                     transparent: true
                 }
@@ -214,67 +195,66 @@ var defaultTheme = {
                     opacity: 0.7,
                     transparent: true
                 };
-            case "50100": //chinese food
+            default :
+        }
+
+        switch(category) {
+            case 101: //food
                 return {
                     color: "#d8992c",
                     opacity: 0.7,
                     transparent: true
                 };
-            case "50117": //hotpot
-                return {
-                    color: "#e6a1d1",
-                    opacity: 0.7,
-                    transparent: true
-                };
-            case "50201": //i don't know. some kinds of food...
-                return {
-                    color: "#b9b3ff",
-                    opacity: 0.7,
-                    transparent: true
-                };
-            case "50300": //western food
-                return {
-                    color: "#a1e5e6",
-                    opacity: 0.7,
-                    transparent: true
-                };
-            case "50300": //western food
-                return {
-                    color: "#9e9323",
-                    opacity: 0.7,
-                    transparent: true
-                };
-            case "61102": //shoes
+            case 102: //retail
                 return {
                     color: "#99455e",
                     opacity: 0.7,
                     transparent: true
                 };
-            case "61103": //bags
+            case 103: //toiletry
                 return {
                     color: "#17566a",
                     opacity: 0.7,
                     transparent: true
                 };
-            case "61202": //jewelry
+            case 104: //parent-child
+                return {
+                    color: "#17566a",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case 105: //life services
+                return {
+                    color: "#e6a1d1",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case 106: //education
+                return {
+                    color: "#b9b3ff",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case 107: //life style
                 return {
                     color: "#d6675b",
                     opacity: 0.7,
                     transparent: true
                 };
-            case "61400": //toiletry
+            case 108: //entertainment
                 return {
-                    color: "#17566a",
+                    color: "#a1e5e6",
                     opacity: 0.7,
                     transparent: true
                 };
-
-            default : //default
+            case 109: //others
+            default :
                 return {
                     color: "#d0641a",
                     opacity: 0.7,
                     transparent: true
                 };
+
         }
     },
 
@@ -284,6 +264,10 @@ var defaultTheme = {
         opacity: 0.5,
         transparent: true,
         linewidth: 1
+    },
+
+    fontStyle:{
+        fontsize: 40
     },
 
     pubPointImg: {
@@ -464,6 +448,8 @@ function ParseModel(json, is3d){
 
                 mall.floors.push(floorObj);
             }else{//for 2d model
+                floor.strokeStyle = mall.theme.strokeStyle.color;
+                floor.fillColor = mall.theme.floor.color;
                 mall.floors.push(floor);
             }
 
@@ -483,7 +469,7 @@ function ParseModel(json, is3d){
                     //solid model
                     extrudeSettings = {amount: floorHeight, bevelEnabled: false};
                     geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                    material = new THREE.MeshLambertMaterial(mall.theme.room(funcArea.Type));
+                    material = new THREE.MeshLambertMaterial(mall.theme.room(funcArea.Type, funcArea.Category));
                     mesh = new THREE.Mesh(geometry, material);
                     mesh.type = "solidroom";
                     mesh.id = funcArea._id;
@@ -497,7 +483,8 @@ function ParseModel(json, is3d){
 
                     floorObj.add(wire);
                 }else{
-                    funcArea.fillColor = mall.theme.room(funcArea.Type).color;
+                    funcArea.fillColor = mall.theme.room(funcArea.Type, funcArea.Category).color;
+                    funcArea.strokeColor = mall.theme.strokeStyle.color;
 
                 }
             }
@@ -562,14 +549,14 @@ var IndoorMap = function (params) {
     var _scene, _controls, _renderer, _projector, _rayCaster;
     var _mapDiv, _canvasDiv, _labelsRoot, _uiRoot, _uiSelected;
     var _selected;
-    var _showLabels = false, _showPubPoints = true;
+    var _showNames = true, _showPubPoints = true;
     var _curFloorId = 0;
     var _fullScreen = false;
     var _selectionListener = null;
     var _sceneOrtho, _cameraOrtho;//for 2d
     var _canvasWidth, _canvasHeight, _canvasWidthHalf, _canvasHeightHalf;
     this.is3d = true;
-    var _spriteMaterials = [], _pubPointSprites=null;
+    var _spriteMaterials = [], _pubPointSprites=null, _nameSprites = null;
 
     //initialization
     this.init = function (params) {
@@ -622,7 +609,6 @@ var IndoorMap = function (params) {
 
         } else {
             _renderer = new Canvas2DRenderer();
-            //_renderer = new THREE.CanvasRenderer();
             _controls.is3d = false;
             _this.is3d = false;
         }
@@ -697,11 +683,21 @@ var IndoorMap = function (params) {
     }
 
     this.zoomIn = function(zoomScale){
-        _controls.zoomOut(zoomScale);
+        if(_this.is3d) {
+            _controls.zoomOut(zoomScale);
+        }else{
+            _renderer.zoomIn();
+        }
+        redraw();
     }
 
     this.zoomOut = function(zoomScale){
-        _controls.zoomIn(zoomScale);
+        if(_this.is3d) {
+            _controls.zoomIn(zoomScale);
+        }else{
+            _renderer.zoomOut();
+        }
+        redraw();
     }
 
     //resize the map
@@ -731,41 +727,13 @@ var IndoorMap = function (params) {
     }
 
     //show the labels
-    this.showLabels = function(show) {
-
-        _showLabels = show == undefined ? true : show;
-
-        if(_this.mall == null){ //if the mall hasn't been loaded
-            return;
-        }else { //the mall has already been loaded
-            if (_showLabels) {
-                var fid = _this.mall.getCurFloorId();
-                if(fid != 0) {
-                    createLabels(fid);
-                    _labelsRoot.style.display = "inline";
-                    updateLabels();
-                }
-            } else {
-                if(_labelsRoot != null) {
-                    _labelsRoot.style.display = "none";
-                }
-            }
-        }
+    this.showAreaNames = function(show) {
+        _showNames = show == undefined ? true : show;
     }
 
     //show pubPoints(entries, ATM, escalator...)
     this.showPubPoints = function(show){
         _showPubPoints = show == undefined ? true: show;
-
-        if(_this.mall == null){//if the mall hasn't been loaded
-            return;
-        }else{//the mall has already been loaded
-            if(_showPubPoints){
-                if(_spriteMaterials.length == 0){
-                    loadSprites();
-                }
-            }
-        }
     }
 
     //get the UI
@@ -843,8 +811,12 @@ var IndoorMap = function (params) {
         }
         _this.mall.showFloor(floorid);
         _this.adjustCamera();
-        createPubPointSprites(floorid);
-        _this.showLabels(_showLabels);
+        if(_showPubPoints) {
+            createPubPointSprites(floorid);
+        }
+        if(_showNames) {
+            createNameSprites(floorid);
+        }
         updateUI();
         redraw();
     }
@@ -861,11 +833,12 @@ var IndoorMap = function (params) {
             _labelsRoot.innerHTML = ""; //clear the labels when showing all
         }
         clearPubPointSprites();
+        clearNameSprites();
         updateUI();
     }
 
     //create the labels by floor id
-    function createLabels(floorId){
+    function createNameSprites(floorId){
         //create the root
         if(typeof _labelsRoot === "undefined") {
             _labelsRoot = document.createElement("div");
@@ -912,79 +885,79 @@ var IndoorMap = function (params) {
         }
 
         var projectMatrix = null;
-        var halfWidth, halfHeight;
-        if(_showLabels) {
-            if (_labelsRoot.children.length == 0) {
-                return;
+
+        if(_showNames) {
+            if(_nameSprites != undefined){
+                projectMatrix = new THREE.Matrix4();
+                projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
+
+                updateSprites(_nameSprites, projectMatrix);
             }
-            var floorPoints = mall.getCurFloor().points;
 
-            projectMatrix = new THREE.Matrix4();
-            projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
-
-            for (var i = 0; i < floorPoints.length; i++) {
-                var vec = new THREE.Vector3(floorPoints[i].position.x, floorPoints[i].position.y, floorPoints[i].position.z);
-                vec.applyProjection(projectMatrix);
-                var pos = {
-                    x: Math.round(vec.x * _canvasWidthHalf + _canvasWidthHalf),
-                    y: Math.round(-vec.y * _canvasHeightHalf + _canvasHeightHalf)
-                };
-                _labelsRoot.children[i].style.left = pos.x + 'px';
-                _labelsRoot.children[i].style.top = pos.y + 'px';
-                _labelsRoot.children[i].style.position = 'absolute';
-
-                if (pos.x < 0 || pos.x > _canvasWidth || pos.y < 0 || pos.y > _canvasHeight) {
-                    _labelsRoot.children[i].style.display = "none";
-                } else {
-                    _labelsRoot.children[i].style.display = "inline";
-                }
-            }
         }
 
         if(_showPubPoints){
-            if(!projectMatrix){
-                projectMatrix = new THREE.Matrix4();
-                projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
-            }
-            var pubPointsJson = _this.mall.getFloorJson(mall.getCurFloorId()).PubPoint;
-
-            for(var i = 0 ; i < _pubPointSprites.children.length; i++){
-                var sprite = _pubPointSprites.children[i];
-                var vec = new THREE.Vector3(sprite.oriX * 0.1, 0, -sprite.oriY * 0.1);
-                vec.applyProjection(projectMatrix);
-
-                var x = Math.round(vec.x * _canvasWidthHalf);
-                var y = Math.round(vec.y * _canvasHeightHalf);
-                sprite.position.set(x, y, 1);
-
-                //check collision with the former sprites
-                var visible = true;
-                var visibleMargin = 5;
-                for(var j = 0; j < i; j++){
-                    var img = sprite.material.map.image;
-                    if(!img){
-                        visible = false;
-                        break;
-                    }
-
-                    var dis = sprite.position.distanceTo( _pubPointSprites.children[j].position ) ;
-
-                    if(dis < img.width){
-                        visible = false;
-                        break;
-                    }
-
-                    if(sprite.visible == false && dis < sprite.material.map.image.width + visibleMargin){
-                        visible = false;
-                        break;
-                    }
+            if(_pubPointSprites != undefined){
+                if(!projectMatrix){
+                    projectMatrix = new THREE.Matrix4();
+                    projectMatrix.multiplyMatrices(_this.camera.projectionMatrix, _this.camera.matrixWorldInverse);
                 }
-                sprite.visible = visible;
-
+                updateSprites(_pubPointSprites, projectMatrix);
             }
         }
         _controls.viewChanged = false;
     };
+
+    function updateSprites(spritelist, projectMatrix){
+        for(var i = 0 ; i < spritelist.children.length; i++){
+            var sprite = spritelist.children[i];
+            var vec = new THREE.Vector3(sprite.oriX * 0.1, 0, -sprite.oriY * 0.1);
+            vec.applyProjection(projectMatrix);
+
+            var x = Math.round(vec.x * _canvasWidthHalf);
+            var y = Math.round(vec.y * _canvasHeightHalf);
+            sprite.position.set(x, y, 1);
+
+            //check collision with the former sprites
+            var visible = true;
+            var visibleMargin = 5;
+            for(var j = 0; j < i; j++){
+                var img = sprite.material.map.image;
+                if(!img){ //if img is undefined (the img has not loaded)
+                    visible = false;
+                    break;
+                }
+
+                var imgWidthHalf1 = sprite.width / 2;
+                var imgHeightHalf1 = sprite.height / 2;
+                var rect1 = new Rect(sprite.position.x - imgWidthHalf1, sprite.position.y - imgHeightHalf1,
+                    sprite.position.x + imgHeightHalf1, sprite.position.y + imgHeightHalf1 );
+
+                var sprite2Pos = spritelist.children[j].position;
+                var imgWidthHalf2 = spritelist.children[j].width / 2;
+                var imgHeightHalf2 = spritelist.children[j].height / 2;
+                var rect2 = new Rect(sprite2Pos.x - imgWidthHalf2, sprite2Pos.y - imgHeightHalf2,
+                        sprite2Pos.x + imgHeightHalf2, sprite2Pos.y + imgHeightHalf2 );
+
+                if(rect1.isCollide(rect2)){
+                    visible = false;
+                    break;
+                }
+
+                rect1.tl[0] -= visibleMargin;
+                rect1.tl[1] -= visibleMargin;
+                rect2.tl[0] -= visibleMargin;
+                rect2.tl[1] -= visibleMargin;
+
+
+                if(sprite.visible == false && rect1.isCollide(rect2)){
+                    visible = false;
+                    break;
+                }
+            }
+            sprite.visible = visible;
+        }
+    }
 
     function updateUI() {
         if(_uiRoot == null){
@@ -1017,15 +990,19 @@ var IndoorMap = function (params) {
         _controls.update();
         if(_controls.viewChanged) {
 
-            _renderer.clear();
-            _renderer.render(_scene, _this.camera);
+            if(_this.is3d) {
+                _renderer.clear();
+                _renderer.render(_scene, _this.camera);
 
 
-            if(_showLabels || _showPubPoints){
-                updateLabels();
+                if (_showNames || _showPubPoints) {
+                    updateLabels();
+                }
+                _renderer.clearDepth();
+                _renderer.render(_sceneOrtho, _cameraOrtho);
+            }else{
+                _renderer.render(_scene, _this.camera);
             }
-            _renderer.clearDepth();
-            _renderer.render(_sceneOrtho, _cameraOrtho);
         }
 
         _controls.viewChanged = false;
@@ -1110,7 +1087,24 @@ var IndoorMap = function (params) {
         _spriteMaterials.isLoaded = true;
     }
 
-    //create the sprites in a floor by the floor id
+    //creat the funcArea Name sprites of a floor
+    function createNameSprites(floorId){
+        if(!_nameSprites){
+            _nameSprites = new THREE.Object3D();
+        }else{
+            clearNameSprites();
+        }
+        var funcAreaJson = _this.mall.getFloorJson(_this.mall.getCurFloorId()).FuncAreas;
+        for(var i = 0 ; i < funcAreaJson.length; i++){
+            var sprite = makeTextSprite(funcAreaJson[i].Name, _this.mall.theme.fontStyle);
+            sprite.oriX = funcAreaJson[i].Center[0];
+            sprite.oriY = funcAreaJson[i].Center[1];
+            _nameSprites.add(sprite);
+        }
+        _sceneOrtho.add(_nameSprites);
+    }
+
+    //create the pubpoint sprites in a floor by the floor id
     function createPubPointSprites(floorId){
         if(!_spriteMaterials.isLoaded){
             loadSprites();
@@ -1120,7 +1114,6 @@ var IndoorMap = function (params) {
 
             _pubPointSprites = new THREE.Object3D();
         }else{
-
             clearPubPointSprites();
         }
 
@@ -1129,22 +1122,86 @@ var IndoorMap = function (params) {
         for(var i = 0; i < pubPointsJson.length; i++){
             var spriteMat = _spriteMaterials[pubPointsJson[i].Type];
             if(spriteMat !== undefined) {
-                //imgWidth = spriteMat.map.image.width;
-                //imgHeight = spriteMat.map.image.height;
                 imgWidth = 30, imgHeight = 30;
                 var sprite = new THREE.Sprite(spriteMat);
                 sprite.scale.set(imgWidth, imgHeight, 1);
                 sprite.oriX = pubPointsJson[i].Outline[0][0][0];
                 sprite.oriY = pubPointsJson[i].Outline[0][0][1];
+                sprite.width = imgWidth;
+                sprite.height = imgHeight;
                 _pubPointSprites.add(sprite);
             }
         }
         _sceneOrtho.add(_pubPointSprites);
     }
 
+    function clearNameSprites(){
+        _nameSprites.remove(_nameSprites.children);
+        _nameSprites.children.length = 0;
+    }
     function clearPubPointSprites(){
         _pubPointSprites.remove(_pubPointSprites.children);
         _pubPointSprites.children.length = 0;
+    }
+    function makeTextSprite( message, parameters )
+    {
+        if ( parameters === undefined ) parameters = {};
+
+        var fontface = parameters.hasOwnProperty("fontface") ?
+            parameters["fontface"] : "Arial";
+
+        var fontsize = parameters.hasOwnProperty("fontsize") ?
+            parameters["fontsize"] : 18;
+
+        var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+            parameters["borderThickness"] : 2;
+
+        var borderColor = parameters.hasOwnProperty("borderColor") ?
+            parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+
+        var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+            parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+
+        //var spriteAlignment = parameters.hasOwnProperty("alignment") ?
+        //	parameters["alignment"] : THREE.SpriteAlignment.topLeft;
+
+        var spriteAlignment = new THREE.Vector2( 0, 0 );
+
+
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        context.font = "Bold " + fontsize + "px " + fontface;
+
+        // get size data (height depends only on font size)
+        var metrics = context.measureText( message );
+//
+//        // background color
+//        context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+//            + backgroundColor.b + "," + backgroundColor.a + ")";
+//        // border color
+        context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+            + borderColor.b + "," + borderColor.a + ")";
+//
+//        context.lineWidth = borderThickness;
+//        context.strokeRect(borderThickness/2, borderThickness/2, metrics.width + borderThickness, fontsize * 1.4 + borderThickness);
+
+        // text color
+        context.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+        context.fillText( message, borderThickness, fontsize + borderThickness);
+
+        // canvas contents will be used for a texture
+        var texture = new THREE.Texture(canvas)
+        texture.needsUpdate = true;
+
+
+        var spriteMaterial = new THREE.SpriteMaterial(
+            { map: texture, useScreenCoordinates: false } );
+        var sprite = new THREE.Sprite( spriteMaterial );
+        sprite.scale.set(100,50,1.0);
+        sprite.width = metrics.width;
+        sprite.height = fontsize * 1.4;
+        return sprite;
     }
 
     _this.init(params);
