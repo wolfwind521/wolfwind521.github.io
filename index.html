@@ -11,6 +11,7 @@
 <script src="Indoor3D/js/IndoorMap.js"></script>
 <script src="Indoor3D/js/stats.min.js"></script>
 <script src="Indoor3D/js/Projector.js"></script>
+<script src="Indoor3D/js/Canvas2DRenderer.js"></script>
 <link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
 
 <script>
@@ -22,6 +23,7 @@
 
     var params = {
         mapDiv:"indoor3d",
+        dim:"2d"
     }
     var indoorMap = new IndoorMap(params);
     indoorMap.load('Indoor3D/data/爱琴海购物中心.json', function(){
@@ -36,5 +38,11 @@
         stats.update();
     }
 </script>
+<ul>
+<li class = "testButton" onclick="indoorMap.setTopView()">顶视图</li>
+<li class = "testButton" onclick="indoorMap.setDefaultView()">默认透视图</li>
+<li class = "testButton" onclick="indoorMap.zoomIn(0.8)">放大</li>
+<li class = "testButton" onclick="indoorMap.zoomOut(0.8)">缩小</li>
+</ul>
 </body>
 </html>
