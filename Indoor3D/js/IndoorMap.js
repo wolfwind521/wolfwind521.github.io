@@ -279,43 +279,6 @@ var defaultTheme = {
         "21002": System.imgPath+"/escalator.png",
         "21003": System.imgPath+"/lift.png"
     }
-
-    ////icons of the labels
-    //pubPointImg: function(type){
-    //    switch (type){
-    //        case "000300": //closed area
-    //            return "./img/indoor_floor_normal.png";
-    //        case "11001": //WC
-    //            return "./img/toilet.png";
-    //        case "11002": //atm
-    //            return "./img/ATM.png";
-    //        //case "11003": //cashier
-    //        //    return "./img/indoor_pub_cashier.png";
-    //        //case "11004": //office
-    //        //    return "./img/indoor_pub_office.png";
-    //        case "21001": //staircase
-    //            return "./img/stair.png";
-    //        case "21002": //escalator
-    //            return "./img/escalator.png";
-    //        case "21003": //elevator
-    //            return "./img/lift.png";
-    //        case "050100": //food
-    //            return "./img/indoor_func_am0010.png";
-    //        case "061102": //shoes
-    //            return "./img/indoor_func_am0006.png";
-    //        case "061103": //bags
-    //            return "./img/indoor_func_am0009.png";
-    //        case "061202": //jewelry
-    //            return "./img/indoor_func_am0002.png";
-    //        case "061400": //toiletry
-    //            return "./img/indoor_func_am0005.png";
-    //        case "22006": //gate
-    //            return "./img/entry.png";
-    //
-    //        default : //default
-    //            return "./img/default-point.png";
-    //    }
-    //}
 }
 //----------------------------the Loader class --------------------------
 IndoorMapLoader= function ( is3d ) {
@@ -837,42 +800,6 @@ var IndoorMap = function (params) {
         updateUI();
     }
 
-    //create the labels by floor id
-    function createNameSprites(floorId){
-        //create the root
-        if(typeof _labelsRoot === "undefined") {
-            _labelsRoot = document.createElement("div");
-            _labelsRoot.className = "mapLabels";
-            _mapDiv.appendChild(_labelsRoot);
-        }
-        _labelsRoot.innerHTML = "";
-
-        if(typeof _this.mall === "undefined"){
-            return;
-        }
-
-        var floorPoints = _this.mall.getFloor(floorId).points;
-        for(var i=0 ; i < floorPoints.length; i++) {
-            var div = document.createElement('div');
-            var imgsrc = _this.mall.theme.pubPointImg(floorPoints[i].type);
-            if(imgsrc != null && imgsrc != "") {
-                var img = document.createElement('img');
-                img.setAttribute('src', imgsrc);
-                div.appendChild(img);
-            }
-
-            if(floorPoints[i].type[0] == '2')//stairs,gates...
-            {
-                div.className = 'pubPoints';
-            }else{
-                var text = document.createTextNode(floorPoints[i].name);
-                div.appendChild(text);
-            }
-            _labelsRoot.appendChild(div);
-        }
-
-    }
-
     //labels includes pubPoints and shop names
     function updateLabels() {
         var mall = _this.mall;
@@ -933,13 +860,14 @@ var IndoorMap = function (params) {
                 var rect1 = new Rect(sprite.position.x - imgWidthHalf1, sprite.position.y - imgHeightHalf1,
                     sprite.position.x + imgHeightHalf1, sprite.position.y + imgHeightHalf1 );
 
-                var sprite2Pos = spritelist.children[j].position;
-                var imgWidthHalf2 = spritelist.children[j].width / 2;
-                var imgHeightHalf2 = spritelist.children[j].height / 2;
+                var sprite2 = spritelist.children[j];
+                var sprite2Pos = sprite2.position;
+                var imgWidthHalf2 = sprite2.width / 2;
+                var imgHeightHalf2 = sprite2.height / 2;
                 var rect2 = new Rect(sprite2Pos.x - imgWidthHalf2, sprite2Pos.y - imgHeightHalf2,
                         sprite2Pos.x + imgHeightHalf2, sprite2Pos.y + imgHeightHalf2 );
 
-                if(rect1.isCollide(rect2)){
+                if(sprite2.visible && rect1.isCollide(rect2)){
                     visible = false;
                     break;
                 }
