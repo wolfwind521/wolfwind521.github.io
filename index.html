@@ -11,7 +11,8 @@
 <script src="Indoor3D/js/IndoorMap.js"></script>
 <script src="Indoor3D/js/stats.min.js"></script>
 <script src="Indoor3D/js/Projector.js"></script>
-<script src="Indoor3D/js/Canvas2DRenderer.js"></script>
+<script src="Indoor3D/js/IndoorMap2d.js"></script>
+<script src="Indoor3D/js/IndoorMap3d.js"></script>
 <link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
 
 <script>
@@ -24,12 +25,19 @@
     var params = {
         mapDiv:"indoor3d"
     }
-    var indoorMap = new IndoorMap(params);
-    indoorMap.load('Indoor3D/data/爱琴海购物中心.json', function(){
+    var indoorMap = IndoorMap(params);
+
+    var testjson;
+    var loader = new IndoorMapLoader(indoorMap.is3d);
+    loader.load('Indoor3D/data/爱琴海购物中心.json', function(mall){
+        testjson = mall.jsonData;
+        indoorMap.parse(testjson);
         indoorMap.showFloor(1);
-	indoorMap.showPubPoints(true);
+        indoorMap.setSelectable(false);
+	    indoorMap.showPubPoints(true);
         indoorMap.setSelectable(true);
-        var ul = indoorMap.getUI();
+
+        var ul = IndoorMap.getUI(indoorMap);
         document.body.appendChild(ul);
     });
     function animate(){
@@ -37,11 +45,11 @@
         stats.update();
     }
 </script>
-<ul>
-<li class = "testButton" onclick="indoorMap.setTopView()">顶视图</li>
-<li class = "testButton" onclick="indoorMap.setDefaultView()">默认透视图</li>
-<li class = "testButton" onclick="indoorMap.zoomIn(0.8)">放大</li>
-<li class = "testButton" onclick="indoorMap.zoomOut(0.8)">缩小</li>
+<ul class="testButton" style="position:absolute; top: 500px">
+<li onclick="indoorMap.setTopView()">顶视图</li>
+<li onclick="indoorMap.setDefaultView()">默认透视图</li>
+<li onclick="indoorMap.zoomIn(0.8)">放大</li>
+<li onclick="indoorMap.zoomOut(0.8)">缩小</li>
 </ul>
 </body>
 </html>
