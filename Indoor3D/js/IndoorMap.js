@@ -539,6 +539,9 @@ var IndoorMap = function (params) {
             _mapDiv = document.createElement("div");
             _mapDiv.style.width = window.innerWidth + "px";
             _mapDiv.style.height = window.innerHeight + "px";
+            _mapDiv.style.top = "0px";
+            _mapDiv.style.left = "0px";
+            _mapDiv.style.position = "absolute";
             _mapDiv.id = "indoor3d";
             document.body.appendChild(_mapDiv);
             document.body.style.margin = "0";
