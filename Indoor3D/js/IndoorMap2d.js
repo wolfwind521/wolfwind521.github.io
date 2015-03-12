@@ -114,11 +114,11 @@ IndoorMap2d = function(mapdiv){
     //set if the objects are selectable
     this.setSelectable = function (selectable) {
         if(selectable){
-            _mapDiv.addEventListener('mousedown', onSelectObject, false);
-            _mapDiv.addEventListener('touchstart', onSelectObject, false);
+            _mapDiv.addEventListener('mouseup', onSelectObject, false);
+            _mapDiv.addEventListener('touchend', onSelectObject, false);
         }else{
-            _mapDiv.removeEventListener('mousedown', onSelectObject, false);
-            _mapDiv.removeEventListener('touchstart', onSelectObject, false);
+            _mapDiv.removeEventListener('mouseup', onSelectObject, false);
+            _mapDiv.removeEventListener('touchend', onSelectObject, false);
         }
     }
 
@@ -132,30 +132,35 @@ IndoorMap2d = function(mapdiv){
         event.preventDefault();
         var pos = [0,0]
         if(event.type == "touchstart"){
-            pos[0] = event.touches[0].clientX-8;
-            pos[1] = event.touches[0].clientY+25;
+            pos[0] = event.touches[0].clientX;
+            pos[1] = event.touches[0].clientY;
         }else {
-            pos[0] = event.clientX-8;
-            pos[1] = event.clientY+25;
+            pos[0] = event.clientX;
+            pos[1] = event.clientY;
         }
 
-        if(_selected){
-            _selected.fillColor = _selectedOldColor;
-        }
+        if(pos[0] == _controls.startPoint[0] && pos[1] == _controls.startPoint[1]) {
 
-        _selected = _this.renderer.onSelect(pos);
-
-        if(_selected){
-            select(_selected)
-            if(_selectionListener) {
-                _selectionListener(_selected._id);
+            pos[0] -= 8;
+            pos[1] += 25;
+            if (_selected) {
+                _selected.fillColor = _selectedOldColor;
             }
-        }else{
-            if(_selectionListener) {
-                _selectionListener(-1);
+
+            _selected = _this.renderer.onSelect(pos);
+
+            if (_selected) {
+                select(_selected)
+                if (_selectionListener) {
+                    _selectionListener(_selected._id);
+                }
+            } else {
+                if (_selectionListener) {
+                    _selectionListener(-1);
+                }
             }
+            redraw();
         }
-        redraw();
 
     }
 
@@ -399,19 +404,20 @@ Controller2D = function(domElement){
     this.viewChanged = true;
 
     var _top, _left;
+    var _curTop, _curLeft;
 
-    var _clickPoint=[0,0],
-        _panStart = [0,0],
-        _panEnd = [0,0],
-        _this = this
+    var _this = this;
+
+    this.startPoint = [0, 0];
+    this.endPoint = [0, 0];
 
     this.reset = function(){
-        _panStart = [0,0];
-        _panEnd = [0,0];
+        _this.startPoint = [0,0];
+        _this.endPoint = [0,0];
     }
     function touchStart(event){
-        _panStart[0] = event.touches[0].clientX;
-        _panStart[1] = event.touches[0].clientY;
+        _this.startPoint[0] = event.touches[0].clientX;
+        _this.startPoint[1] = event.touches[0].clientY;
 
         document.addEventListener('touchend', touchEnd, false);
         document.addEventListener('touchmove', touchMove, false);
@@ -422,8 +428,8 @@ Controller2D = function(domElement){
     }
 
     function mouseDown(event){
-        _panStart[0] = event.clientX;
-        _panStart[1] = event.clientY;
+        _this.startPoint[0] = event.clientX;
+        _this.startPoint[1] = event.clientY;
 
         document.addEventListener('mouseup', mouseUp, false);
         document.addEventListener('mousemove', mouseMove, false);
@@ -437,13 +443,16 @@ Controller2D = function(domElement){
         event.preventDefault();
         event.stopPropagation();
 
-        _panEnd[0] = event.touches[0].clientX;
-        _panEnd[1] = event.touches[0].clientY;
+        _this.endPoint[0] = event.touches[0].clientX;
+        _this.endPoint[1] = event.touches[0].clientY;
 
-        var subVector = [_panEnd[0]-_panStart[0], _panEnd[1]-_panStart[1]];
+        var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
-        domElement.style.left = (_left + subVector[0]) + "px";
-        domElement.style.top = (_top + subVector[1]) + "px";
+        _curLeft = (_left + subVector[0]);
+        _curTop = (_top + subVector[1]);
+
+        domElement.style.left =  _curLeft + "px";
+        domElement.style.top =  _curTop + "px";
 
     }
 
@@ -451,13 +460,15 @@ Controller2D = function(domElement){
         event.preventDefault();
         event.stopPropagation();
 
-        _panEnd[0] = event.clientX;
-        _panEnd[1] = event.clientY;
+        _this.endPoint[0] = event.clientX;
+        _this.endPoint[1] = event.clientY;
 
-        var subVector = [_panEnd[0]-_panStart[0], _panEnd[1]-_panStart[1]];
+        var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
-        domElement.style.left = (_left + subVector[0]) + "px";
-        domElement.style.top = (_top + subVector[1]) + "px";
+        _curLeft = (_left + subVector[0]);
+        _curTop = (_top + subVector[1]);
+        domElement.style.left = _curLeft + "px";
+        domElement.style.top = _curTop + "px";
 
     }
 
