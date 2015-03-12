@@ -102,12 +102,16 @@ IndoorMap2d = function(mapdiv){
         _curFloorId = floorid;
         _this.mall.showFloor(floorid);
         _this.adjustCamera();
-        if(_showPubPoints) {
-            //createPubPointSprites(floorid);
-        }
+
         if(_showNames) {
             _this.renderer.createNameTexts(floorid, _this.mall);
         }
+
+        if(_showPubPoints) {
+            _this.renderer.loadSpirtes(_this.mall);
+            _this.renderer.loadSpirtes(_this.mall);
+        }
+
         redraw();
     }
 
@@ -234,6 +238,8 @@ Canvas2DRenderer = function (mapDiv) {
         _clearColor,
         _showNames = true,
         _nameTexts = [],
+        _sprites = [],
+        _pubPoints = [],
         _showPubPoints = true,
     _ctx = _canvas.getContext('2d'),
     _clearColor,
@@ -337,7 +343,7 @@ Canvas2DRenderer = function (mapDiv) {
                     }
                 }
                 if(nameText.visible) {
-                    _ctx.fillText(nameText.text, center[0] - nameText.halfWidth, center[1]);
+                    _ctx.fillText(nameText.text, (center[0] - nameText.halfWidth) >> 0, (center[1]) >> 0);
 //                _ctx.beginPath();
 //                _ctx.arc(center[0], center[1], 3, 0, Math.PI * 2, true);
 //                _ctx.closePath();
@@ -346,7 +352,33 @@ Canvas2DRenderer = function (mapDiv) {
 //                    _ctx.strokeRect(rect.tl[0], rect.tl[1], rect.br[0] - rect.tl[0], rect.br[1] - rect.tl[1]);
                 }
             }
+        }
 
+        if(_showPubPoints){
+            var pubPoints = _curFloor.PubPoint;
+            var imgWidthHalf = 15, imgHeightHalf = 15;
+            var pubPointRects = [];
+            for(var i = 0; i < pubPoints.length; i++){
+                var pubPoint = pubPoints[i];
+                var center = pubPoint.Outline[0][0];
+                center = _this.localToWorld(center);
+                var rect = new Rect(center[0] - imgWidthHalf, center[1] - imgHeightHalf, center[0] + imgWidthHalf, center[1] + imgHeightHalf);
+                pubPointRects.push(rect);
+
+                pubPoint.visible = true;
+                for(var j = 0; j < i; j++){
+                    if(pubPoints[j].visible && pubPointRects[j].isCollide(rect)){
+                        pubPoint.visible = false;
+                        break;
+                    }
+                }
+                if(pubPoint.visible) {
+                    var image = _sprites[pubPoints[i].Type];
+                    if (image !== undefined) {
+                        _ctx.drawImage(image, (center[0] - imgWidthHalf) >> 0, (center[1] - imgHeightHalf) >> 0);
+                    }
+                }
+            }
         }
 //        //test: render the clicked point
 //        _ctx.fillStyle='#FF0000';
@@ -431,6 +463,22 @@ Canvas2DRenderer = function (mapDiv) {
         _ctx.restore();
 
         return null;
+    }
+
+    this.loadSpirtes = function(mall){
+        if(mall != null && _sprites.length == 0 ){
+            var images = mall.theme.pubPointImg;
+            for( var key in images){
+                var loader = new THREE.ImageLoader();
+
+                var image = loader.load( images[key], function(image){
+                    _this.render(mall);
+                })
+
+                _sprites[key] = image;
+            }
+        }
+        _sprites.isLoaded = true;
     }
 
     this.createNameTexts = function(floorId, mall){
