@@ -35,6 +35,7 @@ IndoorMap2d = function(mapdiv){
         _this.mall = ParseModel(json, _this.is3d);
         _this.showFloor(_this.mall.getDefaultFloorId());
         _this.renderer.setClearColor(_this.mall.theme.background);
+        _mapDiv.style.background = _this.mall.theme.background;
     }
 
     //reset the camera to default configuration
@@ -105,7 +106,7 @@ IndoorMap2d = function(mapdiv){
             //createPubPointSprites(floorid);
         }
         if(_showNames) {
-            //createNameSprites(floorid);
+            _this.renderer.createNameTexts(floorid, _this.mall);
         }
         redraw();
     }
@@ -131,9 +132,9 @@ IndoorMap2d = function(mapdiv){
     function onSelectObject(event){
         event.preventDefault();
         var pos = [0,0]
-        if(event.type == "touchstart"){
-            pos[0] = event.touches[0].clientX;
-            pos[1] = event.touches[0].clientY;
+        if(event.type == "touchend"){
+            pos[0] = event.changedTouches[0].clientX;
+            pos[1] = event.changedTouches[0].clientY;
         }else {
             pos[0] = event.clientX;
             pos[1] = event.clientY;
@@ -163,7 +164,6 @@ IndoorMap2d = function(mapdiv){
         }
 
     }
-
 
     function redraw(){
         _controls.viewChanged = true;
@@ -233,6 +233,7 @@ Canvas2DRenderer = function (mapDiv) {
 
         _clearColor,
         _showNames = true,
+        _nameTexts = [],
         _showPubPoints = true,
     _ctx = _canvas.getContext('2d'),
     _clearColor,
@@ -289,9 +290,9 @@ Canvas2DRenderer = function (mapDiv) {
         _ctx.fillStyle = _curFloor.fillColor;
         _ctx.fill();
 
-
-        for(var i = 0 ; i < _curFloor.FuncAreas.length; i++){
-            var funcArea = _curFloor.FuncAreas[i];
+        var funcAreas = _curFloor.FuncAreas;
+        for(var i = 0 ; i < funcAreas.length; i++){
+            var funcArea = funcAreas[i];
             var poly = funcArea.Outline[0][0];
             if(poly.length < 6){ //less than 3 points, return
                 return;
@@ -310,19 +311,56 @@ Canvas2DRenderer = function (mapDiv) {
 
             _ctx.fillStyle = funcArea.fillColor;
             _ctx.fill();
-
-
-
-            if(_showNames){//draw shop names
-
-            }
         }
 
         _ctx.restore();
+
+        if(_showNames){
+
+            _ctx.textBaseline="middle";
+            _ctx.fillStyle = mall.theme.fontStyle.color;
+            var textRects = [];
+            for(var i = 0 ; i < funcAreas.length; i++){
+                var nameText = _nameTexts[i];
+                var center = funcAreas[i].Center;
+                center = _this.localToWorld(center);
+
+                var rect = new Rect(center[0] - nameText.halfWidth, center[1] - nameText.halfHeight, center[0] + nameText.halfWidth, center[1] + nameText.halfHeight);
+                textRects.push(rect);
+
+                nameText.visible = true;
+
+                for(var j = 0; j < i; j++){
+                    if(_nameTexts[j].visible && textRects[j].isCollide(rect)){
+                        nameText.visible = false;
+                        break;
+                    }
+                }
+                if(nameText.visible) {
+                    _ctx.fillText(nameText.text, center[0] - nameText.halfWidth, center[1]);
+//                _ctx.beginPath();
+//                _ctx.arc(center[0], center[1], 3, 0, Math.PI * 2, true);
+//                _ctx.closePath();
+//
+//                _ctx.fill();
+//                    _ctx.strokeRect(rect.tl[0], rect.tl[1], rect.br[0] - rect.tl[0], rect.br[1] - rect.tl[1]);
+                }
+            }
+
+        }
 //        //test: render the clicked point
 //        _ctx.fillStyle='#FF0000';
 //        _ctx.fillRect(_canvasPos[0], _canvasPos[1], 4, 4);
 
+
+
+    }
+
+    this.localToWorld = function(pt){
+        var worldPoint = [0,0];
+        worldPoint[0] = _canvasWidthHalf + (pt[0] - _centerX) * _scale;
+        worldPoint[1] = _canvasHeightHalf + (pt[1] - _centerY) * _scale;
+        return worldPoint;
     }
 
     this.onSelect = function(point){
@@ -395,9 +433,28 @@ Canvas2DRenderer = function (mapDiv) {
         return null;
     }
 
+    this.createNameTexts = function(floorId, mall){
+        if(_nameTexts.length != 0){
+            _nameTexts.length = 0;
+        }
+        var funcAreaJson = mall.getFloorJson(mall.getCurFloorId()).FuncAreas;
+        var fontStyle = mall.theme.fontStyle;
+        _ctx.font =  "14px " + fontStyle.fontface;
+        for(var i = 0 ; i < funcAreaJson.length; i++){
+            var name = {};
+            name.text = funcAreaJson[i].Name;
+            name.halfWidth = _ctx.measureText(name.text).width/2;
+            name.halfHeight = fontStyle.fontsize/4;
+            name.visible = true;
+
+            _nameTexts.push(name);
+        }
+    }
+
     _this.setSize(2000, 2000);
 }
 
+//---------------------Controller2D class-----------------
 
 Controller2D = function(domElement){
     this.domElement = ( domElement !== undefined ) ? domElement : document;
