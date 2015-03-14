@@ -508,7 +508,7 @@ Canvas2DRenderer = function (mapDiv) {
         }
     }
 
-    _this.setSize(2000, 2000);
+    _this.setSize(1000, 1000);
 }
 
 //---------------------Controller2D class-----------------
