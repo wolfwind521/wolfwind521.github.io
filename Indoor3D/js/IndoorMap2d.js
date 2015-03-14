@@ -252,7 +252,7 @@ Canvas2DRenderer = function (mapDiv) {
     var _curFloor = null;
 
     this.domElement = _canvas;
-    var _devicePixelRatio = window.devicePixelRatio;
+    var _devicePixelRatio = 1;
 
     this.setDefaultView = function(object){
         if(object._id != _oldId) {
