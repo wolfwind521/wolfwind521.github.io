@@ -508,7 +508,8 @@ Canvas2DRenderer = function (mapDiv) {
         }
     }
 
-    _this.setSize(1000, 1000);
+    var size = Math.max()
+    _this.setSize(1500, 1500);
 }
 
 //---------------------Controller2D class-----------------
