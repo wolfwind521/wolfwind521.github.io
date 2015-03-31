@@ -292,7 +292,7 @@ var defaultTheme = {
 
     fontStyle:{
         color: "#231815",
-        fontsize: 14,
+        fontsize: 40,
         fontface: "Helvetica, MicrosoftYaHei "
     },
 
