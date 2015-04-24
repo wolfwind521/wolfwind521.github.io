@@ -148,7 +148,6 @@ IndoorMap2d = function(mapdiv){
             pos[0] -= getElementLeft(_mapDiv);
             pos[1] -= getElementTop(_mapDiv);
 
-            //deselect the old one
             if (_selected) {
                 _selected.fillColor = _selectedOldColor;
                 redraw();
@@ -167,7 +166,6 @@ IndoorMap2d = function(mapdiv){
                     _selectionListener(-1);
                 }
             }
-
         }
 
     }
@@ -252,7 +250,6 @@ Canvas2DRenderer = function (mapDiv) {
     var _curFloor = null;
 
     this.domElement = _canvas;
-    var _devicePixelRatio = 1;
 
     this.setDefaultView = function(object){
         if(object._id != _oldId) {
@@ -261,14 +258,13 @@ Canvas2DRenderer = function (mapDiv) {
             var scaleX = (_parentWidth - _padding) / width;
             var scaleY = (_parentHeight - _padding) / height;
             _scale = scaleX < scaleY ? scaleX : scaleY;
-            _scale *= _devicePixelRatio;
             _centerX = (object.rect.br[0] + object.rect.tl[0])/2;
             _centerY = (-object.rect.br[1] - object.rect.tl[1])/2;
             _canvas.style.position = "absolute";
 
-            left =  -_canvasWidthHalf/_devicePixelRatio +(_parentWidth/2) ;
+            left =  -_canvasWidthHalf +(_parentWidth/2) ;
             _canvas.style.left = left + "px";
-            top =  -_canvasHeightHalf/_devicePixelRatio +(_parentHeight/2) ;
+            top =  -_canvasHeightHalf +(_parentHeight/2) ;
             _canvas.style.top = top + "px";
 
         }
@@ -296,14 +292,14 @@ Canvas2DRenderer = function (mapDiv) {
         }
         _ctx.closePath();
         _ctx.strokeStyle = _curFloor.strokeColor;
-        _ctx.lineWidth = (2*_devicePixelRatio/_scale) >> 0;
+        _ctx.lineWidth = (2/_scale) >> 0;
         _ctx.stroke();
         _ctx.fillStyle = _curFloor.fillColor;
         _ctx.fill();
 
         var funcAreas = _curFloor.FuncAreas;
         _ctx.strokeStyle = mall.theme.strokeStyle.color;
-        _ctx.lineWidth = (mall.theme.strokeStyle.linewidth * _devicePixelRatio/ _scale) >> 0;
+        _ctx.lineWidth = (mall.theme.strokeStyle.linewidth / _scale) >> 0;
         for(var i = 0 ; i < funcAreas.length; i++){
             var funcArea = funcAreas[i];
             var poly = funcArea.Outline[0][0];
@@ -318,7 +314,8 @@ Canvas2DRenderer = function (mapDiv) {
             }
             _ctx.closePath();
 
-
+            _ctx.strokeStyle = mall.theme.strokeStyle.color;
+            _ctx.lineWidth = 1;
             _ctx.stroke();
 
             _ctx.fillStyle = funcArea.fillColor;
@@ -362,7 +359,7 @@ Canvas2DRenderer = function (mapDiv) {
 
         if(_showPubPoints){
             var pubPoints = _curFloor.PubPoint;
-            var imgWidth = 25 * _devicePixelRatio, imgHeight = 25 *_devicePixelRatio;
+            var imgWidth = 25 , imgHeight = 25 ;
             var imgWidthHalf = imgWidth/2, imgHeightHalf = imgHeight/2;
             var pubPointRects = [];
             for(var i = 0; i < pubPoints.length; i++){
@@ -382,7 +379,7 @@ Canvas2DRenderer = function (mapDiv) {
                 if(pubPoint.visible) {
                     var image = _sprites[pubPoints[i].Type];
                     if (image !== undefined) {
-                        _ctx.drawImage(image, (center[0] - imgWidthHalf) >> 0, (center[1] - imgHeightHalf) >> 0, imgWidth, imgHeight);
+                        _ctx.drawImage(image, (center[0] - imgWidthHalf) >> 0, (center[1] - imgHeightHalf) >> 0);
                     }
                 }
             }
@@ -410,8 +407,8 @@ Canvas2DRenderer = function (mapDiv) {
 //        _canvasPos[1] = -(_parentHeight/2 - point[1])/_scale + _centerY;
 
 
-        _canvasPos[0] = (-_parentWidth/2 + point[0] + _canvasWidthHalf/_devicePixelRatio - (parseInt(_canvas.style.left) - left))*_devicePixelRatio;
-        _canvasPos[1] = (-_parentHeight/2 + point[1] + _canvasHeightHalf/_devicePixelRatio - (parseInt(_canvas.style.top) - top))*_devicePixelRatio;
+        _canvasPos[0] = -_parentWidth/2 + point[0] + _canvasWidthHalf - (parseInt(_canvas.style.left) - left);
+        _canvasPos[1] = -_parentHeight/2 + point[1] + _canvasHeightHalf - (parseInt(_canvas.style.top) - top);
         return hitTest(_canvasPos);
     }
 
@@ -435,10 +432,11 @@ Canvas2DRenderer = function (mapDiv) {
     }
 
     this.setSize = function(width, height) {
+
         _canvas.style.width = width + "px";
         _canvas.style.height = height + "px";
-        _canvasWidth = width * _devicePixelRatio;
-        _canvasHeight = height * _devicePixelRatio;
+        _canvasWidth = width ;
+        _canvasHeight = height ;
         _canvas.width = _canvasWidth;
         _canvas.height = _canvasHeight;
         _canvasWidthHalf = Math.floor(_canvasWidth / 2);
@@ -452,6 +450,9 @@ Canvas2DRenderer = function (mapDiv) {
 
         for(var i = 0 ; i < _curFloor.FuncAreas.length; i++) {
             var funcArea = _curFloor.FuncAreas[i];
+            if(funcArea.Category == undefined && funcArea.Type == 100){ //hollow area
+                continue;
+            }
             var poly = funcArea.Outline[0][0];
             if (poly.length < 6) { //less than 3 points, return
                 return;
@@ -496,19 +497,25 @@ Canvas2DRenderer = function (mapDiv) {
         }
         var funcAreaJson = mall.getFloorJson(mall.getCurFloorId()).FuncAreas;
         var fontStyle = mall.theme.fontStyle;
-        _ctx.font =  "bold "+ fontStyle.fontsize * _devicePixelRatio + "px " + fontStyle.fontface;
+        _ctx.font =  "bold "+ fontStyle.fontsize +"px " + fontStyle.fontface;
         for(var i = 0 ; i < funcAreaJson.length; i++){
             var name = {};
-            name.text = funcAreaJson[i].Name;
-            name.halfWidth = _ctx.measureText(name.text).width/2;
-            name.halfHeight = fontStyle.fontsize * _devicePixelRatio/4;
-            name.visible = true;
-
+            var funcArea = funcAreaJson[i];
+            if (funcArea.Category == undefined && ((funcArea.Type == "100") || (funcArea.Type == 300))) {
+                name.text = "";
+                name.halfWidth = 0;
+                name.halfHeight = 0;
+                name.visible = false;
+            } else {
+                name.text = funcAreaJson[i].Name;
+                name.halfWidth = _ctx.measureText(name.text).width / 2;
+                name.halfHeight = fontStyle.fontsize;
+                name.visible = true;
+            }
             _nameTexts.push(name);
         }
     }
 
-    var size = Math.max()
     _this.setSize(2000, 2000);
 }
 
