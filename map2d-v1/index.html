@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script src="js/three.min.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/IndoorMap.js"></script>
+<script src="js/Projector.js"></script>
+<script src="js/stats.min.js"></script>
+<script src="js/IndoorMap2d.js"></script>
+<script src="js/IndoorMap3d.js"></script>
+<link href="css/indoor3D.css" rel="stylesheet">
+
+<div id="indoor3d" style="width: 800px; height: 500px"></div>
+<script>
+    var stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild(stats.domElement);
+    animate();
+
+    var params = {
+//        mapDiv:"indoor3d"
+//        ,
+        dim:"2d"
+    }
+    var indoorMap = IndoorMap(params);
+
+///--------------parse function test-------------------
+    var testjson;
+    var loader = new IndoorMapLoader(indoorMap.is3d);
+    loader.load('data/爱琴海购物中心.json', function(mall){
+        testjson = mall.jsonData;
+        indoorMap.parse(testjson);
+        indoorMap.setSelectable(true);
+
+        var ul = IndoorMap.getUI(indoorMap);
+        document.body.appendChild(ul);
+    });
+
+///---------------load function test--------------------
+//    indoorMap.load('data/赛特购物中心.json', function(){
+//        indoorMap.showFloor(1);
+//        indoorMap.showAreaNames(true);
+//        indoorMap.setSelectable(true);
+//        var ul = indoorMap.getUI();
+//        document.body.appendChild(ul);
+//    });
+
+    function animate(){
+        requestAnimationFrame(animate);
+        stats.update();
+    }
+
+</script>
+<!-- buttons just for test-->
+<ul class="testButton">
+    <li onclick="indoorMap.zoomIn(0.8)">放大</li>
+    <li onclick="indoorMap.zoomOut(0.8)">缩小</li>
+    <li onclick="indoorMap.setTopView()">顶视图</li>
+    <li onclick="indoorMap.setDefaultView()">默认透视图</li>
+
+</ul>
+</body>
+</html>
