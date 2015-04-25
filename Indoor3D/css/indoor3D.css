@@ -45,3 +45,7 @@
 .floorsUI .selected{
     background-color: #cccccc !important;
 }
+
+#indoor3d{
+    border: 10px #0000FF solid;
+}
