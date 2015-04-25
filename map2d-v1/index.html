@@ -17,6 +17,7 @@
 
 <div id="indoor3d" style="width: 800px; height: 500px; top:50px; left: 100px; position: absolute"></div>
 <script>
+    alert("start 0");
     var stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.top = '0px';
@@ -29,11 +30,12 @@
         dim:"2d"
     }
     var indoorMap = IndoorMap(params);
+    alert("indoorMap created");
 
 ///--------------parse function test-------------------
     var testjson;
     var loader = new IndoorMapLoader(indoorMap.is3d);
-    alert("begin");
+    alert("loader created");
     loader.load('data/爱琴海购物中心.json', function(mall){
         alert("load done");
         testjson = mall.jsonData;
