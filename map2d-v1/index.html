@@ -33,10 +33,14 @@
 ///--------------parse function test-------------------
     var testjson;
     var loader = new IndoorMapLoader(indoorMap.is3d);
+    alert("begin");
     loader.load('data/爱琴海购物中心.json', function(mall){
+        alert("load done");
         testjson = mall.jsonData;
+        alert("parse start");
         indoorMap.parse(testjson);
         indoorMap.setSelectable(true);
+        alert("parse end");
 
         var ul = IndoorMap.getUI(indoorMap);
         document.body.appendChild(ul);
