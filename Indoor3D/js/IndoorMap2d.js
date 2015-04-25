@@ -277,7 +277,8 @@ Canvas2DRenderer = function (mapDiv) {
         //get render data
         _curFloor = mall.getCurFloor();
 
-        _ctx.fillStyle = _clearColor;
+        //_ctx.fillStyle = _clearColor;
+        _ctx.fillStyle = "#FF0000";
         _ctx.fillRect(0,0,_canvasWidth, _canvasHeight);
 
         _ctx.save();
@@ -580,7 +581,7 @@ Controller2D = function(domElement){
 
         domElement.style.left =  _curLeft + "px";
         domElement.style.top =  _curTop + "px";
-        
+
         return false;
 
     }
