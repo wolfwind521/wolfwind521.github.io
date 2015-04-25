@@ -22,6 +22,7 @@
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.top = '0px';
     document.body.appendChild(stats.domElement);
+    alert("stats end");
     animate();
 
     var params = {
@@ -59,8 +60,10 @@
 //    });
 
     function animate(){
+        alert("animate start");
         requestAnimationFrame(animate);
         stats.update();
+        alert("animate end");
     }
 
 </script>
