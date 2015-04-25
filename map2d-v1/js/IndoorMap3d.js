@@ -89,6 +89,7 @@ IndoorMap3d = function(mapdiv){
         _this.showFloor(_this.mall.getDefaultFloorId());
         _this.renderer.setClearColor(_this.mall.theme.background);
         _scene.add(_this.mall.root);
+        _mapDiv.style.background = _this.mall.theme.background;
     }
 
     //reset the camera to default configuration
@@ -200,7 +201,8 @@ IndoorMap3d = function(mapdiv){
     //select object(just hight light it)
     function select(obj){
         obj.currentHex = _selected.material.color.getHex();
-        obj.material.color.setHex(_this.mall.theme.selected);
+        obj.material.color = new THREE.Color(_this.mall.theme.selected);
+        obj.scale = new THREE.Vector3(2,2,2);
     }
 
     function onSelectObject(event) {
@@ -394,7 +396,7 @@ IndoorMap3d = function(mapdiv){
         }
         var funcAreaJson = _this.mall.getFloorJson(_this.mall.getCurFloorId()).FuncAreas;
         for(var i = 0 ; i < funcAreaJson.length; i++){
-            var sprite = makeTextSprite(funcAreaJson[i].Name, _this.mall.theme.fontStyle);
+            var sprite = makeTextSprite(funcAreaJson[i].Name_en, _this.mall.theme.fontStyle);
             sprite.oriX = funcAreaJson[i].Center[0];
             sprite.oriY = funcAreaJson[i].Center[1];
             _nameSprites.add(sprite);
@@ -461,6 +463,9 @@ IndoorMap3d = function(mapdiv){
         var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
             parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
+        var fontColor = parameters.hasOwnProperty("color")?
+            parameters["color"] : "#000000";
+
         //var spriteAlignment = parameters.hasOwnProperty("alignment") ?
         //	parameters["alignment"] : THREE.SpriteAlignment.topLeft;
 
@@ -485,7 +490,7 @@ IndoorMap3d = function(mapdiv){
 //        context.strokeRect(borderThickness/2, borderThickness/2, metrics.width + borderThickness, fontsize * 1.4 + borderThickness);
 
         // text color
-        context.fillStyle = "rgba(0, 0, 0, 1.0)";
+        context.fillStyle = fontColor;
 
         context.fillText( message, borderThickness, fontsize + borderThickness);
 
