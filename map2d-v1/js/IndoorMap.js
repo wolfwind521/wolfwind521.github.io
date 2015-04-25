@@ -715,6 +715,7 @@ var IndoorMap = function (params) {
     //initialization
     this.init = function (params) {
 
+        alert("init start");
         // get the map div
         if (!(typeof params === "undefined") && params.hasOwnProperty("mapDiv")) {
             _mapDiv = document.getElementById(params.mapDiv);
@@ -724,6 +725,7 @@ var IndoorMap = function (params) {
                 _this.is3d = false;
             }
         }
+        alert("params parse end");
 
         if(_mapDiv != null){
             _fullScreen = false;
@@ -742,13 +744,17 @@ var IndoorMap = function (params) {
             //window.addEventListener('resize', onWindowResize, false);
         }
 
+        alert("mapDiv done");
+
         // webgl detection
         if (Detector.webgl && _this.is3d) {
             _indoorMap = new IndoorMap3d(_mapDiv);
         } else {
             _indoorMap = new IndoorMap2d(_mapDiv);
+            alert("new indoorMap2d done");
             _this.is3d = false;
         }
+        alert("webgl detection done");
 
 
     }
@@ -782,6 +788,7 @@ var IndoorMap = function (params) {
     }
 
     _this.init(params);
+    alert("init done");
     return _indoorMap;
 }
 

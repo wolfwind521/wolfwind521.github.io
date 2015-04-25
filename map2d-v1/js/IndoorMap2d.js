@@ -18,6 +18,7 @@ IndoorMap2d = function(mapdiv){
     this.is3d = false;
 
     this.init = function(){
+        alert("indoorMap2d init start");
         _this.renderer = new Canvas2DRenderer(_mapDiv);
         var canvasDiv = _this.renderer.domElement;
         _controls = new Controller2D(canvasDiv);
@@ -28,14 +29,17 @@ IndoorMap2d = function(mapdiv){
 //        _this.renderer.setSize(_canvasWidth, _canvasHeight);
         _mapDiv.appendChild(canvasDiv);
         _mapDiv.style.overflow = "hidden";
+        alert("indoorMap2d init end");
 
     }
 
     this.parse = function(json){
+        alert("indoorMap2d parse start");
         _this.mall = ParseModel(json, _this.is3d);
         _this.showFloor(_this.mall.getDefaultFloorId());
         _this.renderer.setClearColor(_this.mall.theme.background);
         _mapDiv.style.background = _this.mall.theme.background;
+        alert("indoorMap2d parse end");
     }
 
     //reset the camera to default configuration
@@ -188,6 +192,7 @@ IndoorMap2d = function(mapdiv){
     }
 
     _this.init();
+    alert("indoorMap2d init end");
     animate();
 }
 
@@ -245,7 +250,6 @@ Canvas2DRenderer = function (mapDiv) {
         _pubPoints = [],
         _showPubPoints = true,
     _ctx = _canvas.getContext('2d'),
-    _clearColor,
     _scale,
     left,
     top;
@@ -274,6 +278,7 @@ Canvas2DRenderer = function (mapDiv) {
         }
     }
     this.render = function (mall){
+        alert("canvas2d render start");
         if(mall === undefined) {
             return;
         }
