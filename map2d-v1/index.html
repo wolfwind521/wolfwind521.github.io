@@ -61,12 +61,12 @@
 
     function animate(){
         alert("animate start");
-        if(requestAnimationFrame){
-            alert("has requestAnimationFrame");
-        }else{
+        if(!window.requestAnimationFrame){
             alert("no requestAnimationFrame");
+        }else{
+            alert("has requestAnimationFrame");
         }
-        requestAnimationFrame(animate);
+        window.requestAnimationFrame(animate);
         stats.update();
         alert("animate end");
     }
