@@ -328,7 +328,7 @@ var default3dTheme = {
 
 var default2dTheme = {
     name: "test", //theme's name
-    background: "#F2F2F2", //background color
+    background: "#FF0000", //background color
 
     //building's style
     building: {

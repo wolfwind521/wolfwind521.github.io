@@ -280,6 +280,9 @@ Canvas2DRenderer = function (mapDiv) {
 
         //get render data
         _curFloor = mall.getCurFloor();
+        alert("canvas width:"+_canvasWidth+"height"+_canvasHeight);
+        _ctx.fillColor = '#FF0000';
+        _ctx.fillRect(0, 0, _canvasWidth, _canvasHeight);
 
         _ctx.fillStyle = _clearColor;
         _ctx.fillRect(0,0,_canvasWidth, _canvasHeight);
