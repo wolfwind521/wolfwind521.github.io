@@ -603,7 +603,7 @@ var IndoorMap = function (params) {
             _mapDiv.style.height = window.innerHeight + "px";
             _mapDiv.style.top = "0px";
             _mapDiv.style.left = "0px";
-            _mapDiv.style.position = "absolute";
+            _mapDiv.style.position = "relative";
             _mapDiv.id = "indoor3d";
             document.body.appendChild(_mapDiv);
             document.body.style.margin = "0";
