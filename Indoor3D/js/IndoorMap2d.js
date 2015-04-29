@@ -27,7 +27,7 @@ IndoorMap2d = function(mapdiv){
 //        canvasDiv.style.height = 2000;
 //        _this.renderer.setSize(_canvasWidth, _canvasHeight);
         _mapDiv.appendChild(canvasDiv);
-        _mapDiv.style.overflow = "hidden";
+        //_mapDiv.style.overflow = "hidden";
 
     }
 
@@ -221,8 +221,10 @@ Canvas2DRenderer = function (mapDiv) {
 
     var _canvas = document.createElement('canvas');
     var _parentDiv = mapDiv,
-        _parentWidth = parseInt(_parentDiv.style.width),
-        _parentHeight = parseInt(_parentDiv.style.height);
+//        _parentWidth = parseInt(_parentDiv.style.width),
+//        _parentHeight = parseInt(_parentDiv.style.height);
+        _parentWidth = window.innerWidth,
+    _parentHeight = window.innerHeight;
 
     var _canvasPos = [0, 0];
     var _this = this,

@@ -599,8 +599,8 @@ var IndoorMap = function (params) {
         } else {
             //if the mapDiv undefined, create a fullscreen map
             _mapDiv = document.createElement("div");
-            _mapDiv.style.width = window.innerWidth + "px";
-            _mapDiv.style.height = window.innerHeight + "px";
+            _mapDiv.style.width = "100%";
+            _mapDiv.style.height = "100%";
             _mapDiv.style.top = "0px";
             _mapDiv.style.left = "0px";
             _mapDiv.style.position = "relative";
