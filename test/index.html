@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <title></title>
+    <style type="text/css">
+        *{margin:0;padding:0}
+        html,body{height:100%}
+        .spirit{position:absolute;width:800px;height:800px;background-color:red;}
+        #canvas{position:relative;width:100%;height:100%;background-color:#ccc}
+    </style>
+</head>
+<body>
+<div id="canvas"></div>
+<script>
+    var canvas = document.getElementById("canvas"),
+            startX,
+            startY,
+    oriX,oriY;
+    spirit = document.createElement("div");
+    canvas.appendChild(spirit);
+    spirit.className = "spirit";
+    spirit.style.left = "20px";
+    spirit.style.top = "20px";
+
+
+    function touchStart(event) {
+
+        event.preventDefault();
+
+        var touch = event.touches[0];
+        startX = touch.pageX;
+        startY = touch.pageY;
+        oriX = parseInt(spirit.style.left);
+        oriY = parseInt(spirit.style.top);
+
+    }
+    canvas.addEventListener("touchstart", touchStart, false);
+
+    function touchMove(event) {
+        event.preventDefault();
+        if (!spirit || !event.touches.length) return;
+        var touch = event.touches[0],
+                x = touch.pageX - startX,
+                y = touch.pageY - startY;
+
+
+        spirit.style.left = oriX + x + "px";
+        spirit.style.top = oriY + y + "px";
+
+    }
+    canvas.addEventListener("touchmove", touchMove, false);
+
+    function touchEnd(event) {
+
+    }
+    canvas.addEventListener("touchend", touchEnd, false);
+</script>
+</body>
+</html>
