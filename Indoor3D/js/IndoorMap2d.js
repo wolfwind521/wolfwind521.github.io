@@ -542,18 +542,16 @@ Controller2D = function(domElement){
     }
     function touchStart(event){
         event.preventDefault();
-        event.stopPropagation();
 
-        _this.startPoint[0] = event.touches[0].pageX;
-        _this.startPoint[1] = event.touches[0].pageY;
+        var touch = event.touches[0];
+        _this.startPoint[0] = touch.pageX;
+        _this.startPoint[1] = touch.pageY;
 
         _this.domElement.addEventListener('touchend', touchEnd, false);
         _this.domElement.addEventListener('touchmove', touchMove, false);
 
         _top = parseInt(domElement.style.top);
         _left = parseInt(domElement.style.left);
-
-        return false;
 
     }
 
@@ -571,10 +569,10 @@ Controller2D = function(domElement){
 
     function touchMove(event){
         event.preventDefault();
-        event.stopPropagation();
 
-        _this.endPoint[0] = event.touches[0].pageX;
-        _this.endPoint[1] = event.touches[0].pageY;
+        var touch = event.touches[0];
+        _this.endPoint[0] = touch.pageX;
+        _this.endPoint[1] = touch.pageY;
 
         var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
@@ -583,8 +581,6 @@ Controller2D = function(domElement){
 
         _this.domElement.style.left =  _curLeft + "px";
         _this.domElement.style.top =  _curTop + "px";
-
-        return false;
 
     }
 
@@ -607,10 +603,8 @@ Controller2D = function(domElement){
 
     function touchEnd(event){
         event.preventDefault();
-        event.stopPropagation();
         _this.domElement.removeEventListener('touchend', touchEnd, false);
         _this.domElement.removeEventListener('touchmove', touchMove, false);
-        return false;
     }
 
     function mouseUp(event){
