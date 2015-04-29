@@ -544,8 +544,8 @@ Controller2D = function(domElement){
         event.preventDefault();
         event.stopPropagation();
 
-        _this.startPoint[0] = event.touches[0].clientX;
-        _this.startPoint[1] = event.touches[0].clientY;
+        _this.startPoint[0] = event.touches[0].pageX;
+        _this.startPoint[1] = event.touches[0].pageY;
 
         _this.domElement.addEventListener('touchend', touchEnd, false);
         _this.domElement.addEventListener('touchmove', touchMove, false);
@@ -558,8 +558,8 @@ Controller2D = function(domElement){
     }
 
     function mouseDown(event){
-        _this.startPoint[0] = event.clientX;
-        _this.startPoint[1] = event.clientY;
+        _this.startPoint[0] = event.pageX;
+        _this.startPoint[1] = event.pageY;
 
         _this.domElement.addEventListener('mouseup', mouseUp, false);
         _this.domElement.addEventListener('mousemove', mouseMove, false);
@@ -573,8 +573,8 @@ Controller2D = function(domElement){
         event.preventDefault();
         event.stopPropagation();
 
-        _this.endPoint[0] = event.touches[0].clientX;
-        _this.endPoint[1] = event.touches[0].clientY;
+        _this.endPoint[0] = event.touches[0].pageX;
+        _this.endPoint[1] = event.touches[0].pageY;
 
         var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
@@ -592,8 +592,8 @@ Controller2D = function(domElement){
         event.preventDefault();
         event.stopPropagation();
 
-        _this.endPoint[0] = event.clientX;
-        _this.endPoint[1] = event.clientY;
+        _this.endPoint[0] = event.pageX;
+        _this.endPoint[1] = event.pageY;
 
         var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
