@@ -7,22 +7,33 @@
     <style type="text/css">
         *{margin:0;padding:0}
         html,body{height:100%}
-        .spirit{position:absolute;width:600px;height:600px;background-image:url(xmas.jpg);}
         #canvas{position:relative;width:100%;height:100%;background-color:#ccc}
     </style>
 </head>
 <body>
-<div id="canvas"></div>
-<script>
+<div id="canvas">
+    <canvas id="spirit" width="600" height="600" style="position:absolute; border: 2px solid #000000"></canvas>
+</div>
+<script type="text/javascript">
     var canvas = document.getElementById("canvas"),
             startX,
             startY,
     oriX,oriY;
-    spirit = document.createElement("div");
+    spirit = document.getElementById("spirit");
     canvas.appendChild(spirit);
     spirit.className = "spirit";
     spirit.style.left = "20px";
     spirit.style.top = "20px";
+
+    var cxt=spirit.getContext("2d");
+    var img=new Image();
+    img.src="/xmas.jpg";
+    cxt.drawImage(img,0,0);
+    cxt.fillStyle="#FFFFFF";
+    cxt.fillRect(0,0,600,600);
+    cxt.fillStyle="#FF0000";
+    cxt.fillRect(150,150,300,300);
+
 
 
     function touchStart(event) {
