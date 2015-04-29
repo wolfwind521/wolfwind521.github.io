@@ -547,8 +547,8 @@ Controller2D = function(domElement){
         _this.startPoint[0] = event.touches[0].clientX;
         _this.startPoint[1] = event.touches[0].clientY;
 
-        document.addEventListener('touchend', touchEnd, false);
-        document.addEventListener('touchmove', touchMove, false);
+        _this.domElement.addEventListener('touchend', touchEnd, false);
+        _this.domElement.addEventListener('touchmove', touchMove, false);
 
         _top = parseInt(domElement.style.top);
         _left = parseInt(domElement.style.left);
@@ -561,8 +561,8 @@ Controller2D = function(domElement){
         _this.startPoint[0] = event.clientX;
         _this.startPoint[1] = event.clientY;
 
-        document.addEventListener('mouseup', mouseUp, false);
-        document.addEventListener('mousemove', mouseMove, false);
+        _this.domElement.addEventListener('mouseup', mouseUp, false);
+        _this.domElement.addEventListener('mousemove', mouseMove, false);
 
         _top = parseInt(domElement.style.top);
         _left = parseInt(domElement.style.left);
@@ -581,8 +581,8 @@ Controller2D = function(domElement){
         _curLeft = (_left + subVector[0]);
         _curTop = (_top + subVector[1]);
 
-        domElement.style.left =  _curLeft + "px";
-        domElement.style.top =  _curTop + "px";
+        _this.domElement.style.left =  _curLeft + "px";
+        _this.domElement.style.top =  _curTop + "px";
 
         return false;
 
@@ -599,8 +599,8 @@ Controller2D = function(domElement){
 
         _curLeft = (_left + subVector[0]);
         _curTop = (_top + subVector[1]);
-        domElement.style.left = _curLeft + "px";
-        domElement.style.top = _curTop + "px";
+        _this.domElement.style.left = _curLeft + "px";
+        _this.domElement.style.top = _curTop + "px";
         return false;
 
     }
@@ -608,14 +608,14 @@ Controller2D = function(domElement){
     function touchEnd(event){
         event.preventDefault();
         event.stopPropagation();
-        document.removeEventListener('touchend', touchEnd, false);
-        document.removeEventListener('touchmove', touchMove, false);
+        _this.domElement.removeEventListener('touchend', touchEnd, false);
+        _this.domElement.removeEventListener('touchmove', touchMove, false);
         return false;
     }
 
     function mouseUp(event){
-        document.removeEventListener('mouseup', mouseUp, false);
-        document.removeEventListener('mousemove', mouseMove, false);
+        _this.domElement.removeEventListener('mouseup', mouseUp, false);
+        _this.domElement.removeEventListener('mousemove', mouseMove, false);
     }
 
     this.domElement.addEventListener('touchstart', touchStart, false);
