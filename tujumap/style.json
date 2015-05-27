@@ -1,0 +1,90 @@
+{
+    "frame": {
+        "type": "inherit",
+        "common": {
+            "style": {
+                "color": "#222",
+                "weight": 1,
+                "opacity": 1,
+                "fillColor": "#FFF",
+                "fillOpacity": 1,
+                "lineCap": null,
+                "lineJoin": null,
+                "clickable": false,
+                "radius": 0.8
+            }
+        }
+    },
+    "shop": {
+        "type": "inherit",
+        "common": {
+            "style": {
+                "color": "#555",
+                "weight": 1,
+                "opacity": 1,
+                "fillColor": "#f4eee1",
+                "fillOpacity": 1,
+                "lineCap": null,
+                "lineJoin": null,
+                "clickable": true,
+                "radius": 0.8,
+                "label": {
+                    "boundPolygon": true,
+                    "opacity": 0,
+                    "fill": true,
+                    "stroke": false,
+                    "color": "#000",
+                    "fillOpacity": 1,
+                    "fillColor": "#454545",
+                    "textAlign": "center",
+                    "textBaseline": "middle",
+                    "font": "13px/1.4 \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, STHeiTi, arial, sans-serif",
+                    "textContent": "%name%"
+                }
+            }
+        },
+        "filter": [{
+            "property": "id",
+            "values": {
+                "81302": {
+                    "fillColor": "#BFCFFF"
+                }
+            }
+        }]
+    },
+    "publicService": {
+        "type": "Icon",
+        "common": {
+            "style": {
+                "rotate": 0,
+                "url": "../images/PublicFacilities/%categoryList[0].categoryId%.png",
+                "size": [32, 32],
+                "fixedSize": {"icon": ["1.8m", "1.8m"]}
+            }
+        },
+        "filter": [{
+            "property": "categoryList[0].categoryId",
+            "values": {
+                "123": {
+                    "url": "123.jpg"
+                }
+            }
+        }]
+    },
+    "publicServicePolygon": {
+        "type": "inherit",
+        "common": {
+            "style": {
+                "color": "#555",
+                "weight": 1,
+                "opacity": 1,
+                "fillColor": "#f4eee1",
+                "fillOpacity": 1,
+                "lineCap": null,
+                "lineJoin": null,
+                "clickable": true,
+                "radius": 0.8
+            }
+        }
+    }
+}

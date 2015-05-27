@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Palmap+</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0 user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="./NGR.css">
+    <script src="./NGR.min.js"></script>
+</head>
+<body style="height: 100%; margin: 0; padding: 0;">
+    <div id="map" style="width: 100%; height: 100%; margin: 0; padding: 0; position:absolute"></div>
+
+
+    <script>
+
+        var layers, res;
+
+        map = new NGR.View('map');
+
+        res = new NGR.DataSource();
+
+        layers = {};
+
+        res.requestPlanarGraph(1738).then(function(layerInfo) {
+            return NGR.IO.fetch({
+                url: 'style.json',
+                onsuccess: JSON.parse
+            }).then(function(style) {
+                layers.frame = NGR.featureLayer(layerInfo.catGisDataList.frame_Polygon, {
+                    styleConfig: style
+                });
+                map.addLayer(layers.frame);
+                layers.shops = NGR.featureLayer(layerInfo.catGisDataList.shop_Polygon, {
+                    styleConfig: style
+                });
+                map.addLayer(layers.shops);
+                layers.publicFacilities = NGR.featureLayer(layerInfo.catGisDataList.publicService_Polygon, {
+                    styleConfig: style,
+                    layer_type: "publicServicePolygon"
+                });
+                map.addLayer(layers.publicFacilities);
+                map.render();
+            });
+        }).then(function() {
+            return layers.shops.eachLayer(function(layer) {
+                layer.on('click', function(e) {
+                    console.log(e.target.feature);
+                });
+                layer.on('mouseover', function(e) {
+                    e.target.setStyle({
+                        fillColor: '#B8E673'
+                    });
+                });
+                layer.on('mouseout', function(e) {
+                    layers.shops.resetStyle(e.target);
+                });
+            }, this);
+        }).fail(function(e) {
+            console.error(e, e.stack);
+        });
+
+    </script>
+
+</body>
+</html>

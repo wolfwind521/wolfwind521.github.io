@@ -225,7 +225,7 @@ Canvas2DRenderer = function (mapDiv) {
 //        _parentHeight = parseInt(_parentDiv.style.height);
         _parentWidth = window.innerWidth,
     _parentHeight = window.innerHeight;
-    alert("parentWidth:"+_parentWidth+"\n parentHeight:"+_parentHeight);
+    //alert("parentWidth:"+_parentWidth+"\n parentHeight:"+_parentHeight);
 
     var _canvasPos = [0, 0];
     var _this = this,
@@ -269,7 +269,7 @@ Canvas2DRenderer = function (mapDiv) {
             _canvas.style.left = left + "px";
             top =  -_canvasHeightHalf +(_parentHeight/2) ;
             _canvas.style.top = top + "px";
-            alert("left:"+_canvas.style.left + "right\n"+_canvas.style.top);
+            //alert("left:"+_canvas.style.left + "right\n"+_canvas.style.top);
         }
     }
     this.render = function (mall){

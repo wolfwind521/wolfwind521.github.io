@@ -1,0 +1,551 @@
+/* required styles */
+
+canvas {
+    border: solid 10px #FF0000;
+}
+
+.ngr-map-pane{
+    border: solid 5px #00FF00;
+}
+.ngr-map-pane,
+.ngr-tile,
+.ngr-marker-icon,
+.ngr-marker-shadow,
+.ngr-tile-pane,
+.ngr-tile-container,
+.ngr-overlay-pane,
+.ngr-shadow-pane,
+.ngr-marker-pane,
+.ngr-popup-pane,
+.ngr-overlay-pane svg,
+.ngr-zoom-box,
+.ngr-image-layer,
+.ngr-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.ngr-container {
+	overflow: hidden;
+	-ms-touch-action: none;
+	}
+.ngr-tile,
+.ngr-marker-icon,
+.ngr-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	-webkit-user-drag: none;
+	}
+.ngr-marker-icon,
+.ngr-marker-shadow {
+	display: block;
+	}
+/* map is broken in FF if you have max-width: 100% on tiles */
+.ngr-container img {
+	max-width: none !important;
+	}
+/* stupid Android 2 doesn't understand "max-width: none" properly */
+.ngr-container img.ngr-image-layer {
+	max-width: 15000px !important;
+	}
+.ngr-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.ngr-tile-loaded {
+	visibility: inherit;
+	}
+.ngr-zoom-box {
+	width: 0;
+	height: 0;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.ngr-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.ngr-tile-pane    { z-index: 2; }
+.ngr-objects-pane { z-index: 3; }
+.ngr-overlay-pane { z-index: 4; }
+.ngr-shadow-pane  { z-index: 5; }
+.ngr-marker-pane  { z-index: 6; }
+.ngr-popup-pane   { z-index: 7; }
+
+.ngr-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.ngr-control {
+	position: relative;
+	z-index: 7;
+	pointer-events: auto;
+	}
+.ngr-top,
+.ngr-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.ngr-top {
+	top: 0;
+	}
+.ngr-right {
+	right: 0;
+	}
+.ngr-bottom {
+	bottom: 0;
+	}
+.ngr-left {
+	left: 0;
+	}
+.ngr-control {
+	float: left;
+	clear: both;
+	}
+.ngr-right .ngr-control {
+	float: right;
+	}
+.ngr-top .ngr-control {
+	margin-top: 10px;
+	}
+.ngr-bottom .ngr-control {
+	margin-bottom: 10px;
+	}
+.ngr-left .ngr-control {
+	margin-left: 10px;
+	}
+.ngr-right .ngr-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.ngr-fade-anim .ngr-tile,
+.ngr-fade-anim .ngr-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	     -o-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.ngr-fade-anim .ngr-tile-loaded,
+.ngr-fade-anim .ngr-map-pane .ngr-popup {
+	opacity: 1;
+	}
+
+.ngr-zoom-anim .ngr-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	     -o-transition:      -o-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.ngr-zoom-anim .ngr-tile,
+.ngr-pan-anim .ngr-tile,
+.ngr-touching .ngr-zoom-animated {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	     -o-transition: none;
+	        transition: none;
+	}
+
+
+.ngr-zoom-anim .ngr-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.ngr-clickable {
+	cursor: pointer;
+	}
+.ngr-container {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	}
+.ngr-popup-pane,
+.ngr-control {
+	cursor: auto;
+	}
+.ngr-dragging .ngr-container,
+.ngr-dragging .ngr-clickable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	}
+
+
+/* visual tweaks */
+
+.ngr-container {
+	background: #ddd;
+	outline: 0;
+	}
+.ngr-container a {
+	color: #0078A8;
+	}
+.ngr-container a.ngr-active {
+	outline: 2px solid orange;
+	}
+.ngr-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.ngr-container {
+	font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+	}
+
+
+/* general toolbar styles */
+
+.ngr-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.ngr-bar a,
+.ngr-bar a:hover {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.ngr-bar a,
+.ngr-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.ngr-bar a:hover {
+	background-color: #f4f4f4;
+	}
+.ngr-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.ngr-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.ngr-bar a.ngr-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.ngr-touch .ngr-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+
+
+/* zoom control */
+
+.ngr-control-zoom-in,
+.ngr-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+.ngr-control-zoom-out {
+	font-size: 20px;
+	}
+
+.ngr-touch .ngr-control-zoom-in {
+	font-size: 22px;
+	}
+.ngr-touch .ngr-control-zoom-out {
+	font-size: 24px;
+	}
+
+
+/* layers control */
+
+.ngr-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.ngr-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.ngr-retina .ngr-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.ngr-touch .ngr-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.ngr-control-layers .ngr-control-layers-list,
+.ngr-control-layers-expanded .ngr-control-layers-toggle {
+	display: none;
+	}
+.ngr-control-layers-expanded .ngr-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.ngr-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.ngr-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.ngr-control-layers label {
+	display: block;
+	}
+.ngr-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+
+/* attribution and scale controls */
+
+.ngr-container .ngr-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.7);
+	margin: 0;
+	}
+.ngr-control-attribution,
+.ngr-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	}
+.ngr-control-attribution a {
+	text-decoration: none;
+	}
+.ngr-control-attribution a:hover {
+	text-decoration: underline;
+	}
+.ngr-container .ngr-control-attribution,
+.ngr-container .ngr-control-scale {
+	font-size: 11px;
+	}
+.ngr-left .ngr-control-scale {
+	margin-left: 5px;
+	}
+.ngr-bottom .ngr-control-scale {
+	margin-bottom: 5px;
+	}
+.ngr-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	font-size: 11px;
+	white-space: nowrap;
+	overflow: hidden;
+	-moz-box-sizing: content-box;
+	     box-sizing: content-box;
+
+	background: #fff;
+	background: rgba(255, 255, 255, 0.5);
+	}
+.ngr-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.ngr-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.ngr-touch .ngr-control-attribution,
+.ngr-touch .ngr-control-layers,
+.ngr-touch .ngr-bar {
+	box-shadow: none;
+	}
+.ngr-touch .ngr-control-layers,
+.ngr-touch .ngr-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.ngr-popup {
+	position: absolute;
+	text-align: center;
+	}
+.ngr-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.ngr-popup-content {
+	margin: 13px 19px;
+	line-height: 1.4;
+	}
+.ngr-popup-content p {
+	margin: 18px 0;
+	}
+.ngr-popup-tip-container {
+	margin: 0 auto;
+	width: 40px;
+	height: 20px;
+	position: relative;
+	overflow: hidden;
+	}
+.ngr-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	     -o-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.ngr-popup-content-wrapper,
+.ngr-popup-tip {
+	background: white;
+
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.ngr-container a.ngr-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 4px 4px 0 0;
+	text-align: center;
+	width: 18px;
+	height: 14px;
+	font: 16px/14px Tahoma, Verdana, sans-serif;
+	color: #c3c3c3;
+	text-decoration: none;
+	font-weight: bold;
+	background: transparent;
+	}
+.ngr-container a.ngr-popup-close-button:hover {
+	color: #999;
+	}
+.ngr-popup-scrolled {
+	overflow: auto;
+	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	}
+
+.ngr-oldie .ngr-popup-content-wrapper {
+	zoom: 1;
+	}
+.ngr-oldie .ngr-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+.ngr-oldie .ngr-popup-tip-container {
+	margin-top: -1px;
+	}
+
+.ngr-oldie .ngr-control-zoom,
+.ngr-oldie .ngr-control-layers,
+.ngr-oldie .ngr-popup-content-wrapper,
+.ngr-oldie .ngr-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.ngr-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* location icon */
+
+.ngr-trackBall {
+    border: 1px solid rgba(82, 168, 236, 0.2);
+    border-radius: 50%;
+}
+
+.ngr-trackBall.ngr-halo:not(.ngr-gray) {
+    animation: ngr-wave 2s infinite;
+    -webkit-animation: ngr-wave 2s infinite;
+    box-shadow: rgba(82, 168, 236, .6) 0 0 5px inset, rgba(82, 168, 236, .6) 0 0 8px;
+}
+
+@keyframes ngr-wave {
+    0% {
+        padding: 0;
+    }
+    100% {
+        padding: 40px;
+        margin-top: -50px;
+        margin-left: -50px;
+    }
+}
+
+@-webkit-keyframes ngr-wave {
+    0% {
+        padding: 0;
+    }
+    100% {
+        padding: 40px;
+        margin-top: -50px;
+        margin-left: -50px;
+    }
+}
+
+.ngr-gray {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+
+    filter: grayscale(100%);
+
+    filter: gray;
+}
+
+/* Palmap+ SDK CSS */
+
+.ngr-floor-switcher > .selected,
+.ngr-floor-switcher > .selected:hover {
+    background-color: #dddddd;
+}
+
+.ngr-floor-switcher.disabled::before {
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    position: absolute;
+    background: rgba(0, 0, 0, .2);
+}

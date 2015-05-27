@@ -227,7 +227,7 @@ var default2dTheme = {
     //rooms' style
     room: function (type, category) {
         var roomStyle;
-        if(category == undefined) {
+        if(category == undefined || category === 0) {
             switch (type) {
 
                 case "100": //hollow. u needn't change this color. because i will make a hole on the model in the final version.

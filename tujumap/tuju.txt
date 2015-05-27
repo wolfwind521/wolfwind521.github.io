@@ -1,0 +1,2056 @@
+{
+    "id": 1738,
+    "number": 1,
+    "altitude": 1,
+    "name": "一层",
+    "display": "F1",
+    "catGisDataList": {
+        "publicService_Polygon": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 1747,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1747,
+                                    "categoryId": 5001119000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515614.2289,
+                                        3672208.2815
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672208.2815
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672211.4035
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672211.4035
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672208.2815
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1814,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1814,
+                                    "categoryId": 5001063000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515614.2289,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672213.8509
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1897,
+                            "name": "门卫",
+                            "display": "门卫",
+                            "phone": null,
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1897,
+                                    "categoryId": 5001020000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515625.7838,
+                                        3672186.4219
+                                    ],
+                                    [
+                                        13515623.2438,
+                                        3672186.4218
+                                    ],
+                                    [
+                                        13515623.2438,
+                                        3672188.9629
+                                    ],
+                                    [
+                                        13515625.7838,
+                                        3672188.9629
+                                    ],
+                                    [
+                                        13515625.7838,
+                                        3672186.4219
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "publicService",
+            "feature_type": "Polygon"
+        },
+        "door_Point": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 2159,
+                            "name": "地铁出入口",
+                            "display": "七号线场中路站二出口",
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2159,
+                                    "categoryId": 6002004000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515636.3408,
+                                3672186.4217
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 2161,
+                            "name": "出入口",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2161,
+                                    "categoryId": 6002001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515603.8043,
+                                3672218.0332
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 2163,
+                            "name": "建筑物正门",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2163,
+                                    "categoryId": 6002002000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515626.5773,
+                                3672186.4219
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "door",
+            "feature_type": "Point"
+        },
+        "shop_Polygon": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 1740,
+                            "name": "老城隍庙特色小吃",
+                            "display": "老城隍庙特色小吃",
+                            "phone": "60733479",
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": "主要经营中式面点、汤包、各类盖浇饭、本帮菜等。",
+                            "website": "www.palmap.cn",
+                            "weibo": null,
+                            "wechat": null,
+                            "email": "business@palmaplus.com",
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1740,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515614.2289,
+                                        3672179.9657
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515594.3683,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515594.3683,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672179.9657
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1741,
+                            "name": "悦维互动",
+                            "display": "悦维互动",
+                            "phone": "64641632",
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": "公司成立于2005年6月，是一家为品牌提供全程营销支持服务的公司。悦维互动的业务覆盖了游戏、传统及电商三大行业。在游戏行业，公司为网络游戏产品提供全面的线上互动解决方案；在传统领域，公司为传统品牌提供全面的互联网整合营销方案；在电商领域，公司将广告与电商运营结合起来，完成真正的有产出的营销。从品牌定位、营销策划、活动创意、运营支持、数据分析等多个方向提供行业领先的电商顾问式服务。",
+                            "website": "www.joywell.com.cn",
+                            "weibo": null,
+                            "wechat": null,
+                            "email": "kefu@play67.com",
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1741,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515651.1649,
+                                        3672228.7489
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672222.2991
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515649.0829,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515631.2784,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515647.3284,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515647.3284,
+                                        3672228.7489
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672228.7489
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1743,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1743,
+                                    "categoryId": 4026001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515603.8043,
+                                        3672196.5339
+                                    ],
+                                    [
+                                        13515606.7251,
+                                        3672196.5339
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672196.5339
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672186.448
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672196.5339
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1744,
+                            "name": "良友",
+                            "display": "良友",
+                            "phone": "61800825",
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": "上海良友金伴便利连锁有限公司于2003年1月成立（前身上海良友连锁经营有限公司于1998年9月成立），由上海良友（集团）有限公司控股，注册资金1.8亿元人民币，是以经营便利业态为主的大型商业连锁企业。目前有门店500余家，分布在除崇明岛之外上海各个区，从业人员2千余人。2013年公司实现营业额20.2亿元，连续八年跻身中国连锁百强，连续第八年获得上海连锁“最具影响力特许品牌”等荣誉称号。",
+                            "website": "www.palmap.cn",
+                            "weibo": null,
+                            "wechat": null,
+                            "email": "business@palmaplus.com",
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1744,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515616.8133,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515616.8133,
+                                        3672165.7024
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672165.7024
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672179.9657
+                                    ],
+                                    [
+                                        13515624.0288,
+                                        3672179.9657
+                                    ],
+                                    [
+                                        13515624.0288,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515619.6245,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515619.6245,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515616.8133,
+                                        3672162.9904
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1745,
+                            "name": "超级奶爸",
+                            "display": "超级奶爸",
+                            "phone": "31170508",
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": "超级奶爸源自宝岛台湾茶饮连锁品牌，上海典梵品牌管理有限公司旗下品牌之一。自2009年在大陆地区开设第一家超级奶爸时尚茶饮店以来，一直坚持最正宗的台式口味，以其时尚、独有的奶爸风格，独特的茶饮制作工艺和完善的品牌授权制度，迅速在奶茶界刮起了超越传统的革命风暴。2010年6月，超级奶爸正式开放加盟权限，发展至今，已在全国多个地区包括上海、山东、安徽、江苏、四川、吉林、常州、无锡、盐城、杭州、扬州等各大城市共开设了500余家连锁加盟店，成为了茶饮行业优秀的新兴加盟企业。",
+                            "website": "www.chaojinaiba.com",
+                            "weibo": null,
+                            "wechat": null,
+                            "email": "business@palmaplus.com",
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1745,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515628.2093,
+                                        3672186.4219
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672199.4973
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515633.1041,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515633.1041,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672186.4219
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1748,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1748,
+                                    "categoryId": 4026002000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515619.0811,
+                                        3672193.6764
+                                    ],
+                                    [
+                                        13515619.0811,
+                                        3672211.4035
+                                    ],
+                                    [
+                                        13515622.8911,
+                                        3672211.4035
+                                    ],
+                                    [
+                                        13515622.8911,
+                                        3672193.6764
+                                    ],
+                                    [
+                                        13515619.0811,
+                                        3672193.6764
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1749,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1749,
+                                    "categoryId": 4026001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515612.8796,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515612.8796,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515612.8796,
+                                        3672201.5559
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1819,
+                            "name": "监控室",
+                            "display": "监控室",
+                            "phone": null,
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1819,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515614.2289,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515616.8133,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515619.6245,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515619.6245,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672162.9904
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1833,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1833,
+                                    "categoryId": 4026001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515606.6872,
+                                        3672214.5688
+                                    ],
+                                    [
+                                        13515606.7715,
+                                        3672214.5688
+                                    ],
+                                    [
+                                        13515606.7715,
+                                        3672213.9443
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672213.9443
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515606.6868,
+                                        3672213.847
+                                    ],
+                                    [
+                                        13515606.6872,
+                                        3672214.5688
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1834,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1834,
+                                    "categoryId": 4026001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515606.7715,
+                                        3672215.0238
+                                    ],
+                                    [
+                                        13515606.6875,
+                                        3672215.0238
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672216.3766
+                                    ],
+                                    [
+                                        13515606.7715,
+                                        3672216.3766
+                                    ],
+                                    [
+                                        13515606.7715,
+                                        3672215.0238
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1860,
+                            "name": "场中路站",
+                            "display": "场中路站",
+                            "phone": null,
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1860,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515639.0572,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515639.0572,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672213.2769
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515639.0572,
+                                        3672186.4217
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1906,
+                            "name": "RINGO COFFEE",
+                            "display": "RINGO COFFEE",
+                            "phone": "60716239",
+                            "membership": false,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": "适宜情侣约会、休闲小憩、随便吃吃的咖啡厅。",
+                            "website": "www.palmap.cn",
+                            "weibo": null,
+                            "wechat": null,
+                            "email": "business@palmaplus.com",
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1906,
+                                    "categoryId": 4018000000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515633.4377,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515633.1041,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672200.9207
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672213.2769
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672200.9207
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "shop",
+            "feature_type": "Polygon"
+        },
+        "frame_Polygon": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 1735,
+                            "name": "一层",
+                            "display": "F1",
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1735,
+                                    "categoryId": 3001001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515633.4377,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515633.1041,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515628.2093,
+                                        3672186.4219
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672183.6324
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672179.9657
+                                    ],
+                                    [
+                                        13515624.0288,
+                                        3672179.9657
+                                    ],
+                                    [
+                                        13515624.0288,
+                                        3672175.0334
+                                    ],
+                                    [
+                                        13515624.0288,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515594.3683,
+                                        3672160.2618
+                                    ],
+                                    [
+                                        13515594.3683,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515603.8043,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672213.8509
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672213.2769
+                                    ],
+                                    [
+                                        13515645.344,
+                                        3672186.4217
+                                    ],
+                                    [
+                                        13515633.4377,
+                                        3672186.4217
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "frame",
+            "feature_type": "Polygon"
+        },
+        "publicService_Point": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 2178,
+                            "name": "监控中心",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2178,
+                                    "categoryId": 5001090000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515617.7087,
+                                3672161.6314
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 2160,
+                            "name": "门卫",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2160,
+                                    "categoryId": 5001051000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515624.6394,
+                                3672187.4973
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 2164,
+                            "name": "女洗手间",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2164,
+                                    "categoryId": 5001119000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515610.366,
+                                3672209.7488
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 2165,
+                            "name": "男洗手间",
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 2165,
+                                    "categoryId": 5001063000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                13515612.3239,
+                                3672216.8925
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "publicService",
+            "feature_type": "Point"
+        },
+        "Road_Line": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 710,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515626.5773,
+                                    3672186.4219
+                                ],
+                                [
+                                    13515626.5742,
+                                    3672213.8509
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 711,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515628.2093,
+                                    3672204.1376
+                                ],
+                                [
+                                    13515626.5753,
+                                    3672204.1376
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 712,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515628.2093,
+                                    3672190.71
+                                ],
+                                [
+                                    13515626.5768,
+                                    3672190.71
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 713,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515624.6394,
+                                    3672187.4973
+                                ],
+                                [
+                                    13515626.5772,
+                                    3672187.4973
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 714,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515626.5768,
+                                    3672190.71
+                                ],
+                                [
+                                    13515617.0007,
+                                    3672190.71
+                                ],
+                                [
+                                    13515617.0007,
+                                    3672212.2785
+                                ],
+                                [
+                                    13515626.5744,
+                                    3672212.2785
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 715,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515617.0007,
+                                    3672212.2785
+                                ],
+                                [
+                                    13515605.4913,
+                                    3672212.2785
+                                ],
+                                [
+                                    13515605.4913,
+                                    3672214.7259
+                                ],
+                                [
+                                    13515608.2694,
+                                    3672214.7259
+                                ],
+                                [
+                                    13515608.2665,
+                                    3672218.1493
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 716,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515605.4913,
+                                    3672212.2785
+                                ],
+                                [
+                                    13515605.4913,
+                                    3672199.2478
+                                ],
+                                [
+                                    13515617.0007,
+                                    3672199.2478
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 717,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515610.366,
+                                    3672209.7488
+                                ],
+                                [
+                                    13515610.4449,
+                                    3672211.4035
+                                ],
+                                [
+                                    13515610.4449,
+                                    3672212.2785
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 718,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515610.5419,
+                                    3672206.5606
+                                ],
+                                [
+                                    13515605.4913,
+                                    3672206.5606
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 719,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515608.4252,
+                                    3672203.2268
+                                ],
+                                [
+                                    13515608.4252,
+                                    3672199.2478
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 720,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515611.3886,
+                                    3672203.2268
+                                ],
+                                [
+                                    13515611.3886,
+                                    3672199.2478
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 721,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515605.4913,
+                                    3672214.7259
+                                ],
+                                [
+                                    13515605.4913,
+                                    3672217.9671
+                                ],
+                                [
+                                    13515603.8043,
+                                    3672218.0332
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 722,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515649.3299,
+                                    3672230.8494
+                                ],
+                                [
+                                    13515649.2466,
+                                    3672228.7489
+                                ],
+                                [
+                                    13515649.2391,
+                                    3672218.0274
+                                ],
+                                [
+                                    13515626.5753,
+                                    3672218.0273
+                                ],
+                                [
+                                    13515626.5742,
+                                    3672213.8509
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 753,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515612.3239,
+                                    3672216.8925
+                                ],
+                                [
+                                    13515612.0461,
+                                    3672213.8509
+                                ],
+                                [
+                                    13515612.0461,
+                                    3672212.2785
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 764,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515615.7087,
+                                    3672164.5581
+                                ],
+                                [
+                                    13515615.5211,
+                                    3672162.9904
+                                ],
+                                [
+                                    13515615.5146,
+                                    3672162.1672
+                                ],
+                                [
+                                    13515616.5317,
+                                    3672162.141
+                                ],
+                                [
+                                    13515616.5862,
+                                    3672160.2618
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "planarGraphId": 1738,
+                            "name": null,
+                            "id": 876,
+                            "type": null,
+                            "weightValue": null,
+                            "direction": 0
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    13515616.5472,
+                                    3672161.6062
+                                ],
+                                [
+                                    13515617.7087,
+                                    3672161.6314
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "Road",
+            "feature_type": "Line"
+        },
+        "door_Polygon": {
+            "featureCollection": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "properties": {
+                            "id": 1742,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1742,
+                                    "categoryId": 6001001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515606.6883,
+                                        3672208.2815
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672208.2815
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672208.2815
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1746,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1746,
+                                    "categoryId": 6001003000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515609.7839,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515609.7839,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515612.8796,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515612.8796,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515609.7839,
+                                        3672201.5559
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1815,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1815,
+                                    "categoryId": 6001003000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515609.8633,
+                                        3672216.3766
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672216.3766
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672219.6534
+                                    ],
+                                    [
+                                        13515609.8633,
+                                        3672216.3766
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1890,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1890,
+                                    "categoryId": 6001003000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515609.7839,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672201.5559
+                                    ],
+                                    [
+                                        13515606.6883,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515609.7839,
+                                        3672204.7309
+                                    ],
+                                    [
+                                        13515609.7839,
+                                        3672201.5559
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1898,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1898,
+                                    "categoryId": 6001001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515616.8133,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672162.9904
+                                    ],
+                                    [
+                                        13515614.2289,
+                                        3672165.7024
+                                    ],
+                                    [
+                                        13515616.8133,
+                                        3672165.7024
+                                    ],
+                                    [
+                                        13515616.8133,
+                                        3672162.9904
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    },
+                    {
+                        "properties": {
+                            "id": 1899,
+                            "name": null,
+                            "display": null,
+                            "phone": null,
+                            "membership": null,
+                            "parking": null,
+                            "parkingSpace": null,
+                            "parkingFee": null,
+                            "description": null,
+                            "website": null,
+                            "weibo": null,
+                            "wechat": null,
+                            "email": null,
+                            "membershipPolicy": null,
+                            "categoryList": [
+                                {
+                                    "poiid": 1899,
+                                    "categoryId": 6001001000
+                                }
+                            ]
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        13515651.1649,
+                                        3672228.7489
+                                    ],
+                                    [
+                                        13515647.3284,
+                                        3672228.7489
+                                    ],
+                                    [
+                                        13515647.3284,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672234.5759
+                                    ],
+                                    [
+                                        13515651.1649,
+                                        3672228.7489
+                                    ]
+                                ]
+                            ]
+                        },
+                        "type": "Feature"
+                    }
+                ]
+            },
+            "layer_type": "door",
+            "feature_type": "Polygon"
+        }
+    }
+}
