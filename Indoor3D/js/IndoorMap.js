@@ -88,7 +88,6 @@ function getElementLeft(element) {
     }
     return actualLeft;
 }
-
 function getElementTop(element) {
 
     var actualTop = element.offsetTop;
@@ -99,14 +98,13 @@ function getElementTop(element) {
     }
     return actualTop;
 }
-
 //---------------------the Mall class--------------------
 function Mall(){
     var _this = this;
     this.floors = [];   //the floors
     this.building = null; //the building
     this.root = null; //the root scene
-    this.theme = default2dTheme; //theme
+    this.theme = null; //theme
     this.is3d = true;
     this.jsonData = null;
 
@@ -192,6 +190,11 @@ function Mall(){
         var offset = 4;
         for(var i=0; i<_this.floors.length; i++){
             _this.floors[i].position.set(0,0,i*_this.floors[i].height*offset);
+//            if(i == 4){
+//                _this.floors[i].position.set(0,-300,i*_this.floors[i].height*offset);
+//            }else{
+//
+//            }
             _this.root.add(this.floors[i]);
         }
         this.building.scale.set(1,1,offset);
@@ -202,7 +205,7 @@ function Mall(){
     }
 }
 //----------------------------theme--------------------------------------
-var default2dTheme = {
+var default3dTheme = {
     name: "test", //theme's name
     background: "#F2F2F2", //background color
 
@@ -227,7 +230,7 @@ var default2dTheme = {
     //rooms' style
     room: function (type, category) {
         var roomStyle;
-        if(category == undefined || category === 0) {
+        if(category == undefined) {
             switch (type) {
 
                 case "100": //hollow. u needn't change this color. because i will make a hole on the model in the final version.
@@ -256,64 +259,69 @@ var default2dTheme = {
         switch(category) {
             case 101: //food
                 roomStyle = {
-                    color: "#2F5987",
+                    color: "#1f77b4",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 102: //retail
                 roomStyle = {
-                    color: "#6AB0BA",
+                    color: "#aec7e8",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 103: //toiletry
                 roomStyle = {
-                    color: "#FF9230",
+                    color: "#ffbb78",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 104: //parent-child
                 roomStyle = {
-                    color: "#FCC57C",
+                    color: "#98df8a",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 105: //life services
                 roomStyle = {
-                    color: "#16AA7E",
+                    color: "#bcbd22",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 106: //education
                 return {
-                    color: "#97D3AF",
+                    color: "#2ca02c",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 107: //life style
                 roomStyle = {
-                    color: "#AF1917",
+                    color: "#dbdb8d",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 108: //entertainment
                 roomStyle = {
-                    color: "#F54A4A",
+                    color: "#EE8A31",
                     opacity: 0.7,
                     transparent: true
                 };
                 break;
             case 109: //others
+                roomStyle = {
+                    color: "#8c564b",
+                    opacity: 0.7,
+                    transparent: true
+                };
             default :
                 roomStyle = {
-                    color: "#7E5D9A",
+                    color: "#c49c94",
                     opacity: 0.7,
                     transparent: true
                 };
@@ -332,6 +340,156 @@ var default2dTheme = {
 
     fontStyle:{
         color: "#231815",
+        fontsize: 40,
+        fontface: "Helvetica, MicrosoftYaHei "
+    },
+
+    pubPointImg: {
+
+        "11001": System.imgPath+"/toilet.png",
+        "11002": System.imgPath+"/ATM.png",
+        "21001": System.imgPath+"/stair.png",
+        "22006": System.imgPath+"/entry.png",
+        "21002": System.imgPath+"/escalator.png",
+        "21003": System.imgPath+"/lift.png"
+    }
+}
+
+var default2dTheme = {
+    name: "test", //theme's name
+    background: "#F2F2F2", //background color
+
+    //building's style
+    building: {
+        color: "#000000",
+        opacity: 0.1,
+        transparent: true,
+        depthTest: false
+    },
+
+    //floor's style
+    floor: {
+        color: "#E0E0E0",
+        opacity: 1,
+        transparent: false
+    },
+
+    //selected room's style
+    selected: "#ffff55",
+
+    //rooms' style
+    room: function (type, category) {
+        var roomStyle;
+        if(category == undefined) {
+            switch (type) {
+
+                case "100": //hollow. u needn't change this color. because i will make a hole on the model in the final version.
+                    return {
+                        color: "#F2F2F2",
+                        opacity: 0.8,
+                        transparent: true
+                    }
+                case "300": //closed area
+                    return {
+                        color: "#AAAAAA",
+                        opacity: 0.7,
+                        transparent: true
+                    };
+                case "400": //empty shop
+                    return {
+                        color: "#D3D3D3",
+                        opacity: 0.7,
+                        transparent: true
+                    };
+                default :
+                    break;
+            }
+        }
+
+        switch(category) {
+            case 101: //food
+                roomStyle = {
+                    color: "#1f77b4",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 102: //retail
+                roomStyle = {
+                    color: "#aec7e8",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 103: //toiletry
+                roomStyle = {
+                    color: "#ffbb78",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 104: //parent-child
+                roomStyle = {
+                    color: "#98df8a",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 105: //life services
+                roomStyle = {
+                    color: "#bcbd22",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 106: //education
+                return {
+                    color: "#2ca02c",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 107: //life style
+                roomStyle = {
+                    color: "#dbdb8d",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 108: //entertainment
+                roomStyle = {
+                    color: "#EE8A31",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 109: //others
+                roomStyle = {
+                    color: "#8c564b",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            default :
+                roomStyle = {
+                    color: "#c49c94",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+        }
+        return roomStyle;
+    },
+
+    //room wires' style
+    strokeStyle: {
+        color: "#666666",
+        opacity: 0.5,
+        transparent: true,
+        linewidth: 3
+    },
+
+    fontStyle:{
+        color: "#333333",
         fontsize: 14,
         fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, Arial, sans-serif  "
     },
@@ -346,6 +504,7 @@ var default2dTheme = {
         "21003": System.imgPath+"/lift.png"
     }
 }
+
 
 //----------------------------the Loader class --------------------------
 IndoorMapLoader= function ( is3d ) {
@@ -448,6 +607,11 @@ function ParseModel(json, is3d){
 
         mall.jsonData = json;
         mall.is3d = is3d;
+        if(is3d){
+            mall.theme = default3dTheme;
+        }else{
+            mall.theme = default2dTheme;
+        }
 
         var building,shape, extrudeSettings, geometry, material, mesh, wire, points;
         var scale = 0.1, floorHeight, buildingHeight = 0;
@@ -599,11 +763,11 @@ var IndoorMap = function (params) {
         } else {
             //if the mapDiv undefined, create a fullscreen map
             _mapDiv = document.createElement("div");
-            _mapDiv.style.width = "100%";
-            _mapDiv.style.height = "100%";
+            _mapDiv.style.width = window.innerWidth + "px";
+            _mapDiv.style.height = window.innerHeight + "px";
             _mapDiv.style.top = "0px";
             _mapDiv.style.left = "0px";
-            _mapDiv.style.position = "relative";
+            _mapDiv.style.position = "absolute";
             _mapDiv.id = "indoor3d";
             document.body.appendChild(_mapDiv);
             document.body.style.margin = "0";
@@ -618,6 +782,15 @@ var IndoorMap = function (params) {
             _indoorMap = new IndoorMap2d(_mapDiv);
             _this.is3d = false;
         }
+
+        var marker = document.createElement("image");
+        marker.style.position = "absolute";
+        marker.style.src = System.imgPath+"/marker.png";
+        marker.visibility = false;
+        marker.style.width = "39px";
+        marker.style.height = "54px";
+        document.body.appendChild(marker);
+        //_indoorMap.setSelectionMarker(marker);
 
 
     }
