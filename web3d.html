@@ -29,7 +29,7 @@
     loader.load('Indoor3D/data/web3d.json', function(mall){
         testjson = mall.jsonData;
         indoorMap.parse(testjson);
-        indoorMap.showFloor(1);
+        indoorMap.showAllFloors();
         indoorMap.setSelectable(false);
 	    indoorMap.showPubPoints(true);
         indoorMap.setSelectable(true);
