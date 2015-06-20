@@ -19,15 +19,14 @@
 
 
     var params = {
-    //    mapDiv:"indoor3d"
-    //    ,
-            dim:"2d"
+        mapDiv:"indoor3d"
+        //,dim:"2d"
     }
     var indoorMap = IndoorMap(params);
 
     var testjson;
     var loader = new IndoorMapLoader(indoorMap.is3d);
-    loader.load('Indoor3D/data/爱琴海购物中心.json', function(mall){
+    loader.load('Indoor3D/data/web3d.json', function(mall){
         testjson = mall.jsonData;
         indoorMap.parse(testjson);
         indoorMap.showFloor(1);
@@ -35,8 +34,6 @@
 	    indoorMap.showPubPoints(true);
         indoorMap.setSelectable(true);
 
-        var ul = IndoorMap.getUI(indoorMap);
-        document.body.appendChild(ul);
     });
 
     var stats = new Stats();
@@ -50,10 +47,6 @@
         stats.update();
     }
 </script>
-<ul class="testButton" style="position:absolute; top: 500px">
-<li onclick="indoorMap.zoomIn(0.8)">Zoom In</li>
-<li onclick="indoorMap.zoomOut(0.8)">Zoom Out</li>
-<li onclick="indoorMap.setDefaultView()">Default View</li>
 
 </ul>
 </body>
