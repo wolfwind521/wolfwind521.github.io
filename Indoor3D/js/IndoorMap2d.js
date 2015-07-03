@@ -266,7 +266,7 @@ Canvas2DRenderer = function (mapDiv) {
     top;
     var _curFloor = null;
     var _objSize = [0,0];
-    var MAX_CANVAS_SIZE = 2000
+    var MAX_CANVAS_SIZE = 1000;
 
     this.domElement = _canvas;
     var _devicePixelRatio = window.devicePixelRatio;
