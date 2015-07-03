@@ -266,13 +266,11 @@ Canvas2DRenderer = function (mapDiv) {
     top;
     var _curFloor = null;
     var _objSize = [0,0];
-    var MAX_CANVAS_SIZE = 1000;
+    var MAX_CANVAS_SIZE = 2000;
 
     this.domElement = _canvas;
-    var _devicePixelRatio = window.devicePixelRatio;
-    if(_devicePixelRatio > 2)
-        _devicePixelRatio = 2;
-    //var _devicePixelRatio = 2;
+    //var _devicePixelRatio = window.devicePixelRatio;
+    var _devicePixelRatio = 1;
     this.setDefaultView = function(object){
         if(object._id != _oldId) {
             var width = object.rect.br[0] - object.rect.tl[0];
