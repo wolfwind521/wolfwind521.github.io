@@ -6,37 +6,65 @@
 //---------------------IndoorMap2D class-----------------
 IndoorMap2d = function(mapdiv){
     var _this = this;
-
     var _mapDiv = mapdiv;
-
     var _controls;
-    var _showNames = true, _showPubPoints = true;
+
     var _curFloorId = 0;
     var _selectionListener = null;
     var _selected, _selectedOldColor;
+
+    this.options = {
+        showNames : true,
+        showPubPoints : true,
+        selectable : true,
+        movable: true
+    }
+    this.mapSize = [0, 0];
+    this.mapHalfSize = [0, 0];
+    this.pos = [0,0];
+
     this.renderer = null;
     this.is3d = false;
+    this.theme = null;
     //var _marker;
 
     this.init = function(){
-        _this.renderer = new Canvas2DRenderer(_mapDiv);
+        _this.mapSize[0] = parseInt(_mapDiv.style.width);
+        _this.mapSize[1] = parseInt(_mapDiv.style.height);
+        _this.mapHalfSize[0] = _this.mapSize[0] / 2;
+        _this.mapHalfSize[1] = _this.mapSize[1] / 2;
+        _this.pos = IDM.DomUtil.getPos(_mapDiv);
+
+        _this.renderer = new Canvas2DRenderer(_this);
         var canvasDiv = _this.renderer.domElement;
         _controls = new Controller2D(canvasDiv);
-
-        //canvas div
-//        canvasDiv.style.width = 2000;
-//        canvasDiv.style.height = 2000;
-//        _this.renderer.setSize(_canvasWidth, _canvasHeight);
         _mapDiv.appendChild(canvasDiv);
         _mapDiv.style.overflow = "hidden";
 
     }
 
+    this.reset = function(){
+        _controls.reset();
+        _this.renderer.reset();
+    }
+
+    this.setTheme = function(theme){
+        _this.theme = theme;
+        redraw();
+        return this;
+    }
+
+    this.getMall = function(){
+        return _this.mall;
+    }
+
     this.parse = function(json){
+        _this.reset();
         _this.mall = ParseModel(json, _this.is3d);
+        _this.theme = _this.mall.theme;
         _this.showFloor(_this.mall.getDefaultFloorId());
-        _this.renderer.setClearColor(_this.mall.theme.background);
-        _mapDiv.style.background = _this.mall.theme.background;
+
+        _mapDiv.style.background = _this.theme.background;
         return _this;
     }
 
@@ -54,6 +82,20 @@ IndoorMap2d = function(mapdiv){
 
     }
 
+    this.translate = function(vec){
+        var canvasDiv = _this.renderer.domElement;
+
+        var top = parseInt(canvasDiv.style.top);
+        var left = parseInt(canvasDiv.style.left);
+        var curLeft = (left + vec[0]),
+            curTop = (top + subVector[1]);
+        canvasDiv.style.left = curLeft + "px";
+        canvasDiv.style.top = curTop + "px";
+    }
+
+    this.fit = function(obj){
+
+    }
     this.zoomIn = function(zoomScale){
         _this.renderer.zoomIn();
         redraw();
@@ -65,19 +107,22 @@ IndoorMap2d = function(mapdiv){
     }
 
     this.showAreaNames = function(show) {
-        _showNames = show == undefined ? true : show;
+        _this.options.showNames = show == undefined ? true : show;
+        redraw();
         return _this;
     }
 
     //show pubPoints(entries, ATM, escalator...)
     this.showPubPoints = function(show){
-        _showPubPoints = show == undefined ? true: show;
+        _this.options.showPubPoints = show == undefined ? true: show;
+        redraw();
         return _this;
     }
 
     //get the selected object
     this.getSelectedId = function(){
-        return _selected._id;
+        var id = _selected.BrandShop;
+        return id ? id : -1;
     }
 
     //the callback function when sth is selected
@@ -88,13 +133,11 @@ IndoorMap2d = function(mapdiv){
 
     //select object by id
     this.selectById = function(id){
-        var floor = _this.getCurFloor();
-        for(var i = 0; i < floor.children.length; i++){
-            if(floor.children[i].id && floor.children[i].id == id) {
-                if (_selected) {
-                    _selected.fillColor = _selectedOldColor;
-                }
-                select(floor.children[i]);
+        var floor = _this.mall.getCurFloor();
+        for(var i = 0; i < floor.FuncAreas.length; i++){
+            if(floor.FuncAreas[i].BrandShop && floor.FuncAreas[i].BrandShop == id) {
+                _this.deselectAll();
+                _this.select(floor.FuncAreas[i]);
             }
         }
     }
@@ -108,11 +151,11 @@ IndoorMap2d = function(mapdiv){
         _this.mall.showFloor(floorid);
         _this.adjustCamera();
 
-        if(_showNames) {
+        if(_this.options.showNames) {
             _this.renderer.createNameTexts(floorid, _this.mall);
         }
 
-        if(_showPubPoints) {
+        if(_this.options.showPubPoints) {
             _this.renderer.loadSpirtes(_this.mall);
             _this.renderer.loadSpirtes(_this.mall);
         }
@@ -137,12 +180,34 @@ IndoorMap2d = function(mapdiv){
         return _this;
     }
 
+    //se if the user can pan the camera
+    this.setMovable = function(movable){
+        _controls.enable = movable;
+        return _this;
+    }
+
+    //focus
+    this.focus = function (obj){
+        _this.renderer.focus(obj);
+    }
+
+    this.deselectAll = function(){
+        if (_selected) {
+            _selected.fillColor = _selectedOldColor;
+            redraw();
+        }
+    }
+
     //select object(just hight light it)
-    function select(obj){
+    this.select = function(obj){
         if(obj != undefined) {
+            //_this.focus(obj);
             _selectedOldColor = obj.fillColor;
-            obj.fillColor = _this.mall.theme.selected;
+            obj.fillColor = _this.theme.selected;
             pos = _this.renderer.localToWorld(obj.Center);
+            _selected = obj;
+            redraw();
+
 //            _marker.style.left = pos[0] - _marker.width / 2;
 //            _marker.style.top = pos[1] - _marker.height / 2;
 //            _marker.style.visibility = true;
@@ -160,24 +225,22 @@ IndoorMap2d = function(mapdiv){
             pos[1] = event.clientY;
         }
 
-        if(pos[0] == _controls.startPoint[0] && pos[1] == _controls.startPoint[1]) {
-            pos[0] -= getElementLeft(_mapDiv);
-            pos[1] -= getElementTop(_mapDiv);
+        if(Math.abs(pos[0] - _controls.startPoint[0]) < 5 && Math.abs(pos[1] == _controls.startPoint[1]) <5) {
+            pos[0] -= IDM.DomUtil.getElementLeft(_mapDiv);
+            pos[1] -= IDM.DomUtil.getElementTop(_mapDiv);
 
             //deselect the old one
-            if (_selected) {
-                _selected.fillColor = _selectedOldColor;
-                redraw();
-            }
+            _this.deselectAll();
 
             _selected = _this.renderer.onSelect(pos);
 
             if (_selected) {
-                select(_selected)
+                _this.select(_selected)
+                console.log(_this.getSelectedId());
                 if (_selectionListener) {
-                    _selectionListener(_selected._id);
+                    _selectionListener(_this.getSelectedId());
                 }
-                redraw();
+
             } else {
                 if (_selectionListener) {
                     _selectionListener(-1);
@@ -188,7 +251,7 @@ IndoorMap2d = function(mapdiv){
     }
 
     function redraw(){
-        _controls.viewChanged = true;
+        _this.renderer.render(_this.mall);
     }
 
     function animate () {
@@ -234,81 +297,151 @@ function CanvasSprite(params){
     }
 }
 
-Canvas2DRenderer = function (mapDiv) {
+Canvas2DRenderer = function (map) {
 
-    var _canvas = document.createElement('canvas');
-    var _parentDiv = mapDiv,
-        _parentWidth = parseInt(_parentDiv.style.width),
-        _parentHeight = parseInt(_parentDiv.style.height);
-
-    var _canvasPos = [0, 0];
     var _this = this,
-        _canvasWidth,
-        _canvasHeight,
-        _canvasWidthHalf,
-        _canvasHeightHalf,
-        _padding = 50,
+        _map = map,
+        _ctx;
+    var _canvas = document.createElement('canvas');
 
-        _centerX = 0,
-        _centerY = 0,
-        _oldId = 0,
+    var _padding = 0.1;  //padding between map bounding box and the div boundary
 
-        _clearColor,
-        _showNames = true,
+    var _floorSize = [0, 0];
+
+    //canvas real size
+    var _canvasPos = [0, 0], //in the browser coordinate
+        _canvasSize = [0, 0],
+        _canvasHalfSize = [0, 0],
+
         _nameTexts = [],
         _sprites = [],
         _pubPoints = [],
-        _showPubPoints = true,
-    _ctx = _canvas.getContext('2d'),
-    _clearColor,
-    _scale,
-    left,
-    top;
+
+
+    _scale;
     var _curFloor = null;
     var _objSize = [0,0];
-    var MAX_CANVAS_SIZE = 2000;
 
     this.domElement = _canvas;
-    //var _devicePixelRatio = window.devicePixelRatio;
+    this.mapCenter = [];
     var _devicePixelRatio = 1;
-    this.setDefaultView = function(object){
-        if(object._id != _oldId) {
-            var width = object.rect.br[0] - object.rect.tl[0];
-            var height = object.rect.br[1] - object.rect.tl[1];
-            var scaleX = (_parentWidth - _padding) / width;
-            var scaleY = (_parentHeight - _padding) / height;
-            _objSize[0] = width;
-            _objSize[1] = height;
-            _scale = scaleX < scaleY ? scaleX : scaleY;
-            _scale *= _devicePixelRatio;
-            _centerX = (object.rect.br[0] + object.rect.tl[0])/2;
-            _centerY = (-object.rect.br[1] - object.rect.tl[1])/2;
-            _canvas.style.position = "absolute";
 
-            left =  -_canvasWidthHalf/_devicePixelRatio +(_parentWidth/2) ;
-            _canvas.style.left = left + "px";
-            top =  -_canvasHeightHalf/_devicePixelRatio +(_parentHeight/2) ;
-            _canvas.style.top = top + "px";
-
-        }
+    function _init(){
+        _canvas.style.position = "absolute";
+        _ctx = _canvas.getContext('2d');
+        _updateViewport();
     }
-    this.render = function (mall){
-        if(mall === undefined) {
+
+    function _updateViewport(){
+        var clipPadding = _clipPadding();
+        var clipSize = [(_map.mapSize[0]*clipPadding) >> 0, (_map.mapSize[1]*clipPadding) >> 0];
+        _canvasPos[0] = _map.pos[0] - clipSize[0];
+        _canvasPos[1] = _map.pos[1] - clipSize[1];
+        var realRatio = 1 + 2*clipPadding;
+        _canvasSize[0] = realRatio * _map.mapSize[0];
+        _canvasSize[1] = realRatio * _map.mapSize[1];
+        _canvasHalfSize[0] = _canvasSize[0]*.5;
+        _canvasHalfSize[1] = _canvasSize[1]*.5;
+        IDM.DomUtil.setPos(_canvas, [-clipSize[0], -clipSize[1]]);
+
+        _devicePixelRatio = window.devicePixelRatio || 1;
+        var area = _canvasSize[0]*_canvasSize[1]*_devicePixelRatio*_devicePixelRatio;
+        _devicePixelRatio = (IDM.Browser.mobile && !IDM.Browser.android || IDM.Browser.android23) && (area > 5E6) ? 1 : _devicePixelRatio;
+        _canvas.width = _canvasSize[0] * _devicePixelRatio;
+        _canvas.height = _canvasSize[1] * _devicePixelRatio;
+        _canvas.style.width = _canvasSize[0] + "px";
+        _canvas.style.height = _canvasSize[1] + "px";
+        _ctx.scale(_devicePixelRatio, _devicePixelRatio);
+        //_ctx.translate(_canvasHalfSize[0], _canvasHalfSize[1]);
+    }
+
+    function _clipPadding(){
+        var ratio = ((IDM.Browser.mobile ? 1280 : 2000) / Math.max(window.innerWidth, window.innerHeight) - 1) / 2;
+        return Math.max(0, Math.min(.5, ratio));
+    }
+
+    function _updatePoints(){
+
+    }
+
+    this.setDefaultView = function (floor) {
+
+        _floorSize[0] = floor.rect.br[0] - floor.rect.tl[0];
+        _floorSize[1] = floor.rect.br[1] - floor.rect.tl[1];
+        var scaleX = (_map.mapSize[0]*(1 - _padding)) / _floorSize[0];
+        var scaleY = (_map.mapSize[1]*(1 - _padding)) / _floorSize[1];
+        _scale = Math.min(scaleX , scaleY);
+        _this.mapCenter[0] = (floor.rect.br[0] + floor.rect.tl[0]) / 2;
+        _this.mapCenter[1] = (-floor.rect.br[1] - floor.rect.tl[1]) / 2;
+
+        //_ctx.translate()
+
+    }
+
+    this.reset = function(){
+        _nameTexts.length = 0;
+
+    }
+
+    this.focus = function (object) {
+        //if(object._id != _oldId) {
+
+        var width = object.rect.br[0] - object.rect.tl[0];
+        var height = object.rect.br[1] - object.rect.tl[1];
+        var ratio = (width+height) / (_floorSize[0]+_floorSize[1]);
+        //var padding = ratio > 0.005? _mapWidth * 0.5 : _mapWidth * 0.85;
+
+        var padding = (-1.42*ratio + 0.9) * _mapWidth;
+        padding < _mapHalfWidth? padding = _mapHalfWidth : padding;
+        var scaleX = (_mapWidth - padding) / width;
+        var scaleY = (_mapHeight - padding) / height;
+        _objSize[0] = width;
+        _objSize[1] = height;
+        _scale = scaleX < scaleY ? scaleX : scaleY;
+
+        //_scale > 0.5 ? _scale = 0.5 : _scale;
+
+        var center = [];
+        center[0] = (object.rect.br[0] + object.rect.tl[0]) / 2;
+        center[1] = (object.rect.br[1] + object.rect.tl[1]) / 2;
+        center = _this.localToWorld(center);
+        _canvas.style.position = "absolute";
+
+        _canvas.style.left = (_mapHalfWidth - center[0]) + "px";
+        _canvas.style.top = (_mapHalfHeight - center[1]) + "px";
+
+        //}
+    }
+
+    this.screenShot = function(type){
+        var tmpCanvas = document.createElement("canvas");
+        tmpCanvas.width = _mapWidth, tmpCanvas.height = _mapHeight;
+
+        var tmpCtx = tmpCanvas.getContext('2d');
+        tmpCtx.drawImage(_canvas,parseInt(_canvas.style.left),parseInt(_canvas.style.top));
+        return tmpCanvas.toDataURL(type);
+    }
+
+    this.render = function (){
+        if(_map.mall === undefined) {
             return;
         }
 
-        var theme = mall.theme;
+        var theme = _map.theme;
 
         //get render data
-        _curFloor = mall.getCurFloor();
+        _curFloor = _map.mall.getCurFloor();
 
-        _ctx.fillStyle = _clearColor;
-        _ctx.fillRect(0,0,_canvasWidth, _canvasHeight);
+        //clear background
+        _ctx.fillStyle = theme.background;
+        _ctx.fillRect(0,0,_canvasSize[0], _canvasSize[1]);
 
         _ctx.save();
-        _ctx.scale(_scale, _scale);
-        _ctx.translate(_canvasWidthHalf/_scale-_centerX, _canvasHeightHalf/_scale - _centerY);
 
+        _ctx.scale(_scale, _scale);
+        _ctx.translate(_canvasHalfSize[0]/_scale-_this.mapCenter[0], _canvasHalfSize[1]/_scale - _this.mapCenter[1]);
+
+        //draw floor
         var poly = _curFloor.Outline[0][0];
         _ctx.beginPath();
         _ctx.moveTo(poly[0], -poly[1]);
@@ -316,20 +449,19 @@ Canvas2DRenderer = function (mapDiv) {
             _ctx.lineTo(poly[i],-poly[i+1]);
         }
         _ctx.closePath();
-        _ctx.strokeStyle = _curFloor.strokeColor;
-        _ctx.lineWidth = (theme.strokeStyle.linewidth*_devicePixelRatio/_scale) >> 0;
+        _ctx.strokeStyle = theme.strokeStyle.color;
+        _ctx.lineWidth = theme.strokeStyle.linewidth/_scale;
         _ctx.stroke();
         _ctx.fillStyle = _curFloor.fillColor;
         _ctx.fill();
 
+        //draw funcAreas
         var funcAreas = _curFloor.FuncAreas;
-        _ctx.strokeStyle = theme.strokeStyle.color;
-        _ctx.lineWidth = (theme.strokeStyle.linewidth * _devicePixelRatio/ _scale) >> 0;
         for(var i = 0 ; i < funcAreas.length; i++){
             var funcArea = funcAreas[i];
             var poly = funcArea.Outline[0][0];
             if(poly.length < 6){ //less than 3 points, return
-                return;
+                continue;
             }
             _ctx.beginPath();
 
@@ -339,27 +471,28 @@ Canvas2DRenderer = function (mapDiv) {
             }
             _ctx.closePath();
 
-            _ctx.strokeStyle = theme.strokeStyle.color;
             _ctx.stroke();
 
             _ctx.fillStyle = funcArea.fillColor;
             _ctx.fill();
         }
 
+        _ctx.fillStyle="#FF0000";
+        _ctx.beginPath();
+        _ctx.arc(0,0,5,0,Math.PI*2,true);
+        _ctx.closePath();
+        _ctx.fill();
+
         _ctx.restore();
 
-        if(_showNames){
+        var options = _map.options;
+        if(options.showNames){
 
             _ctx.textBaseline="middle";
             _ctx.fillStyle = theme.fontStyle.color;
             var textRects = [];
             for(var i = 0 ; i < funcAreas.length; i++){
                 var nameText = _nameTexts[i];
-
-//                if(nameText.text == undefined){
-//                    nameText.visible = false;
-//                    continue;
-//                }
 
                 var center = funcAreas[i].Center;
                 center = _this.localToWorld(center);
@@ -387,9 +520,13 @@ Canvas2DRenderer = function (mapDiv) {
             }
         }
 
-        if(_showPubPoints){
+        if(options.showPubPoints){
             var pubPoints = _curFloor.PubPoint;
-            var imgWidth = 25 * _devicePixelRatio, imgHeight = 25 *_devicePixelRatio;
+            var imgWidth = 20 , imgHeight = 20 ;
+//            if(_scale < 0.1){
+//                imgWidth = imgHeight = 12;
+//            }
+
             var imgWidthHalf = imgWidth/2, imgHeightHalf = imgHeight/2;
             var pubPointRects = [];
             for(var i = 0; i < pubPoints.length; i++){
@@ -414,32 +551,22 @@ Canvas2DRenderer = function (mapDiv) {
                 }
             }
         }
-//        //test: render the clicked point
-//        _ctx.fillStyle='#FF0000';
-//        _ctx.beginPath();
-//        _ctx.arc(_canvasPos[0], _canvasPos[1], 2, 0, Math.PI * 2, true);
-//        _ctx.closePath();
-//        _ctx.fill();
-
 
     }
 
+    //map the coordinate in canvas to the screen
     this.localToWorld = function(pt){
         var worldPoint = [0,0];
-        worldPoint[0] = _canvasWidthHalf + (pt[0] - _centerX) * _scale;
-        worldPoint[1] = _canvasHeightHalf + (-pt[1] - _centerY) * _scale;
+        worldPoint[0] = _canvasHalfSize[0] + (pt[0] - _this.mapCenter[0]) * _scale;
+        worldPoint[1] = _canvasHalfSize[1] + (-pt[1] - _this.mapCenter[1]) * _scale;
         return worldPoint;
     }
 
     this.onSelect = function(point){
-
-//        _canvasPos[0] = (-_parentWidth/2 + point[0])/_scale + _centerX;
-//        _canvasPos[1] = -(_parentHeight/2 - point[1])/_scale + _centerY;
-
-
-        _canvasPos[0] = (-_parentWidth/2 + point[0] + _canvasWidthHalf/_devicePixelRatio - (parseInt(_canvas.style.left) - left))*_devicePixelRatio;
-        _canvasPos[1] = (-_parentHeight/2 + point[1] + _canvasHeightHalf/_devicePixelRatio - (parseInt(_canvas.style.top) - top))*_devicePixelRatio;
-        return hitTest(_canvasPos);
+        var tmpPos = [0,0];
+        tmpPos[0] = (-_mapWidth/2 + point[0] + _canvasHalfSize[0] - (parseInt(_canvas.style.left) - left)) >> 0;
+        tmpPos[1] = (-_mapHeight/2 + point[1] + _canvasHalfSize[1] - (parseInt(_canvas.style.top) - top)) >> 0;
+        return hitTest(tmpPos);
     }
 
     this.setClearColor = function(color){
@@ -467,29 +594,31 @@ Canvas2DRenderer = function (mapDiv) {
     this.setSize = function(width, height) {
         _canvas.style.width = width + "px";
         _canvas.style.height = height + "px";
-        _canvasWidth = width * _devicePixelRatio;
-        _canvasHeight = height * _devicePixelRatio;
-        _canvas.width = _canvasWidth;
-        _canvas.height = _canvasHeight;
-        _canvasWidthHalf = Math.floor(_canvasWidth / 2);
-        _canvasHeightHalf = Math.floor(_canvasHeight / 2);
+        _canvasSize[0] = width * _devicePixelRatio;
+        _canvasSize[1] = height * _devicePixelRatio;
+        _canvas.width = _canvasSize[0];
+        _canvas.height = _canvasSize[1];
+        _canvasHalfSize[0] = Math.floor(width / 2);
+        _canvasHalfSize[1] = Math.floor(height / 2);
+        _ctx.scale(_devicePixelRatio, _devicePixelRatio);
     }
 
     function exceed(scale){
-        var curWidth = _objSize[0] * scale;
-        var curHeight = _objSize[1] * scale;
-        var maxSize = MAX_CANVAS_SIZE * _devicePixelRatio;
-        if(curWidth > maxSize || curHeight > maxSize){
-            return true;
-        }else{
-            return false;
-        }
+        //var curWidth = _objSize[0] * scale;
+        //var curHeight = _objSize[1] * scale;
+        //var maxSize = MAX_CANVAS_SIZE * _devicePixelRatio;
+        //if(curWidth > maxSize || curHeight > maxSize){
+        //    return true;
+        //}else{
+        //    return false;
+        //}
+        return false;
     }
 
     function hitTest(point){
         _ctx.save();
         _ctx.scale(_scale, _scale);
-        _ctx.translate(_canvasWidthHalf/_scale-_centerX, _canvasHeightHalf/_scale - _centerY);
+        _ctx.translate(_canvasHalfSize[0]/_scale-_this.mapCenter[0], _canvasHalfSize[1]/_scale - _this.mapCenter[1]);
 
         for(var i = 0 ; i < _curFloor.FuncAreas.length; i++) {
             var funcArea = _curFloor.FuncAreas[i];
@@ -499,7 +628,7 @@ Canvas2DRenderer = function (mapDiv) {
 
             var poly = funcArea.Outline[0][0];
             if (poly.length < 6) { //less than 3 points, return
-                return;
+                continue;
             }
             _ctx.beginPath();
 
@@ -541,7 +670,7 @@ Canvas2DRenderer = function (mapDiv) {
         }
         var funcAreaJson = mall.getFloorJson(mall.getCurFloorId()).FuncAreas;
         var fontStyle = mall.theme.fontStyle;
-        _ctx.font =  "bold "+ fontStyle.fontsize * _devicePixelRatio + "px " + fontStyle.fontface;
+        _ctx.font =  "bold "+ fontStyle.fontsize + "px " + fontStyle.fontface;
         for(var i = 0 ; i < funcAreaJson.length; i++){
             var name = {};
             var funcArea = funcAreaJson[i];
@@ -553,7 +682,7 @@ Canvas2DRenderer = function (mapDiv) {
             }else {
                 name.text = funcAreaJson[i].Name;
                 name.halfWidth = _ctx.measureText(name.text).width / 2;
-                name.halfHeight = fontStyle.fontsize * _devicePixelRatio / 4;
+                name.halfHeight = fontStyle.fontsize  / 4;
                 name.visible = true;
             }
 
@@ -561,7 +690,7 @@ Canvas2DRenderer = function (mapDiv) {
         }
     }
 
-    _this.setSize(MAX_CANVAS_SIZE, MAX_CANVAS_SIZE);
+    _init();
 }
 
 //---------------------Controller2D class-----------------
@@ -569,9 +698,10 @@ Canvas2DRenderer = function (mapDiv) {
 Controller2D = function(domElement){
     this.domElement = ( domElement !== undefined ) ? domElement : document;
     this.viewChanged = true;
+    this.enable = true;
 
-    var _top, _left;
-    var _curTop, _curLeft;
+    var _startPos = [];
+    var _curPos = [];
 
     var _this = this;
 
@@ -582,7 +712,15 @@ Controller2D = function(domElement){
         _this.startPoint = [0,0];
         _this.endPoint = [0,0];
     }
+
+    this.translate = function(vec){
+        _curPos[0] = (_startPos[0] + vec[0]);
+        _curPos[1] = (_startPos[1] + vec[1]);
+        IDM.DomUtil.setPos(domElement, [_curPos[0], _curPos[1]]);
+    }
+
     function touchStart(event){
+
         event.preventDefault();
 
         var touches = event.touches;
@@ -597,29 +735,35 @@ Controller2D = function(domElement){
         else{
             return;
         }
+        if(_this.enable === false) return;
 
         document.addEventListener('touchend', touchEnd, false);
         document.addEventListener('touchmove', touchMove, false);
 
-        _top = parseInt(domElement.style.top);
-        _left = parseInt(domElement.style.left);
-
+        var point = IDM.DomUtil.getPos(domElement);
+        _startPos[0] = point[0];
+        _startPos[1] = point[1];
     }
 
     function mouseDown(event){
+
         event.preventDefault();
         _this.startPoint[0] = event.clientX;
         _this.startPoint[1] = event.clientY;
 
+        if(_this.enable === false) return;
+
         document.addEventListener('mouseup', mouseUp, false);
         document.addEventListener('mousemove', mouseMove, false);
 
-        _top = parseInt(domElement.style.top);
-        _left = parseInt(domElement.style.left);
+        var point = IDM.DomUtil.getPos(domElement);
+        _startPos[0] = point[0];
+        _startPos[1] = point[1];
 
     }
 
     function touchMove(event){
+        if(_this.enable === false) return;
         event.preventDefault();
         event.stopPropagation();
 
@@ -632,16 +776,12 @@ Controller2D = function(domElement){
         }
 
         var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
-
-        _curLeft = (_left + subVector[0]);
-        _curTop = (_top + subVector[1]);
-
-        domElement.style.left =  _curLeft + "px";
-        domElement.style.top =  _curTop + "px";
+        _this.translate(subVector);
 
     }
 
     function mouseMove(event){
+        if(_this.enable === false) return;
         event.preventDefault();
         event.stopPropagation();
 
@@ -650,19 +790,18 @@ Controller2D = function(domElement){
 
         var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
-        _curLeft = (_left + subVector[0]);
-        _curTop = (_top + subVector[1]);
-        domElement.style.left = _curLeft + "px";
-        domElement.style.top = _curTop + "px";
+        _this.translate(subVector);
 
     }
 
     function touchEnd(event){
+        if(_this.enable === false) return;
         document.removeEventListener('touchend', touchEnd, false);
         document.removeEventListener('touchmove', touchMove, false);
     }
 
     function mouseUp(event){
+        if(_this.enable === false) return;
         document.removeEventListener('mouseup', mouseUp, false);
         document.removeEventListener('mousemove', mouseMove, false);
     }
