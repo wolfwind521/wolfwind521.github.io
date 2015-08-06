@@ -487,8 +487,9 @@ Canvas2DRenderer = function (map) {
 
         var options = _map.options;
         if(options.showNames){
-
-            _ctx.textBaseline="middle";
+            var fontStyle = theme.fontStyle;
+            //_ctx.textAlign = fontStyle.textAlign;
+            _ctx.textBaseline = fontStyle.textBaseline;
             _ctx.fillStyle = theme.fontStyle.color;
             var textRects = [];
             for(var i = 0 ; i < funcAreas.length; i++){
@@ -502,12 +503,14 @@ Canvas2DRenderer = function (map) {
 
                 nameText.visible = true;
 
-                for(var j = 0; j < i; j++){
-                    if(_nameTexts[j].visible && textRects[j].isCollide(rect)){
-                        nameText.visible = false;
-                        break;
-                    }
-                }
+                //for(var j = 0; j < i; j++){
+                //    if(_nameTexts[j].visible && textRects[j].isCollide(rect)){
+                //        nameText.visible = false;
+                //        break;
+                //    }
+                //}
+                if((funcAreas[i].rect.br[0]-funcAreas[i].rect.tl[0])*_scale*0.9 < nameText.halfWidth*2)
+                    nameText.visible = false;
                 if(nameText.visible) {
                     _ctx.fillText(nameText.text, (center[0] - nameText.halfWidth) >> 0, (center[1]) >> 0);
 //                _ctx.beginPath();
@@ -670,7 +673,7 @@ Canvas2DRenderer = function (map) {
         }
         var funcAreaJson = mall.getFloorJson(mall.getCurFloorId()).FuncAreas;
         var fontStyle = mall.theme.fontStyle;
-        _ctx.font =  "bold "+ fontStyle.fontsize + "px " + fontStyle.fontface;
+        _ctx.font =  fontStyle.fontsize + "px/1.4 " + fontStyle.fontface;
         for(var i = 0 ; i < funcAreaJson.length; i++){
             var name = {};
             var funcArea = funcAreaJson[i];

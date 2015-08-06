@@ -592,9 +592,12 @@ var default2dTheme = {
     },
 
     fontStyle:{
+        opacity: 1,
+        textAlign: "center",
+        textBaseline: "middle",
         color: "#333333",
-        fontsize: 14,
-        fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, Arial, sans-serif  "
+        fontsize: 13,
+        fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif  "
     },
 
     pubPointImg: {

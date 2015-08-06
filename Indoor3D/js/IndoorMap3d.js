@@ -4,7 +4,7 @@
 
 IndoorMap3d = function(mapdiv){
     var _this = this;
-
+    var _theme;
     var _mapDiv = mapdiv,
         _canvasWidth = _mapDiv.clientWidth,
         _canvasWidthHalf = _canvasWidth / 2,
@@ -62,6 +62,15 @@ IndoorMap3d = function(mapdiv){
         _canvasDiv.style.height = "100%";
     }
 
+    this.setTheme = function(theme){
+        _theme = theme;
+        return this;
+    }
+
+    this.theme = function(){
+        return _theme;
+    }
+
     //load the map by the json file name
     this.load = function (fileName, callback) {
         var loader = new IndoorMapLoader(_this.is3d);
@@ -100,7 +109,7 @@ IndoorMap3d = function(mapdiv){
         var camDir = [Math.cos(camAngle), Math.sin(camAngle)];
         var camLen = 500;
         var tiltAngle = 75.0 * Math.PI/180.0;
-        _this.camera.position.set(camDir[0]*camLen, Math.sin(tiltAngle) * camLen, camDir[1]*camLen);//TODO: adjust the position automatically
+        _this.camera.position.set(camDir[1]*camLen, Math.sin(tiltAngle) * camLen, camDir[0]*camLen);//TODO: adjust the position automatically
         _this.camera.lookAt(_scene.position);
 
         _controls.reset();
