@@ -97,8 +97,9 @@ IndoorMap2d = function(mapdiv){
 
     }
     this.zoomIn = function(zoomScale){
-        _this.renderer.zoomIn();
-        redraw();
+        _controls.zoom(zoomScale);
+        //_this.renderer.zoomIn();
+        //redraw();
     }
 
     this.zoomOut = function(zoomScale){
@@ -321,6 +322,7 @@ Canvas2DRenderer = function (map) {
     _scale;
     var _curFloor = null;
     var _objSize = [0,0];
+    var _translate = [0,0];
 
     this.domElement = _canvas;
     this.mapCenter = [];
@@ -330,14 +332,7 @@ Canvas2DRenderer = function (map) {
         _canvas.style.position = "absolute";
         _ctx = _canvas.getContext('2d');
         _this.updateViewport();
-        _devicePixelRatio = window.devicePixelRatio || 1;
-        var area = _canvasSize[0]*_canvasSize[1]*_devicePixelRatio*_devicePixelRatio;
-        _devicePixelRatio = (IDM.Browser.mobile && !IDM.Browser.android || IDM.Browser.android23) && (area > 5E6) ? 1 : _devicePixelRatio;
-        _canvas.width = _canvasSize[0] * _devicePixelRatio;
-        _canvas.height = _canvasSize[1] * _devicePixelRatio;
-        _canvas.style.width = _canvasSize[0] + "px";
-        _canvas.style.height = _canvasSize[1] + "px";
-        _ctx.scale(_devicePixelRatio, _devicePixelRatio);
+
 
     }
 
@@ -352,6 +347,14 @@ Canvas2DRenderer = function (map) {
         _canvasHalfSize[0] = _canvasSize[0]*.5;
         _canvasHalfSize[1] = _canvasSize[1]*.5;
         IDM.DomUtil.setPos(_canvas, [-clipSize[0], -clipSize[1]]);
+        _devicePixelRatio = window.devicePixelRatio || 1;
+        var area = _canvasSize[0]*_canvasSize[1]*_devicePixelRatio*_devicePixelRatio;
+        _devicePixelRatio = (IDM.Browser.mobile && !IDM.Browser.android || IDM.Browser.android23) && (area > 5E6) ? 1 : _devicePixelRatio;
+        _canvas.width = _canvasSize[0] * _devicePixelRatio;
+        _canvas.height = _canvasSize[1] * _devicePixelRatio;
+        _canvas.style.width = _canvasSize[0] + "px";
+        _canvas.style.height = _canvasSize[1] + "px";
+        _ctx.scale(_devicePixelRatio, _devicePixelRatio);
 
             //_ctx.translate(_canvasHalfSize[0], _canvasHalfSize[1]);
     }
@@ -363,7 +366,11 @@ Canvas2DRenderer = function (map) {
 
     this.updatePoints = function(vec){
         //TODO: clip polygons if necessary
-        _ctx.translate(vec[0], vec[1]);
+
+        _translate[0] += vec[0];
+        _translate[1] += vec[1];
+        clearBg();
+        _ctx.translate(_translate[0], _translate[1]);
         _this.render();
     }
 
@@ -434,13 +441,6 @@ Canvas2DRenderer = function (map) {
 
         //get render data
         _curFloor = _map.mall.getCurFloor();
-
-        //clear background
-        _ctx.save();
-        _ctx.setTransform(1,0,0,1,0,0);
-        _ctx.fillStyle = theme.background;
-        _ctx.fillRect(0,0,_canvasSize[0], _canvasSize[1]);
-        _ctx.restore();
 
         _ctx.save();
 
@@ -625,6 +625,12 @@ Canvas2DRenderer = function (map) {
         return false;
     }
 
+    function clearBg(){
+        //clear background
+        _ctx.fillStyle = _map.theme.background;
+        _ctx.fillRect(0,0,_canvasSize[0], _canvasSize[1]);
+    }
+
     function hitTest(point){
         _ctx.save();
         _ctx.scale(_scale, _scale);
@@ -720,6 +726,8 @@ Controller2D = function(renderer){
     this.startPoint = [0, 0];
     this.endPoint = [0, 0];
     var _panVector = [0, 0];
+    var _zoomDistStart = 0, _zoomDistEnd = 0;
+    var _zoomCenter = [0, 0];
 
     this.reset = function(){
         _this.startPoint = [0,0];
@@ -732,19 +740,25 @@ Controller2D = function(renderer){
         IDM.DomUtil.setPos(domElement, [_curPos[0], _curPos[1]]);
     }
 
+    this.zoom = function(scale){
+        var pos = IDM.DomUtil.getPos(domElement);
+        domElement.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(pos) + " scale(" + scale + ") ";
+    }
+
     function touchStart(event){
 
         event.preventDefault();
 
         var touches = event.touches;
-        if(touches.length == 1){
+        if(touches.length == 1){ //pan
             _this.startPoint[0] = touches[0].clientX;
             _this.startPoint[1] = touches[0].clientY;
         }
-//        else if( touches.length == 2){
-//            _this.startPoint[0] = touches[1].clientX - touches[0].clientX;
-//            _this.startPoint[1] = touches[1].clientY - touches[0].clientY;
-//        }
+        else if( touches.length == 2){ //zoom
+            var dx = touches[1].clientX - touches[0].clientX;
+            var dy = touches[1].clientY - touches[0].clientY;
+            _zoomDistEnd = _zoomDistStart = Math.sqrt( dx * dx + dy * dy );
+        }
         else{
             return;
         }
@@ -784,12 +798,22 @@ Controller2D = function(renderer){
         if(touches.length == 1) {
             _this.endPoint[0] = touches[0].clientX;
             _this.endPoint[1] = touches[0].clientY;
-        }else {
-            return;
+
+            _panVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
+            _this.translate();
+
+        }else if( touches.length == 2){
+            var dx = touches[1].clientX - touches[0].clientX;
+            var dy = touches[1].clientY - touches[0].clientY;
+            _zoomDistEnd = Math.sqrt( dx * dx + dy * dy );
+            var zoomCenter = [0, 0];
+            _zoomCenter[0] = ( touches[ 0 ].pageX + touches[ 1 ].pageX ) / 2;
+            _zoomCenter[1] = ( touches[ 0 ].pageY + touches[ 1 ].pageY ) / 2;
+
+            _this.zoom( _zoomDistEnd / _zoomDistStart);
         }
 
-        var subVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
-        _this.translate(subVector);
+
 
     }
 
@@ -809,6 +833,7 @@ Controller2D = function(renderer){
 
     function touchEnd(event){
         if(_this.enable === false) return;
+        panEnd();
         document.removeEventListener('touchend', touchEnd, false);
         document.removeEventListener('touchmove', touchMove, false);
     }
