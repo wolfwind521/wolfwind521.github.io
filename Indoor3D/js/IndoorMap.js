@@ -53,7 +53,7 @@ IDM.Browser = {};
         isSymbianOS = -1 !== e.indexOf("symbianos"),
         isWinPhone = -1 !== e.indexOf("windows phone"),
         isIpad =  -1 !== e.indexOf("ipad"),
-        k = isIphone || isWinPhone || isSymbianOS || isAndroid,
+        k = isIphone || isWinPhone || isSymbianOS || isAndroid ||isIpad,
         q = window.navigator && window.navigator.msPointerEnabled && window.navigator.msMaxTouchPoints && !window.PointerEvent,
         t = window.PointerEvent && window.navigator.pointerEnabled && window.navigator.maxTouchPoints || q,
         y = "devicePixelRatio" in window && 1 < window.devicePixelRatio || "matchMedia" in window && window.matchMedia("(min-resolution:144dppi)") &&
