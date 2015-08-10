@@ -180,7 +180,9 @@ IDM.DomUtil = {
     },
     setPos: function (element, point) {
         element._idm_pos = point;
-        IDM.Browser.any3d ? element.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(point) : (element.style.left = point[0] + "px", element.style.top = point[1] + "px")
+        //IDM.Browser.any3d ? element.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(point) : (element.style.left = point[0] + "px", element.style.top = point[1] + "px")
+        element.style.left = point[0] + "px";
+        element.style.top = point[1] + "px";
     },
 
     testProp: function(props) {

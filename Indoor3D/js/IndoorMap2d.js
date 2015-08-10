@@ -42,6 +42,7 @@ IndoorMap2d = function(mapdiv){
         _mapDiv.appendChild(canvasDiv);
         _mapDiv.style.overflow = "hidden";
 
+
     }
 
     this.reset = function(){
@@ -241,6 +242,7 @@ IndoorMap2d = function(mapdiv){
             }
 
         }
+        redraw();
     }
 
     function redraw(){
@@ -309,7 +311,7 @@ Canvas2DRenderer = function (map) {
 
         _nameTexts = [],
         _sprites = [],
-        _pubPoints = [],
+        _pubPoints = [0,0],
 
 
         _scale = 1.0;
@@ -378,11 +380,11 @@ Canvas2DRenderer = function (map) {
         for(var i = 0; i < pubPoints.length ; i++){
             updateOutline(pubPoints[i], _scale);
         }
-        _ctx.translate(-_translate[0], -_translate[1]);
-        _this.render();
+        _ctx.translate(-_translate[0], -_translate[1]);;
         _translate[0] *= scale;
         _translate[1] *= scale;
         _ctx.translate(_translate[0], _translate[1]);
+        _this.clearBg();
         _this.render();
     }
     function updateOutline(obj, scale){
@@ -515,7 +517,7 @@ Canvas2DRenderer = function (map) {
 
         _ctx.fillStyle="#FF0000";
         _ctx.beginPath();
-        _ctx.arc(0,0,5,0,Math.PI*2,true);
+        _ctx.arc(_pubPoints[0],_pubPoints[1],5,0,Math.PI*2,true);
         _ctx.closePath();
         _ctx.fill();
 
@@ -597,20 +599,22 @@ Canvas2DRenderer = function (map) {
     //map the coordinate in the canvas to the screen
     this.localToWorld = function(pt){
         var worldPoint = [0,0];
-        worldPoint[0] = _canvasHalfSize[0] + (pt[0] - _this.mapCenter[0]) * _scale;
-        worldPoint[1] = _canvasHalfSize[1] + (-pt[1] - _this.mapCenter[1]) * _scale;
+        //worldPoint[0] = pt[0]+_translate[0]-_map.containerHalfSize[0];
+        //worldPoint[1] = pt[1]+_translate[1]-_map.containerHalfSize[1];
         return worldPoint;
     }
 
     //map the coordinate in the screen to the canvas
     this.worldToLocal = function(pt){
-
+        var worldPoint = [0,0];
+        worldPoint[0] = (pt[0]-_translate[0]-_map.containerHalfSize[0]) >> 0;
+        worldPoint[1] = (pt[1]-_translate[1]-_map.containerHalfSize[1]) >> 0;
+        return worldPoint;
     }
 
     this.onSelect = function(point){
-        var tmpPos = [0,0];
-        tmpPos[0] = (-_mapWidth/2 + point[0] + _canvasHalfSize[0] - (parseInt(_canvas.style.left) - left)) >> 0;
-        tmpPos[1] = (-_mapHeight/2 + point[1] + _canvasHalfSize[1] - (parseInt(_canvas.style.top) - top)) >> 0;
+        var tmpPos = _this.worldToLocal(point);
+        _pubPoints = tmpPos;
         return hitTest(tmpPos);
     }
 
@@ -671,16 +675,18 @@ Canvas2DRenderer = function (map) {
 
     function hitTest(point){
         _ctx.save();
-        _ctx.scale(_scale, _scale);
-        _ctx.translate(_canvasHalfSize[0]/_scale-_this.mapCenter[0], _canvasHalfSize[1]/_scale - _this.mapCenter[1]);
-
+        _ctx.setTransform(1,0,0,1,0,0);
         for(var i = 0 ; i < _curFloor.FuncAreas.length; i++) {
             var funcArea = _curFloor.FuncAreas[i];
             if(funcArea.Category == undefined && funcArea.Type == 100){ //hollow area
                 continue;
             }
 
-            var poly = funcArea.Outline[0][0];
+            var rect = funcArea.Rect;
+            //if((point[0]<rect.tl[0] && point[0] < -rect.br[1]) || (point[0]>rect.br[0] && point[0] > -rect.tl[1]))
+            //    continue;
+
+            var poly = funcArea.newOutline;
             if (poly.length < 6) { //less than 3 points, return
                 continue;
             }
@@ -697,8 +703,8 @@ Canvas2DRenderer = function (map) {
                 return funcArea;
             }
         }
-        _ctx.restore();
 
+        _ctx.restore();
         return null;
     }
 
