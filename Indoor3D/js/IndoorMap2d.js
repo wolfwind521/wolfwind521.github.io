@@ -218,7 +218,7 @@ IndoorMap2d = function(mapdiv){
             pos[1] = event.clientY;
         }
 
-        if(Math.abs(pos[0] - _controls.startPoint[0]) < 5 && Math.abs(pos[1] == _controls.startPoint[1]) <5) {
+        if(Math.abs(pos[0] - _controls.startPoint[0] + pos[1] - _controls.startPoint[1]) <5) {
             pos[0] -= IDM.DomUtil.getElementLeft(_mapDiv);
             pos[1] -= IDM.DomUtil.getElementTop(_mapDiv);
 
@@ -378,7 +378,12 @@ Canvas2DRenderer = function (map) {
         for(var i = 0; i < pubPoints.length ; i++){
             updateOutline(pubPoints[i], _scale);
         }
-        //_this.translate([_translate[0]/_scale, _translate[1]/_scale]);
+        _ctx.translate(-_translate[0], -_translate[1]);
+        _this.render();
+        _translate[0] *= scale;
+        _translate[1] *= scale;
+        _ctx.translate(_translate[0], _translate[1]);
+        _this.render();
     }
     function updateOutline(obj, scale){
         var outline = obj.Outline[0][0];
@@ -660,7 +665,7 @@ Canvas2DRenderer = function (map) {
         _ctx.save();
         _ctx.setTransform(1,0,0,1,0,0);
         _ctx.fillStyle = _map.theme.background;
-        _ctx.fillRect(0,0,_canvasSize[0], _canvasSize[1]);
+        _ctx.fillRect(0,0,_canvasSize[0]*_devicePixelRatio, _canvasSize[1]*_devicePixelRatio);
         _ctx.restore();
     }
 
@@ -789,18 +794,17 @@ Controller2D = function(renderer){
         if(touches.length == 1){ //pan
             _this.startPoint[0] = touches[0].clientX;
             _this.startPoint[1] = touches[0].clientY;
-            _state = STATE.PAN;
+            var point = IDM.DomUtil.getPos(domElement);
+            _startPos[0] = point[0];
+            _startPos[1] = point[1];
+
         }
         else if( touches.length == 2){ //zoom
             var dx = touches[1].clientX - touches[0].clientX;
             var dy = touches[1].clientY - touches[0].clientY;
             _zoomDistEnd = _zoomDistStart = Math.sqrt( dx * dx + dy * dy );
 
-            var point = IDM.DomUtil.getPos(domElement);
-            _startPos[0] = point[0];
-            _startPos[1] = point[1];
 
-            _state = STATE.ZOOM;
         }
         else{
             _state = STATE.NONE;
@@ -829,7 +833,7 @@ Controller2D = function(renderer){
         _startPos[0] = point[0];
         _startPos[1] = point[1];
 
-        _state = STATE.PAN;
+
 
     }
 
@@ -844,7 +848,8 @@ Controller2D = function(renderer){
             _this.endPoint[1] = touches[0].clientY;
 
             _panVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
-            _this.translate(_panVector);
+            _this.translate();
+            _state = STATE.PAN;
 
         }else if( touches.length == 2){
             var dx = touches[1].clientX - touches[0].clientX;
@@ -855,6 +860,7 @@ Controller2D = function(renderer){
             _zoomCenter[1] = ( touches[ 0 ].pageY + touches[ 1 ].pageY ) / 2;
             _zoomScale = _zoomDistEnd / _zoomDistStart;
             _this.zoom( _zoomScale );
+            _state = STATE.ZOOM;
         }
     }
 
@@ -868,7 +874,8 @@ Controller2D = function(renderer){
 
         _panVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
 
-        _this.translate(_panVector);
+        _this.translate();
+        _state = STATE.PAN;
 
     }
 
