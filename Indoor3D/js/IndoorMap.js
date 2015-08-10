@@ -588,7 +588,7 @@ var default2dTheme = {
         color: "#666666",
         opacity: 0.5,
         transparent: true,
-        linewidth: 3
+        linewidth: 1
     },
 
     fontStyle:{
