@@ -90,12 +90,17 @@ IndoorMap2d = function(mapdiv){
     }
 
     this.zoomIn = function(zoomScale){
+        if(zoomScale === undefined){
+            zoomScale = 1.25;
+        }
         _this.renderer.scale(zoomScale);
-        //_this.renderer.zoomIn();
         redraw();
     }
 
     this.zoomOut = function(zoomScale){
+        if(zoomScale === undefined){
+            zoomScale = 0.8;
+        }
         _this.renderer.scale(zoomScale);
         redraw();
     }
@@ -150,7 +155,6 @@ IndoorMap2d = function(mapdiv){
 
         if(_this.options.showPubPoints) {
             _this.renderer.loadSpirtes(_this.mall);
-            _this.renderer.loadSpirtes(_this.mall);
         }
 
         _this.adjustCamera();
@@ -198,7 +202,7 @@ IndoorMap2d = function(mapdiv){
             //_this.focus(obj);
             _selectedOldColor = obj.fillColor;
             obj.fillColor = _this.theme.selected;
-            var pos = _this.renderer.localToWorld(obj.Center);
+            //var pos = _this.renderer.localToWorld(obj.Center);
             _selected = obj;
             redraw();
 
@@ -308,6 +312,7 @@ Canvas2DRenderer = function (map) {
     var _canvasPos = [0, 0], //in the browser coordinate
         _canvasSize = [0, 0],
         _canvasHalfSize = [0, 0],
+        _bounds = null,
 
         _nameTexts = [],
         _sprites = [],
@@ -331,7 +336,7 @@ Canvas2DRenderer = function (map) {
 
     }
 
-    this.updateViewport = function(){
+    this.updateViewport = function(isZoom){
         var clipPadding = _clipPadding();
         var clipSize = [(_map.containerSize[0]*clipPadding) >> 0, (_map.containerSize[1]*clipPadding) >> 0];
         _canvasPos[0] = _map.containerPos[0] - clipSize[0];
@@ -341,6 +346,7 @@ Canvas2DRenderer = function (map) {
         _canvasSize[1] = (realRatio * _map.containerSize[1]) >> 0;
         _canvasHalfSize[0] = _canvasSize[0]*.5;
         _canvasHalfSize[1] = _canvasSize[1]*.5;
+        _bounds = new Rect(-_canvasHalfSize[0],-_canvasHalfSize[1],_canvasHalfSize[0], _canvasHalfSize[1]);
         IDM.DomUtil.setPos(_canvas, [-clipSize[0], -clipSize[1]]);
         _devicePixelRatio = window.devicePixelRatio || 1;
         var area = _canvasSize[0]*_canvasSize[1]*_devicePixelRatio*_devicePixelRatio;
@@ -351,7 +357,9 @@ Canvas2DRenderer = function (map) {
         _canvas.style.height = _canvasSize[1] + "px";
         _ctx.scale(_devicePixelRatio, _devicePixelRatio);
         _ctx.translate(_canvasHalfSize[0], _canvasHalfSize[1]);
-        //_ctx.translate(_canvasHalfSize[0]+_map.containerSize[0]*_padding, _canvasHalfSize[1]+_map.containerSize[1]*_padding);
+        if(isZoom){
+            _ctx.translate(_translate[0],_translate[1]);
+        }
     }
 
     function _clipPadding(){
@@ -380,7 +388,7 @@ Canvas2DRenderer = function (map) {
         for(var i = 0; i < pubPoints.length ; i++){
             updateOutline(pubPoints[i], _scale);
         }
-        _ctx.translate(-_translate[0], -_translate[1]);;
+        _ctx.translate(-_translate[0], -_translate[1]);
         _translate[0] *= scale;
         _translate[1] *= scale;
         _ctx.translate(_translate[0], _translate[1]);
@@ -396,6 +404,10 @@ Canvas2DRenderer = function (map) {
             obj.newOutline.push(newPoint[1]);
         }
         obj.rect = IDM.GeomUtil.getBoundingRect(obj.newOutline);
+        //if(!obj.rect.isCollide(_bounds)){
+        //    obj.newOutline = [];
+        //    obj.rect = new Rect();
+        //}
         if(obj.Center) {
             obj.Center = [((obj.rect.br[0]+obj.rect.tl[0])/2) >> 0 , ((obj.rect.br[1]+obj.rect.tl[1])/2) >> 0];
         }
@@ -406,21 +418,26 @@ Canvas2DRenderer = function (map) {
     }
 
     this.setDefaultView = function (floor) {
+        floor.rect = IDM.GeomUtil.getBoundingRect(floor.Outline[0][0]);
 
         _floorSize[0] = floor.rect.br[0] - floor.rect.tl[0];
         _floorSize[1] = floor.rect.br[1] - floor.rect.tl[1];
         var scaleX = (_map.containerSize[0]*(1 - _padding)) / _floorSize[0];
         var scaleY = (_map.containerSize[1]*(1 - _padding)) / _floorSize[1];
 
-        floor.rect = IDM.GeomUtil.getBoundingRect(floor.Outline[0][0]);
+
         _this.mapCenter[0] = (floor.rect.br[0] + floor.rect.tl[0]) / 2;
         _this.mapCenter[1] = (floor.rect.br[1] + floor.rect.tl[1]) / 2;
 
+        _ctx.translate(-_translate[0], -_translate[1]);
+        _scale = 1.0;
+        _translate = [0, 0];
         _this.scale(Math.min(scaleX , scaleY));
     }
 
     this.reset = function(){
         _nameTexts.length = 0;
+
 
     }
 
@@ -515,11 +532,12 @@ Canvas2DRenderer = function (map) {
             _ctx.stroke();
         }
 
-        _ctx.fillStyle="#FF0000";
-        _ctx.beginPath();
-        _ctx.arc(_pubPoints[0],_pubPoints[1],5,0,Math.PI*2,true);
-        _ctx.closePath();
-        _ctx.fill();
+        ////test for selection
+        //_ctx.fillStyle="#FF0000";
+        //_ctx.beginPath();
+        //_ctx.arc(_pubPoints[0],_pubPoints[1],5,0,Math.PI*2,true);
+        //_ctx.closePath();
+        //_ctx.fill();
 
         _ctx.restore();
 
@@ -614,30 +632,8 @@ Canvas2DRenderer = function (map) {
 
     this.onSelect = function(point){
         var tmpPos = _this.worldToLocal(point);
-        _pubPoints = tmpPos;
+        //_pubPoints = tmpPos;
         return hitTest(tmpPos);
-    }
-
-    this.setClearColor = function(color){
-        _clearColor = color;
-
-    }
-
-    this.zoomIn = function(zoomScale){
-        if(zoomScale === undefined){
-            zoomScale = 0.8;
-        }
-        if(exceed(_scale/zoomScale)){
-            return;
-        }
-        _scale /= zoomScale;
-    }
-
-    this.zoomOut = function(zoomScale){
-        if(zoomScale === undefined){
-            zoomScale = 0.8;
-        }
-        _scale *= zoomScale;
     }
 
     this.setSize = function(width, height) {
@@ -682,9 +678,9 @@ Canvas2DRenderer = function (map) {
                 continue;
             }
 
-            var rect = funcArea.Rect;
-            //if((point[0]<rect.tl[0] && point[0] < -rect.br[1]) || (point[0]>rect.br[0] && point[0] > -rect.tl[1]))
-            //    continue;
+            var rect = funcArea.rect;
+            if((point[0]<rect.tl[0] && point[0] < -rect.br[1]) || (point[0]>rect.br[0] && point[0] > -rect.tl[1]))
+                continue;
 
             var poly = funcArea.newOutline;
             if (poly.length < 6) { //less than 3 points, return
@@ -771,7 +767,6 @@ Controller2D = function(renderer){
     this.endPoint = [0, 0];
     var _panVector = [0, 0];
     var _zoomDistStart = 0, _zoomDistEnd = 0;
-    var _zoomCenter = [0, 0];
     var _zoomScale = 1;
     var STATE = {NONE: -1, ZOOM: 1, PAN: 2}
     var _state = STATE.NONE;
@@ -787,9 +782,9 @@ Controller2D = function(renderer){
         IDM.DomUtil.setPos(domElement, [_curPos[0], _curPos[1]]);
     }
 
-    this.zoom = function(scale){
+    this.zoom = function(){
         var pos = IDM.DomUtil.getPos(domElement);
-        domElement.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(pos) + " scale(" + scale + ") ";
+        domElement.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(pos) + " scale(" + _zoomScale + ") ";
     }
 
     function touchStart(event){
@@ -861,11 +856,8 @@ Controller2D = function(renderer){
             var dx = touches[1].clientX - touches[0].clientX;
             var dy = touches[1].clientY - touches[0].clientY;
             _zoomDistEnd = Math.sqrt( dx * dx + dy * dy );
-            var zoomCenter = [0, 0];
-            _zoomCenter[0] = ( touches[ 0 ].pageX + touches[ 1 ].pageX ) / 2;
-            _zoomCenter[1] = ( touches[ 0 ].pageY + touches[ 1 ].pageY ) / 2;
             _zoomScale = _zoomDistEnd / _zoomDistStart;
-            _this.zoom( _zoomScale );
+            _this.zoom( );
             _state = STATE.ZOOM;
         }
     }
@@ -878,11 +870,33 @@ Controller2D = function(renderer){
         _this.endPoint[0] = event.clientX;
         _this.endPoint[1] = event.clientY;
 
-        _panVector = [_this.endPoint[0]-_this.startPoint[0], _this.endPoint[1]-_this.startPoint[1]];
+        _panVector = [_this.endPoint[0] - _this.startPoint[0], _this.endPoint[1] - _this.startPoint[1]];
 
-        _this.translate();
-        _state = STATE.PAN;
+        if(event.button === 0) {
 
+
+            _this.translate();
+            _state = STATE.PAN;
+        }
+        else if(event.button === 1){
+
+            _zoomScale = (Math.abs(_panVector[0])+Math.abs(_panVector[1]))/1000;
+            if(_panVector[1] < 0){
+                _zoomScale = -_zoomScale;
+            }
+            _zoomScale += 1;
+            _this.zoom( );
+            _state = STATE.ZOOM;
+        }
+
+    }
+
+    function mouseWheel(event){
+        if(_this.enable === false) return;
+        var delta = 0;
+        delta = event.wheelDelta ? (event.wheelDelta / 120) : (- event.detail / 3);
+        delta > 0 ? delta *= 1.25 : delta *= -0.8;
+        _renderer.scale(delta);
     }
 
     function touchEnd(event){
@@ -917,12 +931,13 @@ Controller2D = function(renderer){
     }
 
     function zoomEnd(){
-        _renderer.updateViewport();
+        _renderer.updateViewport(true);
         _renderer.scale(_zoomScale);
     }
 
     this.domElement.addEventListener('touchstart', touchStart, false);
     this.domElement.addEventListener('mousedown', mouseDown, false);
+    this.domElement.addEventListener('mousewheel', mouseWheel,false);
 
 
 }

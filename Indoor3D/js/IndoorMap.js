@@ -180,9 +180,9 @@ IDM.DomUtil = {
     },
     setPos: function (element, point) {
         element._idm_pos = point;
-        //IDM.Browser.any3d ? element.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(point) : (element.style.left = point[0] + "px", element.style.top = point[1] + "px")
-        element.style.left = point[0] + "px";
-        element.style.top = point[1] + "px";
+        IDM.Browser.any3d ? element.style[IDM.DomUtil.TRANSFORM] = IDM.DomUtil.getTranslateString(point) : (element.style.left = point[0] + "px", element.style.top = point[1] + "px")
+        //element.style.left = point[0] + "px";
+        //element.style.top = point[1] + "px";
     },
 
     testProp: function(props) {
@@ -947,13 +947,15 @@ IndoorMap.getUI = function(indoorMap) {
     _uiRoot = document.createElement('ul');
     _uiRoot.className = 'floorsUI';
 
-    var li = document.createElement('li');
-    var text = document.createTextNode('All');
+    if(_indoorMap.is3d) {
+        var li = document.createElement('li');
+        var text = document.createTextNode('All');
 
-    li.appendChild(text);
-    _uiRoot.appendChild(li);
-    li.onclick = function(){
-        _indoorMap.showAllFloors();
+        li.appendChild(text);
+        _uiRoot.appendChild(li);
+        li.onclick = function () {
+            _indoorMap.showAllFloors();
+        }
     }
 
     for(var i = 0; i < _indoorMap.mall.getFloorNum(); i++){
