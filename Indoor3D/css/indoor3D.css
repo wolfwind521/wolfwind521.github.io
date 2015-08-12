@@ -32,17 +32,17 @@
 }
 
 .testButton{
-    margin-left: auto;
-    margin-right: 2px;
     top: 100px;
-    float:right;
-    width: 100%;
+    right: 0px;
+    bottom: auto;
+    left: auto;
 }
 
 .testButton ul{
-    float: right;
-
+    margin: 0;
+    padding: 0;
 }
+
 .floorsUI li, .testButton li{
     max-width: 100px;
     padding: 10px;
