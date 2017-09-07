@@ -12,6 +12,7 @@ IndoorMap2d = function(mapdiv){
     var _curFloorId = 0;
     var _selectionListener = null;
     var _selected, _selectedOldColor;
+    var _theme = null;
 
     this.options = {
         showNames : true,
@@ -26,7 +27,7 @@ IndoorMap2d = function(mapdiv){
 
     this.renderer = null;
     this.is3d = false;
-    this.theme = null;
+
     //var _marker;
 
     this.init = function(){
@@ -51,22 +52,49 @@ IndoorMap2d = function(mapdiv){
     }
 
     this.setTheme = function(theme){
-        _this.theme = theme;
-        redraw();
-        return this;
+        if(_theme == null){
+            _theme = theme
+        } else if(_theme != theme) {
+            _theme = theme;
+            _this.parse(_this.mall.jsonData); //parse
+            redraw();
+        }
+        return _this;
+    }
+
+    this.theme = function(){
+        return _theme;
     }
 
     this.getMall = function(){
         return _this.mall;
     }
 
+    //load the map by the json file name
+    this.load = function (fileName, callback) {
+        _this.reset();
+        _theme = default2dTheme;
+        var loader = new IndoorMapLoader(false);
+        loader.load(fileName, function(mall){
+            _this.mall = mall;
+            _this.showFloor(_this.mall.getDefaultFloorId());
+            if(callback) {
+                callback();
+            }
+
+
+        });
+    }
+
     this.parse = function(json){
         _this.reset();
-        _this.mall = ParseModel(json, _this.is3d);
-        _this.theme = _this.mall.theme;
+        if(_theme == null) {
+            _theme = default2dTheme;
+        }
+        _this.mall = ParseModel(json, _this.is3d, _theme);
         _this.showFloor(_this.mall.getDefaultFloorId());
 
-        _mapDiv.style.background = _this.theme.background;
+        _mapDiv.style.background = _theme.background;
         return _this;
     }
 
@@ -86,7 +114,6 @@ IndoorMap2d = function(mapdiv){
 
     this.translate = function(vec){
         _this.renderer.translate(vec);
-        redraw();
     }
 
     this.zoomIn = function(zoomScale){
@@ -94,7 +121,6 @@ IndoorMap2d = function(mapdiv){
             zoomScale = 1.25;
         }
         _this.renderer.scale(zoomScale);
-        redraw();
     }
 
     this.zoomOut = function(zoomScale){
@@ -102,7 +128,6 @@ IndoorMap2d = function(mapdiv){
             zoomScale = 0.8;
         }
         _this.renderer.scale(zoomScale);
-        redraw();
     }
 
     this.showAreaNames = function(show) {
@@ -120,8 +145,13 @@ IndoorMap2d = function(mapdiv){
 
     //get the selected object
     this.getSelectedId = function(){
-        var id = _selected.BrandShop;
-        return id ? id : -1;
+        var id;
+        if(_selected && _selected.BrandShop) {
+            id = _selected.BrandShop;
+        }else{
+            id = -1;
+        }
+        return id;
     }
 
     //the callback function when sth is selected
@@ -162,9 +192,9 @@ IndoorMap2d = function(mapdiv){
         return _this;
     }
 
-    this.setSelectionMarker = function(marker){
-        //_marker = marker;
-    }
+//    this.setSelectionMarker = function(marker){
+//        //_marker = marker;
+//    }
 
     //set if the objects are selectable
     this.setSelectable = function (selectable) {
@@ -178,7 +208,7 @@ IndoorMap2d = function(mapdiv){
         return _this;
     }
 
-    //se if the user can pan the camera
+    //set if the user can pan the camera
     this.setMovable = function(movable){
         _controls.enable = movable;
         return _this;
@@ -201,7 +231,7 @@ IndoorMap2d = function(mapdiv){
         if(obj != undefined) {
             //_this.focus(obj);
             _selectedOldColor = obj.fillColor;
-            obj.fillColor = _this.theme.selected;
+            obj.fillColor = _theme.selected;
             //var pos = _this.renderer.localToWorld(obj.Center);
             _selected = obj;
             redraw();
@@ -224,6 +254,7 @@ IndoorMap2d = function(mapdiv){
         }
 
         if(Math.abs(pos[0] - _controls.startPoint[0] + pos[1] - _controls.startPoint[1]) <5) {
+            //turn browser point into container viewport point
             pos[0] -= IDM.DomUtil.getElementLeft(_mapDiv);
             pos[1] -= IDM.DomUtil.getElementTop(_mapDiv);
 
@@ -337,17 +368,19 @@ Canvas2DRenderer = function (map) {
     }
 
     this.updateViewport = function(isZoom){
-        var clipPadding = _clipPadding();
-        var clipSize = [(_map.containerSize[0]*clipPadding) >> 0, (_map.containerSize[1]*clipPadding) >> 0];
+        var clippadding = clipPadding();
+        var clipSize = [(_map.containerSize[0]*clippadding) >> 0, (_map.containerSize[1]*clippadding) >> 0];
         _canvasPos[0] = _map.containerPos[0] - clipSize[0];
         _canvasPos[1] = _map.containerPos[1] - clipSize[1];
-        var realRatio = 1 + 2*clipPadding;
+        var realRatio = 1 + 2*clippadding;
         _canvasSize[0] = (realRatio * _map.containerSize[0]) >> 0;
         _canvasSize[1] = (realRatio * _map.containerSize[1]) >> 0;
         _canvasHalfSize[0] = _canvasSize[0]*.5;
         _canvasHalfSize[1] = _canvasSize[1]*.5;
         _bounds = new Rect(-_canvasHalfSize[0],-_canvasHalfSize[1],_canvasHalfSize[0], _canvasHalfSize[1]);
-        IDM.DomUtil.setPos(_canvas, [-clipSize[0], -clipSize[1]]);
+        _canvasPos[0] = -clipSize[0]
+        _canvasPos[1] = -clipSize[1]
+        IDM.DomUtil.setPos(_canvas, _canvasPos);
         _devicePixelRatio = window.devicePixelRatio || 1;
         var area = _canvasSize[0]*_canvasSize[1]*_devicePixelRatio*_devicePixelRatio;
         _devicePixelRatio = (IDM.Browser.mobile && !IDM.Browser.android || IDM.Browser.android23) && (area > 5E6) ? 1 : _devicePixelRatio;
@@ -362,7 +395,7 @@ Canvas2DRenderer = function (map) {
         }
     }
 
-    function _clipPadding(){
+    function clipPadding(){
         var ratio = ((IDM.Browser.mobile ? 1280 : 2000) / Math.max(window.innerWidth, window.innerHeight) - 1) / 2;
         return Math.max(0, Math.min(.5, ratio));
     }
@@ -373,6 +406,7 @@ Canvas2DRenderer = function (map) {
         _translate[0] += vec[0];
         _translate[1] += vec[1];
         _ctx.translate(_translate[0], _translate[1]);
+        _this.clearBg();
         _this.render();
     }
 
@@ -420,10 +454,11 @@ Canvas2DRenderer = function (map) {
     this.setDefaultView = function (floor) {
         floor.rect = IDM.GeomUtil.getBoundingRect(floor.Outline[0][0]);
 
-        _floorSize[0] = floor.rect.br[0] - floor.rect.tl[0];
-        _floorSize[1] = floor.rect.br[1] - floor.rect.tl[1];
-        var scaleX = (_map.containerSize[0]*(1 - _padding)) / _floorSize[0];
-        var scaleY = (_map.containerSize[1]*(1 - _padding)) / _floorSize[1];
+        var floorSize = [0, 0];
+        floorSize[0] = floor.rect.br[0] - floor.rect.tl[0];
+        floorSize[1] = floor.rect.br[1] - floor.rect.tl[1];
+        var scaleX = (_map.containerSize[0]*(1 - _padding)) / floorSize[0];
+        var scaleY = (_map.containerSize[1]*(1 - _padding)) / floorSize[1];
 
 
         _this.mapCenter[0] = (floor.rect.br[0] + floor.rect.tl[0]) / 2;
@@ -446,37 +481,40 @@ Canvas2DRenderer = function (map) {
 
         var width = object.rect.br[0] - object.rect.tl[0];
         var height = object.rect.br[1] - object.rect.tl[1];
-        var ratio = (width+height) / (_floorSize[0]+_floorSize[1]);
+        var floor = _map.getMall().getCurFloor();
+        var floorSize = [0, 0];
+        floorSize[0] = floor.rect.br[0] - floor.rect.tl[0];
+        floorSize[1] = floor.rect.br[1] - floor.rect.tl[1];
+        var ratio = (width+height) / (floorSize[0]+floorSize[1]);
         //var padding = ratio > 0.005? _mapWidth * 0.5 : _mapWidth * 0.85;
 
-        var padding = (-1.42*ratio + 0.9) * _mapWidth;
-        padding < _mapHalfWidth? padding = _mapHalfWidth : padding;
-        var scaleX = (_mapWidth - padding) / width;
-        var scaleY = (_mapHeight - padding) / height;
+
+        var minSize = Math.min(_map.containerSize[0], _map.containerSize[1]);
+        var padding = (-1.42*ratio + 0.9) * minSize; //empirical value
+        minSize /= 2;
+        padding < minSize? padding = minSize : padding;
+        var scaleX = (_map.containerSize[0] - padding) / width;
+        var scaleY = (_map.containerSize[1] - padding) / height;
         _objSize[0] = width;
         _objSize[1] = height;
-        _scale = scaleX < scaleY ? scaleX : scaleY;
-
-        //_scale > 0.5 ? _scale = 0.5 : _scale;
+        var tmpScale = scaleX < scaleY ? scaleX : scaleY;
+        _this.scale(tmpScale);
 
         var center = [];
         center[0] = (object.rect.br[0] + object.rect.tl[0]) / 2;
-        center[1] = (object.rect.br[1] + object.rect.tl[1]) / 2;
-        center = _this.localToWorld(center);
-        _canvas.style.position = "absolute";
-
-        _canvas.style.left = (_mapHalfWidth - center[0]) + "px";
-        _canvas.style.top = (_mapHalfHeight - center[1]) + "px";
-
-        //}
+        center[1] = - (object.rect.br[1] + object.rect.tl[1]) / 2;
+        var curCenter = _this.worldToLocal([_map.containerHalfSize[0], _map.containerHalfSize[1]]);
+        var vec = [curCenter[0]-center[0], curCenter[1]-center[1]];
+        _this.updateViewport();
+        _this.translate(vec);
     }
 
     this.screenShot = function(type){
         var tmpCanvas = document.createElement("canvas");
-        tmpCanvas.width = _mapWidth, tmpCanvas.height = _mapHeight;
+        tmpCanvas.width = _map.containerSize[0], tmpCanvas.height = _map.containerSize[1];
 
         var tmpCtx = tmpCanvas.getContext('2d');
-        tmpCtx.drawImage(_canvas,parseInt(_canvas.style.left),parseInt(_canvas.style.top));
+        tmpCtx.drawImage(_canvas,_canvasPos[0],_canvasPos[1]);
         return tmpCanvas.toDataURL(type);
     }
 
@@ -485,16 +523,12 @@ Canvas2DRenderer = function (map) {
             return;
         }
 
-        var theme = _map.theme;
+        var theme = _map.theme();
 
         //get render data
         _curFloor = _map.mall.getCurFloor();
 
         _ctx.save();
-
-
-        //_ctx.translate(_canvasHalfSize[0]/_scale-_this.mapCenter[0], _canvasHalfSize[1]/_scale - _this.mapCenter[1]);
-        //_ctx.scale(_scale, _scale);
 
         //draw floor
         var poly = _curFloor.newOutline;
@@ -553,7 +587,6 @@ Canvas2DRenderer = function (map) {
                 var nameText = _nameTexts[i];
 
                 var center = funcAreas[i].Center;
-                //center = _this.localToWorld(center);
 
                 var rect = new Rect(center[0] - nameText.halfWidth, -center[1] - nameText.halfHeight, center[0] + nameText.halfWidth, -center[1] + nameText.halfHeight);
                 textRects.push(rect);
@@ -592,7 +625,6 @@ Canvas2DRenderer = function (map) {
             for(var i = 0; i < pubPoints.length; i++){
                 var pubPoint = pubPoints[i];
                 var center = pubPoint.newOutline;
-                //center = _this.localToWorld(center);
                 var rect = new Rect(center[0] - imgWidthHalf, -center[1] - imgHeightHalf, center[0] + imgWidthHalf, -center[1] + imgHeightHalf);
                 pubPointRects.push(rect);
 
@@ -614,20 +646,21 @@ Canvas2DRenderer = function (map) {
 
     }
 
-    //map the coordinate in the canvas to the screen
+    //map the coordinate in the map to the viewport
+    //!!hasnt been tested yet
     this.localToWorld = function(pt){
         var worldPoint = [0,0];
-        //worldPoint[0] = pt[0]+_translate[0]-_map.containerHalfSize[0];
-        //worldPoint[1] = pt[1]+_translate[1]-_map.containerHalfSize[1];
+        worldPoint[0] = pt[0]+_translate[0]+_map.containerHalfSize[0] >> 0;
+        worldPoint[1] = pt[1]+_translate[1]+_map.containerHalfSize[1] >> 0;
         return worldPoint;
     }
 
-    //map the coordinate in the screen to the canvas
+    //map the coordinate in the viewport to the map (with -y)
     this.worldToLocal = function(pt){
-        var worldPoint = [0,0];
-        worldPoint[0] = (pt[0]-_translate[0]-_map.containerHalfSize[0]) >> 0;
-        worldPoint[1] = (pt[1]-_translate[1]-_map.containerHalfSize[1]) >> 0;
-        return worldPoint;
+        var localPoint = [0,0];
+        localPoint[0] = (pt[0]-_translate[0]-_map.containerHalfSize[0]) >> 0;
+        localPoint[1] = (pt[1]-_translate[1]-_map.containerHalfSize[1]) >> 0;
+        return localPoint;
     }
 
     this.onSelect = function(point){
@@ -664,7 +697,7 @@ Canvas2DRenderer = function (map) {
         //clear background
         _ctx.save();
         _ctx.setTransform(1,0,0,1,0,0);
-        _ctx.fillStyle = _map.theme.background;
+        _ctx.fillStyle = _map.theme().background;
         _ctx.fillRect(0,0,_canvasSize[0]*_devicePixelRatio, _canvasSize[1]*_devicePixelRatio);
         _ctx.restore();
     }
@@ -674,7 +707,7 @@ Canvas2DRenderer = function (map) {
         _ctx.setTransform(1,0,0,1,0,0);
         for(var i = 0 ; i < _curFloor.FuncAreas.length; i++) {
             var funcArea = _curFloor.FuncAreas[i];
-            if(funcArea.Category == undefined && funcArea.Type == 100){ //hollow area
+            if((!funcArea.Category) && parseInt(funcArea.Type) == 100){ //hollow area
                 continue;
             }
 
@@ -706,7 +739,7 @@ Canvas2DRenderer = function (map) {
 
     this.loadSpirtes = function(mall){
         if(mall != null && _sprites.length == 0 ){
-            var images = mall.theme.pubPointImg;
+            var images = _map.theme().pubPointImg;
             for( var key in images){
                 var loader = new THREE.ImageLoader();
 
@@ -725,12 +758,12 @@ Canvas2DRenderer = function (map) {
             _nameTexts.length = 0;
         }
         var funcAreaJson = mall.getFloorJson(mall.getCurFloorId()).FuncAreas;
-        var fontStyle = mall.theme.fontStyle;
+        var fontStyle = _map.theme().fontStyle;
         _ctx.font =  fontStyle.fontsize + "px/1.4 " + fontStyle.fontface;
         for(var i = 0 ; i < funcAreaJson.length; i++){
             var name = {};
             var funcArea = funcAreaJson[i];
-            if(funcArea.Category == undefined && ((funcArea.Type == "100") || (funcArea.Type == 300))){
+            if((!funcArea.Category) && ((parseInt(funcArea.Type) == 100) || (parseInt(funcArea.Type) == 300))){
                 name.text = "";
                 name.halfWidth = 0;
                 name.halfHeight = 0;

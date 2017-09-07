@@ -19,22 +19,16 @@
 
 
     var params = {
-        mapDiv:"indoor3d"
         //,dim:"2d"
     }
-    var indoorMap = IndoorMap(params);
+    var map = IndoorMap(params);
+    map.load('Indoor3D/data/爱琴海购物中心.json', function(){
+        map.showFloor(1);
+        map.setSelectable(false);
+        map.showPubPoints(true);
+        map.setSelectable(true);
 
-    var testjson;
-    var loader = new IndoorMapLoader(indoorMap.is3d);
-    loader.load('Indoor3D/data/爱琴海购物中心.json', function(mall){
-        testjson = mall.jsonData;
-        indoorMap.parse(testjson);
-        indoorMap.showFloor(1);
-        indoorMap.setSelectable(false);
-	    indoorMap.showPubPoints(true);
-        indoorMap.setSelectable(true);
-
-        var ul = IndoorMap.getUI(indoorMap);
+        var ul = IndoorMap.getUI(map);
         document.body.appendChild(ul);
     });
 
