@@ -79,8 +79,7 @@ IndoorMap2d = function(mapdiv){
         _theme = default2dTheme;
         var loader = new IndoorMapLoader();
         loader.load(fileName, function(json){
-            var building = Parser2D(json);
-            _this.building = building;
+            _this.building = Parser2D(json);
             _this.showFloor(_this.building.getDefaultFloorNo());
             if(callback) {
                 callback();
@@ -128,6 +127,11 @@ IndoorMap2d = function(mapdiv){
         if(zoomScale === undefined){
             zoomScale = 0.8;
         }
+
+        var flbbox = _this.building.getFloor(_curFloorNo).bbox;
+        var minSize = 400;
+        if(flbbox.br[0] - flbbox.tl[0] < minSize || flbbox.br[1] - flbbox.tl[1] < minSize) //stop scaling too small
+            return
         _this.renderer.scale(zoomScale);
     };
 
@@ -458,6 +462,8 @@ Canvas2DRenderer = function (map) {
     }
 
     this.setDefaultView = function (floor) {
+        if(!floor)
+            return;
         floor.bbox = IDM.GeomUtil.getBoundingRect(floor.geometry.coordinates[0]);
 
         var floorSize = [0, 0];
@@ -533,7 +539,8 @@ Canvas2DRenderer = function (map) {
 
         //get render data
         _curFloor = _map.building.getFloor(_map.getCurFloorNo());
-
+        if(!_curFloor)
+            return;
         _ctx.save();
 
         //draw floor
@@ -745,19 +752,21 @@ Canvas2DRenderer = function (map) {
         if(building != null && _sprites.length == 0 ){
             var images = _map.theme().pubPointImg;
             for( var i = 0; i < images.length; ++i){
-                var loader = new THREE.ImageLoader();
-
-                var image = loader.load( images[i], function(image){
+                var img = new Image();
+                img.src = images[i];
+                img.onload = function()
+                {
                     _this.render(building);
-                });
-
-                _sprites[images[i]] = image;
+                }
+                _sprites[images[i]] = img;
             }
         }
         _sprites.isLoaded = true;
     };
 
     this.createNameTexts = function(floorNo, building){
+        if(floorNo == 0)
+            return;
         if(_nameTexts.length != 0){
             _nameTexts.length = 0;
         }
@@ -978,13 +987,14 @@ Controller2D = function(renderer){
 
 
 };
+//-----------------------------the 2D Parser class ---------------------------------------
 
 function Parser2D(json, theme) {
     var building = new Building();
 
     function parse()
     {
-        if(json.type == "FeatureCollection" && json.hasOwnProperty("features"))
+        if(json && json.type == "FeatureCollection" && json.features)
         {
             if (theme == undefined) {
                 theme = default2dTheme;
@@ -992,7 +1002,7 @@ function Parser2D(json, theme) {
 
             for (var i = 0; i < json.features.length; i++) {
                 var ft = json.features[i];
-                if (ft.properties.hasOwnProperty("FL_NO")) //the floor
+                if (ft.properties.FL_NO) //the floor
                 {
                     if(!ft.bbox)
                         ft.bbox = IDM.GeomUtil.getBoundingRect(ft.geometry.coordinates[0]);
@@ -1003,18 +1013,18 @@ function Parser2D(json, theme) {
                     ft.properties.fillColor = theme.floor.color;
 
                     var floor = building.floors[ft.properties["FL_ID"]];
-                    if(floor && floor.hasOwnProperty("rooms"))
+                    if(floor && floor.rooms)
                         ft.rooms = floor.rooms;
                     else
                         ft.rooms = [];
-                    if(floor && floor.hasOwnProperty("pubPoints"))
+                    if(floor && floor.pubPoints)
                         ft.pubPoints = floor.pubPoints;
                     else
                         ft.pubPoints = [];
 
                     building.floors[ft.properties["FL_ID"]] = ft;
                 }
-                else if (ft.properties.hasOwnProperty("FL_ID")) //floor features
+                else if (ft.properties.FL_ID) //floor features
                 {
                     var floor = building.floors[ft.properties["FL_ID"]];
                     if (floor == undefined)
