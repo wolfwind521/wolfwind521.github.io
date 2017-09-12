@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0 user-scalable=no">
+    <title></title>
+</head>
+<body>
+<script src="yunqi/js/three.min.js"></script>
+<script src="yunqi/js/IndoorMap.js"></script>
+<script src="yunqi/js/IndoorMap2d.js"></script>
+<link href="Indoor3D/css/indoor3D.css" rel="stylesheet">
+
+<div id="indoor3d" style="width: 800px; height: 500px; top:0px; left: 0px; position: absolute"></div>
+<script>
+
+    var params = {
+        //mapDiv:"indoor3d",
+        dim:"2d"
+    }
+    var map = IndoorMap(params);
+    map.load('yunqi/data/yunqi.json', function(){
+        map.showAreaNames(true).showPubPoints(true).setSelectable(true);
+//        map.setSelectionListener(function (ft) {
+//            if(ft)
+//                map.focus(ft);
+//        })
+        var ul = IndoorMap.getUI(map);
+        document.body.appendChild(ul);
+    });
+
+</script>
+<!-- buttons just for test-->
+<div class="testButton">
+    <ul >
+        <li onclick="map.zoomIn(1.2)">+</li>
+        <li onclick="map.zoomOut(0.8)">-</li>
+        <!--<li onclick="map.setTopView()">Top View</li>-->
+        <li onclick="map.setDefaultView()">Default View</li>
+
+    </ul>
+</div>
+</body>
+</html>
