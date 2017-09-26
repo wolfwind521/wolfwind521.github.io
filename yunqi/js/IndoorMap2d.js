@@ -31,6 +31,8 @@ IndoorMap2d = function(mapdiv){
 
     this.renderer = null;
     this.is3d = false;
+    this.minSize = 200;     //minimum map size when scaling
+    this.maxSize = 2000;    //maximum map size when scaling
 
     //var _marker;
 
@@ -43,7 +45,7 @@ IndoorMap2d = function(mapdiv){
 
         _this.renderer = new Canvas2DRenderer(_this);
         var canvasDiv = _this.renderer.domElement;
-        _controls = new Controller2D(_this.renderer);
+        _controls = new Controller2D(_this);
         _mapDiv.appendChild(canvasDiv);
         _mapDiv.style.overflow = "hidden";
     };
@@ -109,11 +111,29 @@ IndoorMap2d = function(mapdiv){
     //TODO:adjust camera to fit the building
     this.adjustCamera = function() {
         _this.setDefaultView();
-
     };
 
     this.translate = function(vec){
         _this.renderer.translate(vec);
+    };
+
+    //get proper relative scale limited by minSize and maxSize
+    this.getProperScale = function (scale) {
+        var curFloor = _this.building.getFloor(_curFloorNo);
+        var flbbox = curFloor.bbox;
+        if(scale < 1)
+        {
+            var minLen = Math.min(flbbox.br[0] - flbbox.tl[0], flbbox.br[1] - flbbox.tl[1]);
+            var minLenScale = minLen * scale;
+            scale = minLenScale < _this.minSize ? _this.minSize / minLen : scale;
+        }
+        else
+        {
+            var maxLen = Math.max(flbbox.br[0] - flbbox.tl[0], flbbox.br[1] - flbbox.tl[1]);
+            var maxLenScale = maxLen * scale;
+            scale = maxLenScale > _this.maxSize ? _this.maxSize / maxLen : scale;
+        }
+        return scale;
     };
 
     this.zoomIn = function(zoomScale){
@@ -127,11 +147,6 @@ IndoorMap2d = function(mapdiv){
         if(zoomScale === undefined){
             zoomScale = 0.8;
         }
-
-        var flbbox = _this.building.getFloor(_curFloorNo).bbox;
-        var minSize = 400;
-        if(flbbox.br[0] - flbbox.tl[0] < minSize || flbbox.br[1] - flbbox.tl[1] < minSize) //stop scaling too small
-            return
         _this.renderer.scale(zoomScale);
     };
 
@@ -185,10 +200,6 @@ IndoorMap2d = function(mapdiv){
             _this.renderer.createNameTexts(floorNo, _this.building);
         }
 
-        if(_this.options.showPubPoints) {
-            _this.renderer.loadSpirtes(_this.building);
-        }
-
         _this.adjustCamera();
 
         return _this;
@@ -235,7 +246,6 @@ IndoorMap2d = function(mapdiv){
     //select object(just hight light it)
     this.select = function(obj){
         if(obj != undefined) {
-            _this.focus(obj);
             _selectedOldColor = obj.properties.fillColor;
             obj.properties.fillColor = _theme.selected;
             //var pos = _this.renderer.localToWorld(obj.Center);
@@ -305,34 +315,6 @@ IndoorMap2d = function(mapdiv){
     _this.init();
     animate();
 };
-
-//---------------------the Sprite class------------------
-function CanvasSprite(params){
-    var _this = this,
-        _ctx = params.ctx,
-        _width = params.width,
-        _height = params.height,
-        _offsetX = 0,
-        _offsetY = 0,
-        _visible = true,
-
-        _img = new Image();
-    _img.src = params.image;
-
-    this.draw = function(x, y){
-        if(_visible){
-            _ctx.drawImage(_img,_offsetX, _offsetY, _width, _height, x >> 0, y >> 0, _width, _height);
-        }
-    };
-
-    this.show = function(){
-        _visible = true;
-    };
-
-    this.hide = function(){
-        _visible = false;
-    }
-}
 
 //---------------------2D Renderer class ----------------
 Canvas2DRenderer = function (map) {
@@ -418,7 +400,7 @@ Canvas2DRenderer = function (map) {
     };
 
     this.scale = function(scale){
-        _scale *= scale;
+        _scale *= _map.getProperScale(scale);
         _curFloor = _map.building.getFloor(_map.getCurFloorNo());
         updateOutline(_curFloor, _scale);
         var rooms = _curFloor.rooms;
@@ -649,9 +631,20 @@ Canvas2DRenderer = function (map) {
                     }
                 }
                 if(pubPoint.visible) {
-                    var image = _sprites[theme.pubPoint(pubPoints[i].properties.TYPE)];
+                    var imgUrl = theme.pubPoint(pubPoints[i].properties.TYPE);
+                    var image = _sprites[imgUrl];
                     if(image !== undefined)
                         _ctx.drawImage(image, (center[0] - imgWidthHalf) >> 0, (-center[1] - imgHeightHalf) >> 0, imgWidth, imgHeight);
+                    else
+                    {
+                        var img = new Image();
+                        img.src = imgUrl;
+                        img.onload = function()
+                        {
+                            _this.render(_map.building);
+                        }
+                        _sprites[imgUrl] = img;
+                    }
                 }
             }
         }
@@ -748,22 +741,6 @@ Canvas2DRenderer = function (map) {
         return null;
     }
 
-    this.loadSpirtes = function(building){
-        if(building != null && _sprites.length == 0 ){
-            var images = _map.theme().pubPointImg;
-            for( var i = 0; i < images.length; ++i){
-                var img = new Image();
-                img.src = images[i];
-                img.onload = function()
-                {
-                    _this.render(building);
-                }
-                _sprites[images[i]] = img;
-            }
-        }
-        _sprites.isLoaded = true;
-    };
-
     this.createNameTexts = function(floorNo, building){
         if(floorNo == 0)
             return;
@@ -797,8 +774,9 @@ Canvas2DRenderer = function (map) {
 
 //---------------------Controller2D class-----------------
 
-Controller2D = function(renderer){
-    var _renderer = renderer;
+Controller2D = function(map){
+    var _map = map;
+    var _renderer = map.renderer;
     var domElement = _renderer.domElement;
     this.domElement = ( domElement !== undefined ) ? domElement : document;
     this.viewChanged = true;
@@ -903,6 +881,8 @@ Controller2D = function(renderer){
             var dy = touches[1].clientY - touches[0].clientY;
             _zoomDistEnd = Math.sqrt( dx * dx + dy * dy );
             _zoomScale = _zoomDistEnd / _zoomDistStart;
+
+            _zoomScale = _map.getProperScale(_zoomScale);
             _this.zoom( );
             _state = STATE.ZOOM;
         }
@@ -931,6 +911,7 @@ Controller2D = function(renderer){
                 _zoomScale = -_zoomScale;
             }
             _zoomScale += 1;
+            _zoomScale = _map.getProperScale(_zoomScale);
             _this.zoom( );
             _state = STATE.ZOOM;
         }
@@ -942,6 +923,7 @@ Controller2D = function(renderer){
         var delta = 0;
         delta = event.wheelDelta ? (event.wheelDelta / 120) : (- event.detail / 3);
         delta > 0 ? delta *= 1.25 : delta *= -0.8;
+        delta = _map.getProperScale(delta);
         _renderer.scale(delta);
     }
 
@@ -1055,3 +1037,169 @@ function Parser2D(json, theme) {
 
     return parse();
 }
+
+//----------------------------default 2d theme--------------------------------------
+var default2dTheme = {
+    name: "test", //theme's name
+    background: "#F2F2F2", //background color
+
+    //building's style
+    building: {
+        color: "#000000",
+        opacity: 0.1,
+        transparent: true,
+        depthTest: false
+    },
+
+    //floor's style
+    floor: {
+        color: "#E0E0E0",
+        opacity: 1,
+        transparent: false
+    },
+
+    //selected room's style
+    selected: "#ffff55",
+
+    //rooms' style
+    room: function (type) {
+        var roomStyle;
+        switch (type) {
+            case 100: //hollow.
+                return {
+                    color: "#F2F2F2",
+                    opacity: 0.8,
+                    transparent: true
+                };
+            case 101: //food
+                roomStyle = {
+                    color: "#1f77b4",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 102: //retail
+                roomStyle = {
+                    color: "#aec7e8",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 103: //toiletry
+                roomStyle = {
+                    color: "#ffbb78",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 104: //parent-child
+                roomStyle = {
+                    color: "#98df8a",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 105: //life services
+                roomStyle = {
+                    color: "#bcbd22",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 106: //education
+                return {
+                    color: "#2ca02c",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 107: //life style
+                roomStyle = {
+                    color: "#dbdb8d",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 108: //entertainment
+                roomStyle = {
+                    color: "#EE8A31",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+            case 109: //others
+                roomStyle = {
+                    color: "#8c564b",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case 300: //closed area
+                return {
+                    color: "#AAAAAA",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case 400: //empty shop
+                return {
+                    color: "#D3D3D3",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            default :
+                roomStyle = {
+                    color: "#f29e7b",
+                    opacity: 0.7,
+                    transparent: true
+                };
+                break;
+        }
+        return roomStyle;
+    },
+
+    //room wires' style
+    strokeStyle: {
+        color: "#666666",
+        opacity: 0.5,
+        transparent: true,
+        linewidth: 1
+    },
+
+    fontStyle:{
+        opacity: 1,
+        textAlign: "center",
+        textBaseline: "middle",
+        color: "#333333",
+        fontsize: 11,
+        fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif  "
+    },
+
+    pubPoint:function(type) {
+        var imgUrl;
+        switch(type){
+            case "200300":
+            case "200301":
+            case "200302":
+                imgUrl = System.imgPath+"/toilet.png";
+                break;
+            case "11002":
+                imgUrl = System.imgPath+"/ATM.png";
+                break;
+            case "990100":
+                imgUrl = System.imgPath+"/stair.png";
+                break;
+            case "990200":
+                imgUrl = System.imgPath+"/lift.png";
+                break;
+            case "990300":
+                imgUrl = System.imgPath+"/escalator.png";
+                break;
+            case "990700":
+            case "991000":
+                imgUrl = System.imgPath+"/entry.png";
+                break;
+            default:
+                imgUrl = System.imgPath+"/default-point.png";
+        }
+        return imgUrl;
+    }
+};
