@@ -32,7 +32,7 @@ IndoorMap2d = function(mapdiv){
     this.renderer = null;
     this.is3d = false;
     this.minSize = 200;     //minimum map size when scaling
-    this.maxSize = 2000;    //maximum map size when scaling
+    this.maxSize = 30000;    //maximum map size when scaling
 
     //var _marker;
 
@@ -440,7 +440,7 @@ Canvas2DRenderer = function (map) {
     }
 
     function updatePoint(point, scale){
-        return [((point[0] - _this.mapCenter[0])*scale)>>0, ((point[1] - _this.mapCenter[1])*scale)>>0];
+        return [((point[0] - _this.mapCenter[0])*scale), ((point[1] - _this.mapCenter[1])*scale)];
     }
 
     this.setDefaultView = function (floor) {
@@ -528,6 +528,7 @@ Canvas2DRenderer = function (map) {
         //draw floor
         var poly = _curFloor.newOutline;
         _ctx.beginPath();
+        _ctx.lineJoin="round";
         _ctx.moveTo(poly[0][0], -poly[0][1]);
         for(var i = 1; i < poly.length; ++i){
             _ctx.lineTo(poly[i][0],-poly[i][1]);
@@ -549,7 +550,7 @@ Canvas2DRenderer = function (map) {
                 continue;
             }
             _ctx.beginPath();
-
+            _ctx.lineJoin="round";
             _ctx.moveTo(poly[0][0], -poly[0][1]);
             for(var j = 1; j < poly.length; ++j){
                 _ctx.lineTo(poly[j][0],-poly[j][1]);
@@ -594,7 +595,7 @@ Canvas2DRenderer = function (map) {
                 //        break;
                 //    }
                 //}
-                if((rooms[i].bbox.br[0]-rooms[i].bbox.tl[0])*0.9 < nameText.halfWidth*2)
+                if((rooms[i].bbox.br[0]-rooms[i].bbox.tl[0]) < nameText.halfWidth*2)
                     nameText.visible = false;
                 if(nameText.visible) {
                     _ctx.fillText(nameText.text, (center[0] - nameText.halfWidth) >> 0, (-center[1]) >> 0);
@@ -711,7 +712,7 @@ Canvas2DRenderer = function (map) {
         _ctx.setTransform(1,0,0,1,0,0);
         for(var i = 0 ; i < _curFloor.rooms.length; i++) {
             var room = _curFloor.rooms[i];
-            if((!room.Category) && parseInt(room.Type) == 100){ //hollow area
+            if(room.properties.TYPE == "000100"){ //hollow area can not be selectd
                 continue;
             }
 
@@ -984,7 +985,7 @@ function Parser2D(json, theme) {
 
             for (var i = 0; i < json.features.length; i++) {
                 var ft = json.features[i];
-                if (ft.properties.FL_NO) //the floor
+                if (ft.properties && ft.properties.FL_NO) //the floor
                 {
                     if(!ft.bbox)
                         ft.bbox = IDM.GeomUtil.getBoundingRect(ft.geometry.coordinates[0]);
@@ -1006,7 +1007,7 @@ function Parser2D(json, theme) {
 
                     building.floors[ft.properties["FL_ID"]] = ft;
                 }
-                else if (ft.properties.FL_ID) //floor features
+                else if (ft.properties && ft.properties.FL_ID) //floor features
                 {
                     var floor = building.floors[ft.properties["FL_ID"]];
                     if (floor == undefined)
@@ -1020,7 +1021,7 @@ function Parser2D(json, theme) {
                             ft.bbox = IDM.GeomUtil.getBoundingRect(ft.geometry.coordinates[0]);
                         if(!ft.properties.center)
                             ft.properties.center = IDM.GeomUtil.getCenter(ft.bbox);
-                        ft.properties.fillColor = theme.room(parseInt(ft.properties.TYPE)).color;
+                        ft.properties.fillColor = theme.room(ft.properties.TYPE).color;
                         ft.properties.strokeColor = theme.strokeStyle.color;
 
                         floor.rooms.push(ft);
@@ -1065,86 +1066,51 @@ var default2dTheme = {
     room: function (type) {
         var roomStyle;
         switch (type) {
-            case 100: //hollow.
+            case "000100": //hollow.
                 return {
                     color: "#F2F2F2",
                     opacity: 0.8,
                     transparent: true
                 };
-            case 101: //food
-                roomStyle = {
-                    color: "#1f77b4",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 102: //retail
-                roomStyle = {
-                    color: "#aec7e8",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 103: //toiletry
-                roomStyle = {
-                    color: "#ffbb78",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 104: //parent-child
-                roomStyle = {
-                    color: "#98df8a",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 105: //life services
-                roomStyle = {
-                    color: "#bcbd22",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 106: //education
-                return {
-                    color: "#2ca02c",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 107: //life style
-                roomStyle = {
-                    color: "#dbdb8d",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 108: //entertainment
-                roomStyle = {
-                    color: "#EE8A31",
-                    opacity: 0.7,
-                    transparent: true
-                };
-                break;
-            case 109: //others
-                roomStyle = {
-                    color: "#8c564b",
-                    opacity: 0.7,
-                    transparent: true
-                };
-            case 300: //closed area
+            case "000300": //closed area
                 return {
                     color: "#AAAAAA",
                     opacity: 0.7,
                     transparent: true
                 };
-            case 400: //empty shop
+            case "000400": //empty shop
                 return {
                     color: "#D3D3D3",
                     opacity: 0.7,
                     transparent: true
                 };
+            case "000900": //auxiliary plane
+            case "000901": //auxiliary plane
+                return {
+                    color: "#c49c94",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case "110000": //green area
+                return {
+                    color: "#98df8a",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case "980447": //path
+                return {
+                    color: "#ffbb78",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            case "140200":
+            case "070000": //sign in
+                return {
+                    color: "#aec7e8",
+                    opacity: 0.7,
+                    transparent: true
+                };
+            //add more cases here
             default :
                 roomStyle = {
                     color: "#f29e7b",
@@ -1161,7 +1127,7 @@ var default2dTheme = {
         color: "#666666",
         opacity: 0.5,
         transparent: true,
-        linewidth: 1
+        linewidth: 0.8
     },
 
     fontStyle:{
@@ -1169,7 +1135,7 @@ var default2dTheme = {
         textAlign: "center",
         textBaseline: "middle",
         color: "#333333",
-        fontsize: 11,
+        fontsize: 12,
         fontface: "'Lantinghei SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif  "
     },
 
@@ -1195,6 +1161,7 @@ var default2dTheme = {
                 break;
             case "990700":
             case "991000":
+            case "991001":
                 imgUrl = System.imgPath+"/entry.png";
                 break;
             default:

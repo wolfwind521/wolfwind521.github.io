@@ -20,10 +20,10 @@
     var map = IndoorMap(params);
     map.load('yunqi/data/yunqi.json', function(){
         map.showAreaNames(true).showPubPoints(true).setSelectable(true);
-//        map.setSelectionListener(function (ft) {
-//            if(ft)
-//                map.focus(ft);
-//        })
+        map.setSelectionListener(function (feature) {
+            if(feature)
+                map.focus(feature);
+        })
         var ul = IndoorMap.getUI(map);
         document.body.appendChild(ul);
     });

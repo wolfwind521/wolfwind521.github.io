@@ -125,7 +125,7 @@ IDM.GeomUtil = {
         if (points.length < 1) {
             return rect;
         }
-        var minX = 9999999, minY = 9999999, maxX = -9999999, maxY = -9999999;
+        var minX = Number.MAX_VALUE, minY = Number.MAX_VALUE, maxX = -Number.MAX_VALUE, maxY = -Number.MAX_VALUE;
         for (var i = 0; i < points.length; ++i) {
 
             if (points[i][0] > maxX) {
